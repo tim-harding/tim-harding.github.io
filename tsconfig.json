@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "types": [
+      "vite/client"
+    ],
+    "moduleResolution": "bundler",
+    "module": "esnext",
+    "target": "esnext",
+    "isolatedModules": true,
+    "strict": true,
+    "allowJs": true,
+    "checkJs": true
+  }
+}
