@@ -1,17 +1,10 @@
 <script setup>
-import { ref } from "vue";
-import { useData } from "vitepress";
-const { isDark } = useData();
-
-const thing = ref(false);
 const toggleTheme = () => {
-  thing.value = !thing.value;
-  isDark.value = !isDark.value;
+  document.documentElement.classList.toggle("dark");
 };
 </script>
 
 <template>
-  <div :class="{ [$style.thing]: thing, [$style.stuff]: true }"></div>
   <button :class="$style.themeButton" @click="toggleTheme">
     <span class="sr">Toggle theme</span>
 
