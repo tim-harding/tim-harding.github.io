@@ -150,7 +150,6 @@ html.dark {
   --lavender: #babbf1;
 }
 
-/*
 @property --subtext-1 {
   syntax: "<color>";
   inherits: true;
@@ -276,5 +275,4 @@ html.dark {
   inherits: true;
   initial-value: transparent;
 }
-*/
 </style>
