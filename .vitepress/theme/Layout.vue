@@ -72,6 +72,12 @@ h6 {
   text-wrap: balance;
 }
 
+ul,
+ol,
+menu {
+  list-style: none;
+}
+
 .sr {
   position: absolute;
   width: 1px;
@@ -82,6 +88,10 @@ h6 {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+.contents {
+  display: contents;
 }
 
 /* Catppuccin latte */
