@@ -1,20 +1,17 @@
 <script setup lang="ts">
-import { useData } from 'vitepress'
-// See https://vitepress.dev/reference/runtime-api
-const { page, frontmatter } = useData()
+import { useData } from "vitepress";
+import NotFound from "./NotFound.vue";
+
+const { page } = useData();
 </script>
 
 <template>
-    <div v-if="page.isNotFound">
-        404
-    </div>
-    <div v-if="frontmatter.layout === 'home'">
-        Custom homepage
-    </div>
-    <div v-else>
-        <h1>Hello</h1>
-        <Content />
-    </div>
+  <header></header>
+  <main>
+    <NotFound v-if="page.isNotFound" />
+    <Content v-else />
+  </main>
+  <footer></footer>
 </template>
 
 <style lang="postcss" module></style>

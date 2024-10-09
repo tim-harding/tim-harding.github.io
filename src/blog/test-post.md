@@ -2,4 +2,4 @@
 title: Test post
 ---
 
-# Test post
+# {{ $frontmatter.title }}
