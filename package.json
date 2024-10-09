@@ -1,6 +1,7 @@
 {
   "name": "tim-harding.github.io",
   "private": true,
+  "type": "module",
   "description": "Blag",
   "homepage": "https://tim-harding.github.io/",
   "author": {
