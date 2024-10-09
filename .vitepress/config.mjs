@@ -1,0 +1,24 @@
+import { defineConfig } from "vitepress";
+
+export default defineConfig({
+  title: "Tim Harding",
+  description: "Blag",
+  srcDir: "src",
+  appearance: false,
+  head: [
+    [
+      "script",
+      { id: "check-dark-mode" },
+      `(() => {
+switch (localStorage.getItem("theme")) {
+  case "auto":
+  case null:
+    if (window.matchMedia("(prefers-color-scheme: light)").matches) break;
+  case "dark":
+    document.documentElement.classList.add("dark");
+}})()`,
+    ],
+  ],
+  themeConfig: {},
+  vite: {},
+});
