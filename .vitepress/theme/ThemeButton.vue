@@ -27,17 +27,6 @@ const toggleTheme = () => {
 </template>
 
 <style scoped>
-.stuff {
-  background: black;
-  width: 100px;
-  height: 100px;
-  transition: all 2s;
-}
-
-.thing {
-  width: 200px;
-}
-
 .theme-button {
   display: grid;
   grid-template-rows: 100%;
@@ -48,6 +37,25 @@ const toggleTheme = () => {
   border-radius: 0.25rem;
   border: 1px solid var(--surface-1);
   overflow: hidden;
+  transition-property: background-color, border-color;
+  transition-duration: 125ms;
+
+  &:focus-visible {
+    outline-style: solid;
+    outline-width: 2px;
+    outline-offset: 2px;
+    outline-color: var(--blue);
+  }
+
+  &:hover {
+    background-color: var(--surface-1);
+    border-color: var(--surface-2);
+  }
+
+  &:active {
+    background-color: var(--surface-2);
+    border-color: var(--overlay-0);
+  }
 }
 
 .center-icon {
