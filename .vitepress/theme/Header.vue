@@ -1,5 +1,11 @@
-<script setup></script>
+<script setup>
+import ThemeButton from "./ThemeButton.vue";
+</script>
 
-<template></template>
+<template>
+  <header>
+    <ThemeButton />
+  </header>
+</template>
 
 <style></style>

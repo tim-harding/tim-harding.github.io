@@ -1,14 +1,13 @@
 <script setup>
 import { useData } from "vitepress";
+const { page } = useData();
 import NotFound from "./NotFound.vue";
-const { page, isDark } = useData();
+import Header from "./Header.vue";
 </script>
 
 <template>
   <div>
-    <header>
-      <button @click="() => (isDark = !isDark)">Toggle theme</button>
-    </header>
+    <Header />
     <main>
       <NotFound v-if="page.isNotFound" />
       <Content v-else />
@@ -21,8 +20,8 @@ const { page, isDark } = useData();
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 :where(:not(html, iframe, canvas, img, svg, video, audio, svg *, symbol *)) {
-  all: unset;
-  display: revert;
+  /*all: unset;*/
+  /*display: revert;*/
 }
 
 *,
@@ -73,13 +72,6 @@ h6 {
   text-wrap: balance;
 }
 
-/* Prevent font size inflation */
-html {
-  -moz-text-size-adjust: none;
-  -webkit-text-size-adjust: none;
-  text-size-adjust: none;
-}
-
 .sr {
   position: absolute;
   width: 1px;
@@ -120,6 +112,12 @@ html {
   --sapphire: #209fb5;
   --blue: #1e66f5;
   --lavender: #7287fd;
+
+  transition-property: --text, --subtext-1, --subtext-0, --overlay-2,
+    --overlay-1, --overlay-0, --surface-2, --surface-1, --surface-0, --base,
+    --mantle, --crust, --rosewater, --flamingo, --pink, --mauve, --red, --maroon,
+    --peach, --yellow, --green, --teal, --sky, --sapphire, --blue, --lavender;
+  transition-duration: 250ms;
 }
 
 /* Catppuccin frappe */
@@ -152,6 +150,7 @@ html.dark {
   --lavender: #babbf1;
 }
 
+/*
 @property --subtext-1 {
   syntax: "<color>";
   inherits: true;
@@ -277,4 +276,5 @@ html.dark {
   inherits: true;
   initial-value: transparent;
 }
+*/
 </style>
