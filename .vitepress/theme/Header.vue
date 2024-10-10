@@ -14,7 +14,15 @@ import ThemeButton from "./ThemeButton.vue";
             <a class="link" href="/blog">Blog</a>
           </li>
           <li>
-            <a class="link" href="/resume">Resumé</a>
+            <a class="link" href="/about">About</a>
+          </li>
+          <li>
+            <a
+              class="link"
+              href="https://github.com/tim-harding/"
+              target="_blank"
+              >GitHub</a
+            >
           </li>
         </ul>
       </nav>
@@ -44,7 +52,9 @@ import ThemeButton from "./ThemeButton.vue";
 .list {
   grid-area: nav;
   display: grid;
-  grid-template-columns: 1fr max-content max-content;
+  grid-template-columns: 1fr;
+  grid-auto-columns: max-content;
+  grid-auto-flow: column;
   gap: 1.5rem;
   align-items: center;
 }
