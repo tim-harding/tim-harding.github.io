@@ -35,114 +35,6 @@ import Footer from "./Footer.vue";
 </style>
 
 <style>
-@font-face {
-  font-family: "Concourse Tab";
-  src: local("Concourse 2 Tab");
-  font-weight: 200;
-}
-
-@font-face {
-  font-family: "Concourse Tab";
-  src: local("Concourse 3 Tab");
-  font-weight: 300;
-}
-
-@font-face {
-  font-family: "Concourse Tab";
-  src: local("Concourse 4 Tab");
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: "Concourse Tab";
-  src: local("Concourse 6 Tab");
-  font-weight: 600;
-}
-
-@font-face {
-  font-family: "Concourse Tab";
-  src: local("Concourse 7 Tab");
-  font-weight: 700;
-}
-
-@font-face {
-  font-family: "Concourse Tab";
-  src: local("Concourse 8 Tab");
-  font-weight: 800;
-}
-
-@font-face {
-  font-family: "Concourse Caps";
-  src: local("Concourse 2 Caps");
-  font-weight: 200;
-}
-
-@font-face {
-  font-family: "Concourse Caps";
-  src: local("Concourse 3 Caps");
-  font-weight: 300;
-}
-
-@font-face {
-  font-family: "Concourse Caps";
-  src: local("Concourse 4 Caps");
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: "Concourse Caps";
-  src: local("Concourse 6 Caps");
-  font-weight: 600;
-}
-
-@font-face {
-  font-family: "Concourse Caps";
-  src: local("Concourse 7 Caps");
-  font-weight: 700;
-}
-
-@font-face {
-  font-family: "Concourse Caps";
-  src: local("Concourse 8 Caps");
-  font-weight: 800;
-}
-
-@font-face {
-  font-family: "Concourse";
-  src: local("Concourse 2");
-  font-weight: 200;
-}
-
-@font-face {
-  font-family: "Concourse";
-  src: local("Concourse 3");
-  font-weight: 300;
-}
-
-@font-face {
-  font-family: "Concourse";
-  src: local("Concourse 4");
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: "Concourse";
-  src: local("Concourse 6");
-  font-weight: 600;
-}
-
-@font-face {
-  font-family: "Concourse";
-  src: local("Concourse 7");
-  font-weight: 700;
-}
-
-@font-face {
-  font-family: "Concourse";
-  src: local("Concourse 8");
-  font-weight: 800;
-}
-
 :where(:not(html, iframe, canvas, img, svg, video, audio, svg *, symbol *)) {
   all: unset;
   display: revert;
@@ -217,6 +109,11 @@ menu {
 :root {
   --page-width: 36rem;
   font-size: 20px;
+}
+
+::selection {
+  background-color: var(--blue);
+  color: var(--base);
 }
 
 /* Catppuccin latte */
@@ -409,5 +306,113 @@ html.dark {
   syntax: "<color>";
   inherits: true;
   initial-value: transparent;
+}
+
+@font-face {
+  font-family: "Concourse Tab";
+  src: local("Concourse 2 Tab");
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: "Concourse Tab";
+  src: local("Concourse 3 Tab");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "Concourse Tab";
+  src: local("Concourse 4 Tab");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Concourse Tab";
+  src: local("Concourse 6 Tab");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Concourse Tab";
+  src: local("Concourse 7 Tab");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Concourse Tab";
+  src: local("Concourse 8 Tab");
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: "Concourse Caps";
+  src: local("Concourse 2 Caps");
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: "Concourse Caps";
+  src: local("Concourse 3 Caps");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "Concourse Caps";
+  src: local("Concourse 4 Caps");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Concourse Caps";
+  src: local("Concourse 6 Caps");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Concourse Caps";
+  src: local("Concourse 7 Caps");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Concourse Caps";
+  src: local("Concourse 8 Caps");
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: "Concourse";
+  src: local("Concourse 2");
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: "Concourse";
+  src: local("Concourse 3");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "Concourse";
+  src: local("Concourse 4");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Concourse";
+  src: local("Concourse 6");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Concourse";
+  src: local("Concourse 7");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Concourse";
+  src: local("Concourse 8");
+  font-weight: 800;
 }
 </style>

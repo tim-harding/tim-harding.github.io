@@ -36,9 +36,10 @@ const toggleTheme = () => {
   grid-template-columns: 100% 100%;
   width: 2rem;
   height: 2rem;
-  background-color: var(--base);
   border-radius: 0.25rem;
-  border: 1px solid var(--surface-0);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
   overflow: hidden;
   transition-property: background-color, border-color;
   transition-duration: 125ms;
@@ -51,13 +52,13 @@ const toggleTheme = () => {
   }
 
   &:hover {
-    background-color: var(--surface-0);
-    border-color: var(--surface-1);
+    background-color: var(--base);
+    border-color: var(--surface-0);
   }
 
   &:active {
-    background-color: var(--surface-1);
-    border-color: var(--surface-2);
+    background-color: var(--surface-0);
+    border-color: var(--surface-1);
   }
 }
 

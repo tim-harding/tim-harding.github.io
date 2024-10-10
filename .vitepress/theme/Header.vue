@@ -47,7 +47,7 @@ import ThemeButton from "./ThemeButton.vue";
   grid-template-columns: 1fr max-content;
   grid-template-areas: "nav theme-button";
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .list {
