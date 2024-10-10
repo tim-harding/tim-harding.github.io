@@ -1,6 +1,9 @@
 <script setup>
 const toggleTheme = () => {
-  document.documentElement.classList.toggle("dark");
+  const classlist = document.documentElement.classList;
+  classlist.toggle("dark");
+  const theme = classlist.contains("dark") ? "dark" : "light";
+  localStorage.setItem("theme", theme);
 };
 </script>
 
