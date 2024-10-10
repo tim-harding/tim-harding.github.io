@@ -34,8 +34,8 @@ const toggleTheme = () => {
   display: grid;
   grid-template-rows: 100%;
   grid-template-columns: 100% 100%;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2rem;
+  height: 2rem;
   background-color: var(--base);
   border-radius: 0.25rem;
   border: 1px solid var(--surface-0);

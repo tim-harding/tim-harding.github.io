@@ -26,6 +26,7 @@ import Footer from "./Footer.vue";
 
 .main {
   grid-area: main;
+  padding-top: 3rem;
 }
 
 .footer {
@@ -34,7 +35,113 @@ import Footer from "./Footer.vue";
 </style>
 
 <style>
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@font-face {
+  font-family: "Concourse Tab";
+  src: local("Concourse 2 Tab");
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: "Concourse Tab";
+  src: local("Concourse 3 Tab");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "Concourse Tab";
+  src: local("Concourse 4 Tab");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Concourse Tab";
+  src: local("Concourse 6 Tab");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Concourse Tab";
+  src: local("Concourse 7 Tab");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Concourse Tab";
+  src: local("Concourse 8 Tab");
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: "Concourse Caps";
+  src: local("Concourse 2 Caps");
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: "Concourse Caps";
+  src: local("Concourse 3 Caps");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "Concourse Caps";
+  src: local("Concourse 4 Caps");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Concourse Caps";
+  src: local("Concourse 6 Caps");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Concourse Caps";
+  src: local("Concourse 7 Caps");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Concourse Caps";
+  src: local("Concourse 8 Caps");
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: "Concourse";
+  src: local("Concourse 2");
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: "Concourse";
+  src: local("Concourse 3");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "Concourse";
+  src: local("Concourse 4");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Concourse";
+  src: local("Concourse 6");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Concourse";
+  src: local("Concourse 7");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Concourse";
+  src: local("Concourse 8");
+  font-weight: 800;
+}
 
 :where(:not(html, iframe, canvas, img, svg, video, audio, svg *, symbol *)) {
   all: unset;
@@ -49,7 +156,7 @@ import Footer from "./Footer.vue";
 
 body {
   line-height: 1.5;
-  font-family: "Poppins", sans-serif;
+  font-family: "Concourse", sans-serif;
   background-color: var(--base);
   color: var(--text);
 }
@@ -108,7 +215,8 @@ menu {
 }
 
 :root {
-  --page-width: 58rem;
+  --page-width: 36rem;
+  font-size: 20px;
 }
 
 /* Catppuccin latte */

@@ -38,6 +38,7 @@ import ThemeButton from "./ThemeButton.vue";
   grid-template-rows: 4rem;
   grid-template-areas: ". . center . .";
   background-color: var(--mantle);
+  border-bottom: 1px solid var(--crust);
 }
 
 .header-contents {
@@ -79,7 +80,7 @@ import ThemeButton from "./ThemeButton.vue";
 
 .site-title {
   font-size: 2rem;
-  font-weight: 900;
+  font-weight: 800;
 }
 
 .theme-button {
