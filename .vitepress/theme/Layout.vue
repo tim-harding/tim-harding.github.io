@@ -109,6 +109,7 @@ menu {
 :root {
   --page-width: 36rem;
   font-size: 20px;
+  scrollbar-color: var(--surface-2) var(--crust);
 }
 
 ::selection {
