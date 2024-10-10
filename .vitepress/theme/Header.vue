@@ -5,15 +5,15 @@ import ThemeButton from "./ThemeButton.vue";
 <template>
   <header class="header">
     <div class="header-contents">
-      <nav class="contents">
+      <nav>
         <ul class="list">
           <li>
             <a class="site-title link" href="/">Harding</a>
           </li>
-          <li class="contents">
+          <li>
             <a class="link" href="/blog">Blog</a>
           </li>
-          <li class="contents">
+          <li>
             <a class="link" href="/resume">Resumé</a>
           </li>
         </ul>

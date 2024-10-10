@@ -107,10 +107,6 @@ menu {
   border-width: 0;
 }
 
-.contents {
-  display: contents;
-}
-
 :root {
   --page-width: 58rem;
 }
