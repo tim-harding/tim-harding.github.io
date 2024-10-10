@@ -94,6 +94,10 @@ menu {
   display: contents;
 }
 
+:root {
+  --page-width: 58rem;
+}
+
 /* Catppuccin latte */
 html {
   --text: #4c4f69;

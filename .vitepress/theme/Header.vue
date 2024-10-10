@@ -4,53 +4,75 @@ import ThemeButton from "./ThemeButton.vue";
 
 <template>
   <header class="header">
-    <nav class="nav">
-      <ul class="ul">
-        <li class="contents">
-          <a href="/" class="site-title">Harding</a>
-        </li>
-        <li>
-          <a href="/blog">Blog</a>
-        </li>
-        <li>
-          <a href="/resume">Resumé</a>
-        </li>
-      </ul>
-    </nav>
-    <ThemeButton class="theme-button" />
+    <div class="header-contents">
+      <nav class="contents">
+        <ul class="list">
+          <li>
+            <a class="site-title link" href="/">Harding</a>
+          </li>
+          <li class="contents">
+            <a class="link" href="/blog">Blog</a>
+          </li>
+          <li class="contents">
+            <a class="link" href="/resume">Resumé</a>
+          </li>
+        </ul>
+      </nav>
+      <ThemeButton class="theme-button" />
+    </div>
   </header>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .header {
   display: grid;
-  grid-template-columns: [nav-start] 1fr max-content [nav-end];
-  grid-template-rows: [nav-start] 4rem [nav-end];
-  grid-template-areas: ". theme-button";
+  grid-template-columns: 1fr 1rem minmax(0rem, var(--page-width)) 1rem 1fr;
+  grid-template-rows: 4rem;
+  grid-template-areas: ". . center . .";
   background-color: var(--mantle);
 }
 
-.nav {
-  grid-area: nav;
+.header-contents {
+  grid-area: center;
   display: grid;
-  grid-template-columns: 1fr 1rem minmax(0rem, 48rem) 1rem 1fr;
-  grid-template-areas: ". . ul . .";
+  grid-template-columns: 1fr max-content;
+  grid-template-areas: "nav theme-button";
+  align-items: center;
+  gap: 2rem;
 }
 
-.ul {
-  grid-area: ul;
+.list {
+  grid-area: nav;
   display: grid;
   grid-template-columns: 1fr max-content max-content;
-  gap: 1rem;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.link {
+  font-weight: 500;
+  transition: color 125ms;
+
+  &:hover {
+    color: var(--blue);
+  }
+
+  &:active {
+    color: var(--sky);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
 }
 
 .site-title {
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 900;
 }
 
 .theme-button {
   grid-area: theme-button;
-  margin: 1rem 1rem 0rem 0rem;
 }
 </style>
