@@ -4,4 +4,4 @@
   <h1>404</h1>
 </template>
 
-<style module></style>
+<style lang="scss" scoped></style>

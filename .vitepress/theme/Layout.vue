@@ -1,20 +1,37 @@
 <script setup>
-import { useData } from "vitepress";
-const { page } = useData();
-import NotFound from "./NotFound.vue";
 import Header from "./Header.vue";
+import Main from "./Main.vue";
+import Footer from "./Footer.vue";
 </script>
 
 <template>
-  <div>
-    <Header />
-    <main>
-      <NotFound v-if="page.isNotFound" />
-      <Content v-else />
-    </main>
-    <footer></footer>
+  <div class="layout">
+    <Header class="header" />
+    <Main class="main" />
+    <Footer class="footer" />
   </div>
 </template>
+
+<style lang="scss" scoped>
+.layout {
+  display: grid;
+  grid-template-rows: max-content 1fr max-content;
+  grid-template-areas: "header" "main" "footer";
+  min-height: 100vh;
+}
+
+.header {
+  grid-area: header;
+}
+
+.main {
+  grid-area: main;
+}
+
+.footer {
+  grid-area: footer;
+}
+</style>
 
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
