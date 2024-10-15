@@ -1,3 +1,7 @@
+---
+title: Squircles
+---
+
 # Squircles
 
 This is a squircle,
