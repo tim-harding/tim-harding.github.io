@@ -1,0 +1,41 @@
+body {
+  font-family: "Concourse", sans-serif;
+  background-color: var(--base);
+  color: var(--text);
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+:root {
+  --page-width: 36rem;
+  font-size: 20px;
+  scrollbar-color: var(--surface-2) var(--crust);
+}
+
+::selection {
+  background-color: var(--blue);
+  color: var(--base);
+}
+
+h1 {
+  font-size: 2rem;
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 3rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
