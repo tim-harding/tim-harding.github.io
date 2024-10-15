@@ -1,4 +1,14 @@
-@import "@fontsource/cascadia-code";
+@font-face {
+  font-family: "Cascadia Code";
+  src: url("../fonts/CascadiaCodePL.woff2") format(woff2);
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Cascadia Code";
+  src: url("../fonts/CascadiaCodePLItalic.woff2") format(woff2);
+  font-style: italic;
+}
 
 @font-face {
   font-family: "Concourse";
