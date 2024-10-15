@@ -1,4 +1,5 @@
 import { defineConfig } from "vitepress";
+import mk from "markdown-it-mathjax3";
 
 export default defineConfig({
   title: "Tim Harding",
@@ -20,5 +21,10 @@ switch (localStorage.getItem("theme")) {
     ],
   ],
   themeConfig: {},
+  markdown: {
+    config: (md) => {
+      md.use(mk);
+    },
+  },
   vite: {},
 });
