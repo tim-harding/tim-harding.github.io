@@ -1,11 +1,17 @@
-import { defineConfig } from "vitepress";
+import { defineConfig, createContentLoader } from "vitepress";
 import mk from "markdown-it-mathjax3";
+import { Feed } from "feed";
+import { writeFileSync } from "fs";
+import path from "path";
 
 export default defineConfig({
   title: "Tim Harding",
   description: "Blag",
   srcDir: "src",
   appearance: false,
+  vite: {},
+  themeConfig: {},
+
   head: [
     [
       "script",
@@ -20,7 +26,7 @@ switch (localStorage.getItem("theme")) {
 }})()`,
     ],
   ],
-  themeConfig: {},
+
   markdown: {
     theme: {
       light: "catppuccin-latte",
@@ -30,5 +36,44 @@ switch (localStorage.getItem("theme")) {
       md.use(mk);
     },
   },
-  vite: {},
+
+  buildEnd: async (config) => {
+    const baseUrl = "https://tim-harding.github.io";
+
+    const feed = new Feed({
+      title: "Tim Harding",
+      description: "Personal website and blog",
+      id: baseUrl,
+      link: baseUrl,
+      language: "en",
+      copyright: "Copyright © 2024, Timothy Harding",
+    });
+
+    const posts = await createContentLoader("blog/**/*.md", {}).load();
+
+    posts.sort(
+      (a, b) => +new Date(b.frontmatter.date) - +new Date(a.frontmatter.date),
+    );
+
+    for (const { url, frontmatter, html } of posts) {
+      feed.addItem({
+        title: frontmatter.title,
+        id: `${baseUrl}${url}`,
+        link: `${baseUrl}${url}`,
+        description: frontmatter.description,
+        content: html,
+        date: frontmatter.date,
+        author: [
+          {
+            name: "Tim Harding",
+            email: "tim@timharding.co",
+            link: "https://tim-harding.github.io",
+          },
+        ],
+      });
+    }
+
+    writeFileSync(path.join(config.outDir, "feed.rss"), feed.rss2());
+    writeFileSync(path.join(config.outDir, "feed.atom"), feed.atom1());
+  },
 });
