@@ -1,3 +1,5 @@
+@import "@fontsource/cascadia-code";
+
 @font-face {
   font-family: "Concourse";
   src: url("../fonts/concourse_ot_2_thin.woff2") format(woff2);

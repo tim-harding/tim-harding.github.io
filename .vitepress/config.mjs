@@ -24,7 +24,7 @@ switch (localStorage.getItem("theme")) {
   markdown: {
     theme: {
       light: "catppuccin-latte",
-      dark: "catppuccin-frappe",
+      dark: "catppuccin-mocha",
     },
     config: (md) => {
       md.use(mk);

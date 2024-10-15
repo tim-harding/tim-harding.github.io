@@ -1,15 +1,16 @@
 @import "./fonts.css";
 @import "./theme.css";
 
-:where(:not(html, iframe, canvas, img, svg, video, audio, svg *, symbol *)) {
+:where(html, body, a, button, input) {
   all: unset;
-  display: revert;
 }
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -94,17 +95,22 @@ h2 {
   font-size: 1.5rem;
 }
 
+code {
+  font-family: "Cascadia Code";
+  font-size: 0.8rem; /* 16px */
+}
+
 div[class*="language-"] {
-  & > .copy {
-    display: none;
-  }
+  background-color: var(--mantle);
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  margin: 1rem -1rem 1rem -1rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--crust);
+}
 
-  & > .lang {
-    display: none;
-  }
-
-  & > code {
-  }
+.copy,
+.lang {
+  display: none;
 }
 
 .vp-code span {
