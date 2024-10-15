@@ -1,7 +1,6 @@
 code {
   font-family: "Cascadia Code";
   font-size: 0.8rem; /* 16px */
-  font-feature-settings: "calt", "ss01";
 }
 
 div[class*="language-"] {
