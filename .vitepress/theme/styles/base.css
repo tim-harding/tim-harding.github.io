@@ -101,6 +101,7 @@ code {
 }
 
 div[class*="language-"] {
+  position: relative;
   background-color: var(--mantle);
   padding: 0.5rem 1rem 0.5rem 1rem;
   margin: 1rem -1rem 1rem -1rem;
@@ -108,7 +109,56 @@ div[class*="language-"] {
   border: 1px solid var(--crust);
 }
 
-.copy,
+div[class*="language-"] > button {
+  position: absolute;
+  display: grid;
+  place-content: center;
+  height: 1.5rem;
+  width: 1.5rem;
+  right: 0.5em;
+  top: 0.5em;
+  border-radius: 0.25rem;
+  border: 1px solid transparent;
+}
+
+div[class*="language-"] > button:hover {
+  background-color: var(--base);
+  border-color: var(--crust);
+}
+
+div[class*="language-"] > button:active {
+  background-color: var(--surface-0);
+  border-color: var(--crust);
+}
+
+div[class*="language-"] > button:focus-visible {
+  outline: 2px solid var(--blue);
+}
+
+/**
+ * Note:
+ * Shiki adds tabindex=0 to <pre> in order to meet accessibility success
+ * criteria that scrollable overflowing elements must be focusable.
+ */
+div[class*="language-"]:has(.shiki:focus-visible) {
+  outline: 2px solid var(--blue);
+}
+
+.shiki:focus-visible {
+  outline: none;
+}
+
+div[class*="language-"] > button::before {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='rgb(172, 176, 190)' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' viewBox='0 0 24 24'%3E%3Crect width='8' height='4' x='8' y='2' rx='1' ry='1'/%3E%3Cpath d='M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2'/%3E%3C/svg%3E");
+}
+
+.dark div[class*="language-"] > button::before {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='rgb(98, 104, 128)' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' viewBox='0 0 24 24'%3E%3Crect width='8' height='4' x='8' y='2' rx='1' ry='1'/%3E%3Cpath d='M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2'/%3E%3C/svg%3E");
+}
+
 .lang {
   display: none;
 }
