@@ -11,37 +11,67 @@ import { path } from 'superellipse-squircle';
 <style module="s">
 .squirclesIntro {
   display: grid;
-  grid-template-columns: 1fr 4fr 1rem 4fr 1fr;
-  grid-template-areas: ". squircle . rounded-rect .";
-  margin: 2rem 0rem 2rem 0rem;
+  grid-template-columns: 1fr minmax(0rem, 16rem) 1fr;
+  grid-template-rows: 1fr max-content;
+  grid-template-areas: ". full ." ". button. ";
+  gap: 0.5rem;
 }
 
-@media (max-width: 580px) {
-  .squirclesIntro {
-  grid-template-columns: 1fr 1rem 1fr;
-  grid-template-areas: "squircle . rounded-rect";
+.squirclesIntroToggleButton {
+  display: grid;
+  height: calc(1rem + 4px);
+  width: 2rem;
+  border-radius: calc(0.5rem + 2px);
+  background-color: var(--crust);
+  box-shadow: 0px 0px 1px 1px var(--surface-0);
+  padding: 2px;
+
+  &::before {
+    content: "";
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--lavender);
+    border-radius: 50%;
+    transition: background-color 125ms, transform 125ms;
   }
 }
 
-@media (max-width: 400px) {
-  .squirclesIntro {
-    grid-template-columns: 1fr minmax(0rem, 8rem) 1fr;
-    grid-template-areas: ". squircle ." ". rounded-rect .";
-    row-gap: 1rem;
-  }
-}
-
-.squirclesIntroRoundedRect,
-.squirclesIntroSquircle {
+.squirclesIntroSquircle,
+.squirclesIntroRoundedRect {
+  display: grid;
+  grid-area: full;
   fill: var(--surface-2);
 }
 
-.squirclesIntroSquircle {
-  grid-area: squircle;
+.squirclesIntroLabel {
+  grid-area: button;
+  font-weight: 400;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 1rem;
+  align-items: center;
+  justify-self: center;
+
+  &:hover > .squirclesIntroToggleButton::before {
+    background-color: var(--mauve);
+  }
 }
 
-.squirclesIntroRoundedRect {
-  grid-area: rounded-rect;
+input:checked {
+  & + .squirclesIntroLabel > .squirclesIntroToggleButton::before {
+    transform: translateX(calc(0.75rem + 1px));
+  }
+
+
+  & ~ .squirclesIntroRoundedRect {
+    display: none;
+  }
+}
+
+input:not(:checked) {
+  & ~ .squirclesIntroSquircle {
+      display: none;
+  }
 }
 </style>
 
@@ -50,11 +80,17 @@ import { path } from 'superellipse-squircle';
 This is a squircle, a shape popularized by Jonathan Ive during his redesign of iOS 7.
 
 <div :class="s.squirclesIntro">
-  <svg :class="s.squirclesIntroSquircle" viewBox="0 0 162 100">
-    <path :d="path(0, 0, 162, 100, 16)"></path>
-  </svg>
+  <input class="sr" id="squircle-intro-checkbox" type="checkbox" checked="checked">
+  <label :class="s.squirclesIntroLabel" for="squircle-intro-checkbox">
+    <div :class="s.squirclesIntroToggleButton"></div>
+    Squircle
+  </label>
+
   <svg :class="s.squirclesIntroRoundedRect" viewBox="0 0 162 100">
     <rect width="162" height="100" rx="16" ry="16"></rect>
+  </svg>
+  <svg :class="s.squirclesIntroSquircle" viewBox="0 0 162 100">
+    <path :d="path(0, 0, 162, 100, 16)"></path>
   </svg>
 </div>
 
