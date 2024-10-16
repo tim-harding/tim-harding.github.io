@@ -1,22 +1,28 @@
 <script setup>
 import ThemeButton from "./ThemeButton.vue";
+import { ref } from "vue";
+
+const isPressed = ref(false);
 </script>
 
 <template>
   <header :class="s.header">
-    <div :class="s.headerContents">
-      <nav>
+    <div :class="s.headerInner">
+      <nav :class="s.nav">
         <ul :class="s.list">
-          <li>
-            <a :class="[s.siteTitle, s.link]" href="/">Harding</a>
+          <li :class="s.siteTitle">
+            <a :class="s.link" href="/">
+              Harding
+              <span class="sr">home page</span>
+            </a>
           </li>
-          <li>
+          <li :class="s.blog">
             <a :class="s.link" href="/blog">Blog</a>
           </li>
-          <li>
+          <li :class="s.about">
             <a :class="s.link" href="/about">About</a>
           </li>
-          <li>
+          <li :class="s.github">
             <a
               :class="s.link"
               href="https://github.com/tim-harding/"
@@ -26,6 +32,22 @@ import ThemeButton from "./ThemeButton.vue";
           </li>
         </ul>
       </nav>
+      <button
+        :class="['icon-button', s.disclosure]"
+        :aria-pressed="isPressed"
+        @click="isPressed = !isPressed"
+      >
+        <svg
+          :class="s.icon"
+          viewBox="0 -960 960 960"
+          height="24px"
+          width="24px"
+        >
+          <path
+            d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"
+          />
+        </svg>
+      </button>
       <ThemeButton :class="s.themeButton" />
     </div>
   </header>
@@ -35,29 +57,46 @@ import ThemeButton from "./ThemeButton.vue";
 .header {
   display: grid;
   grid-template-columns: 1fr 1rem minmax(0rem, var(--page-width)) 1rem 1fr;
-  grid-template-rows: 4rem;
   grid-template-areas: ". . center . .";
   background-color: var(--mantle);
   border-bottom: 1px solid var(--crust);
+  overflow: hidden;
 }
 
-.headerContents {
+.headerInner {
   grid-area: center;
   display: grid;
-  grid-template-columns: 1fr max-content;
-  grid-template-areas: "nav theme-button";
+  grid-template-columns: 1fr max-content max-content max-content max-content;
+  grid-template-rows: 4rem;
+  grid-template-areas: "site-title blog about github theme-button";
   align-items: center;
   gap: 1rem;
 }
 
+.siteTitle {
+  grid-area: site-title;
+
+  & > .link {
+    font-size: 2rem;
+    font-weight: 800;
+  }
+}
+
+.blog {
+  grid-area: blog;
+}
+
+.about {
+  grid-area: about;
+}
+
+.github {
+  grid-area: github;
+}
+
+.nav,
 .list {
-  grid-area: nav;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-auto-columns: max-content;
-  grid-auto-flow: column;
-  gap: 1.5rem;
-  align-items: center;
+  display: contents;
 }
 
 .link {
@@ -73,12 +112,44 @@ import ThemeButton from "./ThemeButton.vue";
   }
 }
 
-.siteTitle {
-  font-size: 2rem;
-  font-weight: 800;
-}
-
 .themeButton {
   grid-area: theme-button;
+}
+
+.icon {
+  fill: var(--text);
+}
+
+button.disclosure {
+  display: none;
+}
+
+@media (max-width: 540px) {
+  button.disclosure {
+    display: grid;
+  }
+
+  .headerInner {
+    grid-template-columns: 1fr max-content;
+    grid-template-rows: 4rem repeat(3, 0rem);
+    grid-template-areas:
+      "site-title collapse"
+      "blog theme-button"
+      "about theme-button"
+      "github theme-button";
+    gap: 0rem;
+    transition: grid-template-rows 250ms;
+
+    &:has(.disclosure[aria-pressed="true"]) {
+      grid-template-rows: 4rem repeat(3, 2rem);
+    }
+  }
+
+  .blog,
+  .about,
+  .github,
+  .themeButton {
+    align-self: start;
+  }
 }
 </style>

@@ -8,7 +8,7 @@ const toggleTheme = () => {
 </script>
 
 <template>
-  <button :class="s.themeButton" @click="toggleTheme">
+  <button :class="['icon-button', s.themeButton]" @click="toggleTheme">
     <span class="sr">Toggle theme</span>
 
     <div :class="s.centerIcon">
@@ -30,29 +30,10 @@ const toggleTheme = () => {
 </template>
 
 <style module="s">
-.themeButton {
-  display: grid;
+button.themeButton {
+  place-content: unset;
   grid-template-rows: 100%;
   grid-template-columns: 100% 100%;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 0.25rem;
-  border-width: 1px;
-  border-style: solid;
-  border-color: transparent;
-  overflow: hidden;
-  transition-property: background-color, border-color;
-  transition-duration: 125ms;
-
-  &:hover {
-    background-color: var(--base);
-    border-color: var(--surface-0);
-  }
-
-  &:active {
-    background-color: var(--surface-0);
-    border-color: var(--surface-1);
-  }
 }
 
 .centerIcon {
@@ -61,7 +42,7 @@ const toggleTheme = () => {
   transition: transform 250ms;
 }
 
-html.dark .center-icon {
+html:global(.dark) .centerIcon {
   transform: translateX(-100%);
 }
 
