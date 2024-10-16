@@ -28,6 +28,7 @@
   "dependencies": {
     "@types/node": "^22.7.5",
     "feed": "^4.2.2",
-    "markdown-it-mathjax3": "^4.3.2"
+    "markdown-it-mathjax3": "^4.3.2",
+    "superellipse-squircle": "^0.1.14"
   }
 }
