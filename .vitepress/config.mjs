@@ -9,8 +9,26 @@ export default defineConfig({
   description: "Blag",
   srcDir: "src",
   appearance: false,
-  vite: {},
   themeConfig: {},
+
+  vite: {
+  },
+
+  vue: {
+    template: {
+      compilerOptions: {
+        isCustomElement: (tag) => {
+          return [
+            // From superellipse-squircle
+            "th-squircle",
+            // From MathJax
+            "mjx-assistive-mml",
+            "mjx-container",
+          ].includes(tag);
+        },
+      },
+    },
+  },
 
   head: [
     [
