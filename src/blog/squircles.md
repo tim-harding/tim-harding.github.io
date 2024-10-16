@@ -4,15 +4,61 @@ description: Drawing squircles with superellipses and canvas
 date: 2024-10-15
 ---
 
+<script setup>
+import { path } from 'superellipse-squircle';
+</script>
+
+<style module="s">
+.squirclesIntro {
+  display: grid;
+  grid-template-columns: 1fr 4fr 1rem 4fr 1fr;
+  grid-template-areas: ". squircle . rounded-rect .";
+  margin: 2rem 0rem 2rem 0rem;
+}
+
+@media (max-width: 580px) {
+  .squirclesIntro {
+  grid-template-columns: 1fr 1rem 1fr;
+  grid-template-areas: "squircle . rounded-rect";
+  }
+}
+
+@media (max-width: 400px) {
+  .squirclesIntro {
+    grid-template-columns: 1fr minmax(0rem, 8rem) 1fr;
+    grid-template-areas: ". squircle ." ". rounded-rect .";
+    row-gap: 1rem;
+  }
+}
+
+.squirclesIntroRoundedRect,
+.squirclesIntroSquircle {
+  fill: var(--surface-2);
+}
+
+.squirclesIntroSquircle {
+  grid-area: squircle;
+}
+
+.squirclesIntroRoundedRect {
+  grid-area: rounded-rect;
+}
+</style>
+
 # Squircles
 
-This is a squircle,
+This is a squircle, a shape popularized by Jonathan Ive during his redesign of iOS 7.
 
-<!--
-TODO
--->
+<div :class="s.squirclesIntro">
+  <svg :class="s.squirclesIntroSquircle" viewBox="0 0 162 100">
+    <path :d="path(0, 0, 162, 100, 16)"></path>
+  </svg>
+  <svg :class="s.squirclesIntroRoundedRect" viewBox="0 0 162 100">
+    <rect width="162" height="100" rx="16" ry="16"></rect>
+  </svg>
+</div>
 
-a shape popularized by Jonathan Ive during his redesign of iOS 7. Unlike the typical rounded rectangle found on most websites, squircles blend gradually between straight and curved surfaces to create a more natural transition. To make a typical rounded rectangle, you take a circle, quarter it, and graft the pieces onto a rectangle.
+Unlike the typical rounded rectangle found on most websites, squircles blend gradually between straight and curved surfaces to create a more natural transition. To make a typical rounded rectangle, you take a circle, quarter it, and graft the pieces onto a rectangle.
 
 <!--
 TODO
