@@ -71,11 +71,6 @@ import ThemeButton from "./ThemeButton.vue";
   &:active {
     color: var(--sky);
   }
-
-  &:focus-visible {
-    outline: 2px solid var(--blue);
-    outline-offset: 2px;
-  }
 }
 
 .site-title {

@@ -44,13 +44,6 @@ const toggleTheme = () => {
   transition-property: background-color, border-color;
   transition-duration: 125ms;
 
-  &:focus-visible {
-    outline-style: solid;
-    outline-width: 2px;
-    outline-offset: 2px;
-    outline-color: var(--blue);
-  }
-
   &:hover {
     background-color: var(--base);
     border-color: var(--surface-0);
