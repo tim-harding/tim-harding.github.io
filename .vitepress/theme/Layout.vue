@@ -12,7 +12,7 @@ import Footer from "./Footer.vue";
   </div>
 </template>
 
-<style lang="scss" module="s">
+<style module="s">
 .layout {
   display: grid;
   grid-template-rows: max-content 1fr max-content;

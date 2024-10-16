@@ -14,7 +14,7 @@ const { page } = useData();
   </main>
 </template>
 
-<style lang="scss" module="s">
+<style module="s">
 .main {
   grid-area: main;
   display: grid;

@@ -42,7 +42,7 @@
   </footer>
 </template>
 
-<style lang="scss" module="s">
+<style module="s">
 .footer {
   display: grid;
   grid-template-columns: 1fr minmax(0rem, calc(var(--page-width) + 2rem)) 1fr;

@@ -33,7 +33,7 @@ const when = computed(() =>
   </div>
 </template>
 
-<style lang="scss" module="s">
+<style module="s">
 .experience {
   display: grid;
   grid-template-columns: 1fr max-content;

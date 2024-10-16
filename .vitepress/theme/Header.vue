@@ -4,7 +4,7 @@ import ThemeButton from "./ThemeButton.vue";
 
 <template>
   <header :class="s.header">
-    <div :class="s.header - contents">
+    <div :class="s.headerContents">
       <nav>
         <ul :class="s.list">
           <li>
@@ -31,7 +31,7 @@ import ThemeButton from "./ThemeButton.vue";
   </header>
 </template>
 
-<style lang="scss" module="s">
+<style module="s">
 .header {
   display: grid;
   grid-template-columns: 1fr 1rem minmax(0rem, var(--page-width)) 1rem 1fr;
@@ -41,7 +41,7 @@ import ThemeButton from "./ThemeButton.vue";
   border-bottom: 1px solid var(--crust);
 }
 
-.header-contents {
+.headerContents {
   grid-area: center;
   display: grid;
   grid-template-columns: 1fr max-content;

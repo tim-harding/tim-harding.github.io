@@ -29,7 +29,7 @@ const toggleTheme = () => {
   </button>
 </template>
 
-<style lang="scss" module="s">
+<style module="s">
 .themeButton {
   display: grid;
   grid-template-rows: 100%;
