@@ -22,8 +22,8 @@
     "build": "vitepress build"
   },
   "devDependencies": {
-    "sass-embedded": "^1.79.4",
-    "vitepress": "^1.4.0"
+    "sass-embedded": "^1.79.5",
+    "vitepress": "^1.4.1"
   },
   "dependencies": {
     "@types/node": "^22.7.5",
