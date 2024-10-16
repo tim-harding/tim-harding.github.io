@@ -3,22 +3,22 @@ import ThemeButton from "./ThemeButton.vue";
 </script>
 
 <template>
-  <header class="header">
-    <div class="header-contents">
+  <header :class="s.header">
+    <div :class="s.header - contents">
       <nav>
-        <ul class="list">
+        <ul :class="s.list">
           <li>
-            <a class="site-title link" href="/">Harding</a>
+            <a :class="[s.siteTitle, s.link]" href="/">Harding</a>
           </li>
           <li>
-            <a class="link" href="/blog">Blog</a>
+            <a :class="s.link" href="/blog">Blog</a>
           </li>
           <li>
-            <a class="link" href="/about">About</a>
+            <a :class="s.link" href="/about">About</a>
           </li>
           <li>
             <a
-              class="link"
+              :class="s.link"
               href="https://github.com/tim-harding/"
               target="_blank"
               >GitHub</a
@@ -26,12 +26,12 @@ import ThemeButton from "./ThemeButton.vue";
           </li>
         </ul>
       </nav>
-      <ThemeButton class="theme-button" />
+      <ThemeButton :class="s.themeButton" />
     </div>
   </header>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss" module="s">
 .header {
   display: grid;
   grid-template-columns: 1fr 1rem minmax(0rem, var(--page-width)) 1rem 1fr;
@@ -73,12 +73,12 @@ import ThemeButton from "./ThemeButton.vue";
   }
 }
 
-.site-title {
+.siteTitle {
   font-size: 2rem;
   font-weight: 800;
 }
 
-.theme-button {
+.themeButton {
   grid-area: theme-button;
 }
 </style>

@@ -6,15 +6,15 @@ const { page } = useData();
 </script>
 
 <template>
-  <main class="main">
-    <div class="inner">
+  <main :class="s.main">
+    <div :class="s.inner">
       <NotFound v-if="page.isNotFound" />
       <Content v-else />
     </div>
   </main>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss" module="s">
 .main {
   grid-area: main;
   display: grid;

@@ -7,33 +7,33 @@ const when = computed(() =>
 </script>
 
 <template>
-  <div class="experience">
-    <h3 class="role">{{ props.role }}</h3>
-    <dl class="definitions">
+  <div :class="s.experience">
+    <h3 :class="s.role">{{ props.role }}</h3>
+    <dl :class="s.definitions">
       <dt class="sr">Institution</dt>
-      <dd class="institution">{{ props.institution }}</dd>
+      <dd :class="s.institution">{{ props.institution }}</dd>
 
       <dt class="sr">When</dt>
-      <dd class="when">
+      <dd :class="s.when">
         <address>
           {{ when }}
         </address>
       </dd>
 
       <dt class="sr" v-if="location">Location</dt>
-      <dd class="location" v-if="location">
+      <dd :class="s.location" v-if="location">
         <address>
           {{ props.location }}
         </address>
       </dd>
 
       <dt class="sr" v-if="gpa">Grade point average</dt>
-      <dd class="gpa" v-if="gpa">{{ props.gpa }}</dd>
+      <dd :class="s.gpa" v-if="gpa">{{ props.gpa }}</dd>
     </dl>
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss" module="s">
 .experience {
   display: grid;
   grid-template-columns: 1fr max-content;

@@ -1,15 +1,15 @@
 <script setup></script>
 
 <template>
-  <footer class="footer">
-    <div class="footer-inner">
-      <span class="copyright">&copy; Timothy Harding 2024</span>
-      <nav class="nav">
-        <ul class="ul">
+  <footer :class="s.footer">
+    <div :class="s.footerInner">
+      <span :class="s.copyright">&copy; Timothy Harding 2024</span>
+      <nav :class="s.nav">
+        <ul :class="s.ul">
           <li>
-            <a class="link" href="mailto:tim@timharding.co">
+            <a :class="s.link" href="mailto:tim@timharding.co">
               <svg
-                class="icon"
+                :class="s.icon"
                 viewBox="0 -960 960 960"
                 height="24px"
                 width="24px"
@@ -21,8 +21,13 @@
             </a>
           </li>
           <li>
-            <a class="link" href="https://www.github.com/tim-harding">
-              <svg class="icon" viewBox="0 0 98 96" width="24px" height="24px">
+            <a :class="s.link" href="https://www.github.com/tim-harding">
+              <svg
+                :class="s.icon"
+                viewBox="0 0 98 96"
+                width="24px"
+                height="24px"
+              >
                 <path
                   fill-rule="evenodd"
                   clip-rule="evenodd"
@@ -37,14 +42,14 @@
   </footer>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss" module="s">
 .footer {
   display: grid;
   grid-template-columns: 1fr minmax(0rem, calc(var(--page-width) + 2rem)) 1fr;
   grid-template-areas: ". center .";
 }
 
-.footer-inner {
+.footerInner {
   grid-area: center;
   display: grid;
   grid-template-columns: 1fr max-content;

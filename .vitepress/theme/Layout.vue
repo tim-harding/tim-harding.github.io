@@ -5,14 +5,14 @@ import Footer from "./Footer.vue";
 </script>
 
 <template>
-  <div class="layout">
-    <Header class="header" />
-    <Main class="main" />
-    <Footer class="footer" />
+  <div :class="s.layout">
+    <Header :class="s.header" />
+    <Main :class="s.main" />
+    <Footer :class="s.footer" />
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss" module="s">
 .layout {
   display: grid;
   grid-template-rows: max-content 1fr max-content;
