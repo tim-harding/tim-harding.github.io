@@ -12,6 +12,12 @@ export default defineConfig({
   themeConfig: {},
 
   vite: {
+    server: {
+      watch: {
+        // For <style module> hot module reloading
+        usePolling: true,
+      },
+    },
   },
 
   vue: {
