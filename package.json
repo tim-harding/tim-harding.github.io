@@ -21,15 +21,14 @@
     "dev": "vitepress dev",
     "build": "vitepress build"
   },
-  "devDependencies": {
-    "sass-embedded": "^1.79.5",
+  "dependencies": {
     "vitepress": "^1.4.1",
+    "markdown-it-mathjax3": "^4.3.2",
+    "superellipse-squircle": "^0.1.14"
+  },
+  "devDependencies": {
     "@types/node": "^22.7.5",
     "feed": "^4.2.2",
-    "markdown-it-mathjax3": "^4.3.2",
     "postcss-preset-env": "^10.0.7"
-  },
-  "dependencies": {
-    "superellipse-squircle": "^0.1.14"
   }
 }
