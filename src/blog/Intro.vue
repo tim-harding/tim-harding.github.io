@@ -3,29 +3,29 @@ import { path } from "superellipse-squircle";
 </script>
 
 <template>
-  <div :class="s.squirclesIntro">
+  <div :class="s.intro">
     <input
       class="sr"
       id="squircle-intro-checkbox"
       type="checkbox"
       checked="checked"
     />
-    <label :class="s.squirclesIntroLabel" for="squircle-intro-checkbox">
-      <div :class="s.squirclesIntroToggleButton"></div>
+    <label :class="s.label" for="squircle-intro-checkbox">
+      <div :class="s.toggleButton"></div>
       Squircle
     </label>
 
-    <svg :class="s.squirclesIntroRoundedRect" viewBox="0 0 162 100">
+    <svg :class="s.roundedRect" viewBox="0 0 162 100">
       <rect width="162" height="100" rx="16" ry="16"></rect>
     </svg>
-    <svg :class="s.squirclesIntroSquircle" viewBox="0 0 162 100">
+    <svg :class="s.squircle" viewBox="0 0 162 100">
       <path :d="path(0, 0, 162, 100, 16)"></path>
     </svg>
   </div>
 </template>
 
 <style module="s">
-.squirclesIntro {
+.intro {
   display: grid;
   grid-template-columns: 1fr minmax(0rem, 16rem) 1fr;
   grid-template-rows: 1fr max-content;
@@ -33,7 +33,7 @@ import { path } from "superellipse-squircle";
   gap: 0.5rem;
 }
 
-.squirclesIntroToggleButton {
+.toggleButton {
   display: grid;
   height: calc(1rem + 4px);
   width: 1.75rem;
@@ -52,19 +52,19 @@ import { path } from "superellipse-squircle";
   }
 }
 
-.squirclesIntroSquircle,
-.squirclesIntroRoundedRect {
+.squircle,
+.roundedRect {
   display: grid;
   grid-area: full;
   fill: var(--surface-2);
 }
 
-.squirclesIntroRoundedRect {
+.roundedRect {
   opacity: 1;
   transition: opacity 125ms;
 }
 
-.squirclesIntroLabel {
+.label {
   grid-area: button;
   font-weight: 400;
   display: grid;
@@ -73,17 +73,17 @@ import { path } from "superellipse-squircle";
   align-items: center;
   justify-self: center;
 
-  &:hover > .squirclesIntroToggleButton {
+  &:hover > .toggleButton {
     background-color: var(--sapphire);
   }
 }
 
 input:checked {
-  & + .squirclesIntroLabel > .squirclesIntroToggleButton::before {
+  & + .label > .toggleButton::before {
     transform: translateX(calc(0.5rem + 1px));
   }
 
-  & ~ .squirclesIntroRoundedRect {
+  & ~ .roundedRect {
     opacity: 0;
   }
 }
