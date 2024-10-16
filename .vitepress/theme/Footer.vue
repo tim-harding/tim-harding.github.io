@@ -5,7 +5,7 @@
     <div :class="s.footerInner">
       <span :class="s.copyright">&copy; Timothy Harding 2024</span>
       <nav :class="s.nav">
-        <ul :class="s.ul">
+        <ul :class="s.list">
           <li>
             <a :class="s.link" href="mailto:tim@timharding.co">
               <svg
@@ -62,18 +62,18 @@
   color: var(--overlay-2);
 }
 
-ul {
-  display: contents;
-}
-
-nav {
+.nav {
   display: grid;
   grid-auto-flow: column;
   gap: 0.5rem;
   align-content: center;
 }
 
-a {
+.list {
+  display: contents;
+}
+
+.link {
   display: grid;
   place-content: center;
 
@@ -83,16 +83,16 @@ a {
     border-radius: 0.1px;
   }
 
-  &:hover > svg {
+  &:hover > .icon {
     fill: var(--blue);
   }
 
-  &:active > svg {
+  &:active > .icon {
     fill: var(--sky);
   }
 }
 
-svg {
+.icon {
   fill: var(--overlay-0);
   transition: 125ms fill;
 }
