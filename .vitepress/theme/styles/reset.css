@@ -60,3 +60,7 @@ ol,
 menu {
   list-style: none;
 }
+
+label {
+  user-select: none;
+}

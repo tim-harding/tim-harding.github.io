@@ -20,19 +20,19 @@ import { path } from 'superellipse-squircle';
 .squirclesIntroToggleButton {
   display: grid;
   height: calc(1rem + 4px);
-  width: 2rem;
+  width: 1.75rem;
   border-radius: calc(0.5rem + 2px);
-  background-color: var(--crust);
-  box-shadow: 0px 0px 1px 1px var(--surface-0);
+  background-color: var(--lavender);
   padding: 2px;
+  transition: background-color 125ms;
 
   &::before {
     content: "";
     width: 1rem;
     height: 1rem;
-    background-color: var(--lavender);
+    background-color: var(--base);
     border-radius: 50%;
-    transition: background-color 125ms, transform 125ms;
+    transition: transform 125ms;
   }
 }
 
@@ -41,6 +41,11 @@ import { path } from 'superellipse-squircle';
   display: grid;
   grid-area: full;
   fill: var(--surface-2);
+}
+
+.squirclesIntroRoundedRect {
+  opacity: 1;
+  transition: opacity 125ms;
 }
 
 .squirclesIntroLabel {
@@ -52,25 +57,19 @@ import { path } from 'superellipse-squircle';
   align-items: center;
   justify-self: center;
 
-  &:hover > .squirclesIntroToggleButton::before {
-    background-color: var(--mauve);
+  &:hover > .squirclesIntroToggleButton {
+    background-color: var(--sapphire);
   }
 }
 
 input:checked {
   & + .squirclesIntroLabel > .squirclesIntroToggleButton::before {
-    transform: translateX(calc(0.75rem + 1px));
+    transform: translateX(calc(0.5rem + 1px));
   }
 
 
   & ~ .squirclesIntroRoundedRect {
-    display: none;
-  }
-}
-
-input:not(:checked) {
-  & ~ .squirclesIntroSquircle {
-      display: none;
+    opacity: 0;
   }
 }
 </style>
