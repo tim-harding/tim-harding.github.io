@@ -43,6 +43,10 @@ h2 {
   font-weight: 600;
 }
 
+p {
+  margin: 1rem 0rem 1rem 0rem;
+}
+
 :is(h1, h2, h3, h4, h5, h6) {
   &:has(a:focus),
   button:focus-visible,
