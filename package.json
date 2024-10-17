@@ -24,10 +24,10 @@
   "dependencies": {
     "vitepress": "^1.4.1",
     "markdown-it-mathjax3": "^4.3.2",
-    "superellipse-squircle": "^0.1.14"
+    "superellipse-squircle": "^0.1.15"
   },
   "devDependencies": {
-    "@types/node": "^22.7.5",
+    "@types/node": "^22.7.6",
     "feed": "^4.2.2",
     "postcss-preset-env": "^10.0.7"
   }
