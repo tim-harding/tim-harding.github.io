@@ -24,7 +24,7 @@
   "dependencies": {
     "@types/bun": "^1.1.11",
     "markdown-it-mathjax3": "^4.3.2",
-    "superellipse-squircle": "^0.1.17",
+    "superellipse-squircle": "^0.1.18",
     "vitepress": "^1.4.1"
   },
   "devDependencies": {
