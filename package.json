@@ -22,12 +22,12 @@
     "build": "vitepress build"
   },
   "dependencies": {
-    "vitepress": "^1.4.1",
+    "@types/bun": "^1.1.11",
     "markdown-it-mathjax3": "^4.3.2",
-    "superellipse-squircle": "^0.1.15"
+    "superellipse-squircle": "^0.1.15",
+    "vitepress": "^1.4.1"
   },
   "devDependencies": {
-    "@types/node": "^22.7.6",
     "feed": "^4.2.2",
     "postcss-preset-env": "^10.0.7"
   }
