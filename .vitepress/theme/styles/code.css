@@ -1,5 +1,6 @@
 code {
   font-family: "Cascadia Code";
+  font-feature-settings: "calt", "ss01", "ss02", "ss03", "ss19", "ss20";
   font-size: 0.8rem; /* 16px */
   font-weight: 400;
 }
