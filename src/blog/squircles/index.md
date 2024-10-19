@@ -10,36 +10,38 @@ import Intro from "./Intro.vue";
 
 # Squircles
 
-This is a squircle, a shape popularized by Jonathan Ive during his redesign of iOS 7.
+This is a squircle, a shape popularized by Jonathan Ive in his design of iPhone and iOS.
 
 <Intro />
 
-Unlike the typical rounded rectangle found on most websites, squircles blend gradually between straight and curved surfaces to create a more natural transition. To make a typical rounded rectangle, you take a circle, quarter it, and graft the pieces onto a rectangle.
+A typical rounded rectangle is made by taking a circle, quartering it, and grafting the pieces onto a rectangle. The trouble is, this creates a sudden jump in curvature where the parts are glued together. In contrast, squircles blend gradually between straight and curved surfaces to create a more natural transition. During the design of iOS 7,
 
-<!--
-TODO
--->
+> Ive’s design team had obsessed over the rounded corners of the phone and become advocates of Bézier curves, a concept from computer modeling used to eliminate the transition breaks between straight and curved surfaces.... A standard rounded corner consists of a single-radius arch or a quarter circle, whereas their curves were mapped through a dozen points, creating a more gradual and natural transition.
 
-The trouble is, this creates a sudden jump in curvature where the parts are glued together. We can do better. Let's go back to the equation of a circle:
+<cite>
+Mickle, Tripp. After Steve: How Apple Became a Trillion-Dollar Company and Lost Its Soul (p. 119). HarperCollins. Kindle Edition.
+</cite>
+
+Beziér curves are just one option to soften the shape. Another is to repurpose an attractive shape from mathematics, the superellipse. We'll start with the equation for a circle:
 
 $$ x^2 + y^2 = 1 $$
 
-Instead of squaring $x$ and $y$, we can swap in an arbitrary exponent.
+Instead of squaring $x$ and $y$, we can swap in an arbitrary exponent, $n$.
 
 $$ x^n + y^n = 1 $$
 
-As the exponent increases, the circle becomes more and more box-shaped, and eventually approaches a perfect square. Going the other way and lowering the exponent below two, the circle starts to pucker and fold in on itself.
+As the exponent increases, the circle becomes more and more box-shaped, and eventually approaching a perfect square. Going the other way, the circle starts to pucker and fold in on itself. The puckering isn't so nice, but we can massage this shape into something useable.
 
-This family of shapes is called a superellipse, and unlike a rounded rectangle, its curvature is continuous everywhere. With this as a starting point, we need to massage it into something we can use. It should adapt to all kinds of box shapes while preserving the corner radius, and it needs to be something we can draw with web technology. Superellipses require arbitrarily large exponents, so we won't be able to match it perfectly with bezier curves, since they are limited to cubic shapes. The simplest approach is to approximate the superellipse with straight line segments, and this turns out to work pretty well. It's a bit difficult to generate points for our line segments using the implicit equation for a superellipse, but fortunately, there's also a parametric form that makes this super easy.
+To start, we need to figure out how to draw it. The simplest approach is to approximate the superellipse with straight line segments, and this turns out to work pretty well. It's a bit difficult to generate points for our line segments using the implicit equation for a superellipse, but fortunately, there's also a parametric form that makes this super easy.
 
 $$
 \begin{align}
-x(t) &= \cos^\frac{2}{n}(t) \\
-y(t) &= \sin^\frac{2}{n}(t)
+x(t) &= \cos^{2/n}(t) \\
+y(t) &= \sin^{2/n}(t)
 \end{align}
 $$
 
-As $t$ ranges from $0$ to $pi/2$, this gives us the coordinates for points within the first quartile. Mirroring these points across $x$ and $y$ to completes the shape. Next, the exponent $n$ and the corner radius $r$ are inversely proportional, so by replacing $n$ with $1/r$, we get the superellipse for a given corner radius.
+As $t$ ranges from $0$ to $2 \pi$, this gives us the coordinates for points around the superellipse. Next, we need to adjust the equation to acheive a given corner radius. Since the exponent $n$ and the corner radius $r$ are inversely proportional, we can do so by replacing $n$ with $1/r$.
 
 $$
 \begin{align}
