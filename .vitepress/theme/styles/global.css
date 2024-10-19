@@ -50,15 +50,14 @@ p {
   margin: 1rem 0rem 1rem 0rem;
 }
 
-:is(h1, h2, h3, h4, h5, h6) {
-  &:has(a:focus),
-  button:focus-visible,
-  a:focus-visible {
-    outline: 2px solid var(--blue);
-    outline-offset: 2px;
-    border-radius: 0.1px;
-  }
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+  border-radius: 0.1px;
+}
 
+:is(h1, h2, h3, h4, h5, h6) {
   &:has(a) {
     position: relative;
     display: grid;
@@ -75,6 +74,12 @@ p {
     &:hover::before {
       opacity: 1;
     }
+  }
+
+  &:has(a:focus) {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+    border-radius: 0.1px;
   }
 
   & > a {
@@ -100,7 +105,6 @@ p {
   border-width: 1px;
   border-style: solid;
   border-color: transparent;
-  overflow: hidden;
   transition-property: background-color, border-color;
   transition-duration: 125ms;
 
@@ -112,5 +116,9 @@ p {
   &:active {
     background-color: var(--surface-0);
     border-color: var(--surface-1);
+  }
+
+  &:focus-visible {
+    outline-offset: 0px;
   }
 }

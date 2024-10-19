@@ -10,6 +10,12 @@ body {
   line-height: 1.5;
 }
 
+a,
+button {
+  border: none;
+  outline: none;
+}
+
 a {
   color: currentColor;
   text-decoration: none;
@@ -17,7 +23,6 @@ a {
 
 button {
   background-color: transparent;
-  border: none;
   font-size: inherit;
   color: inherit;
 }
