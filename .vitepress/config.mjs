@@ -38,13 +38,6 @@ export default defineConfig({
 
   head: [
     [
-      "meta",
-      {
-        name: "theme-color",
-        content: "#eff1f5",
-      },
-    ],
-    [
       "link",
       {
         rel: "icon",
@@ -55,13 +48,17 @@ export default defineConfig({
       "script",
       { id: "check-dark-mode" },
       `(() => {
+const meta = document.createElement('meta');
+meta.setAttribute('name', 'theme-color');
+meta.setAttribute('theme-color', '#eff1f5');
+document.head.appendChild(meta);
 switch (localStorage.getItem("theme")) {
   case "auto":
   case null:
     if (window.matchMedia("(prefers-color-scheme: light)").matches) break;
   case "dark":
     document.documentElement.classList.add("dark");
-    document.querySelector("meta[name='theme-color']").setAttribute('content', '#303446');
+    meta.setAttribute('content', '#303446');
 }})()`,
     ],
   ],
