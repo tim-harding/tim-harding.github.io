@@ -3,6 +3,7 @@ body {
   font-weight: 300; /* Book */
   background-color: var(--base);
   color: var(--text);
+  overflow-x: hidden;
 }
 
 .sr {
@@ -18,7 +19,8 @@ body {
 }
 
 :root {
-  --page-width: 36rem;
+  --content-width: 36rem;
+  --page-margin: 1rem;
   font-size: 20px;
   scrollbar-color: var(--surface-2) var(--crust);
 }

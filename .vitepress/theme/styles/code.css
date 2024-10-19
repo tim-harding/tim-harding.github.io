@@ -7,16 +7,11 @@ code {
 div[class*="language-"] {
   position: relative;
   background-color: var(--mantle);
-  padding: 0.5rem 1rem 0.5rem 1rem;
-  margin: 1rem -1rem 1rem -1rem;
+  padding: 0.25rem 0.75rem 0.5rem 0.75rem;
+  margin: 1rem -0.75rem 1rem -0.75rem;
   border-radius: 0.25rem;
   border: 1px solid var(--crust);
   overflow-x: auto;
-
-  @media (max-width: 800px) {
-    padding: 0.5rem 0.75rem 0.5rem 0.75rem;
-    margin: 1rem -0.75rem 1rem -0.75rem;
-  }
 
   /**
    * Note:

@@ -56,7 +56,10 @@ const isPressed = ref(false);
 <style module="s">
 .header {
   display: grid;
-  grid-template-columns: 1fr 1rem minmax(0rem, var(--page-width)) 1rem 1fr;
+  grid-template-columns: 1fr var(--page-margin) minmax(
+      0rem,
+      var(--content-width)
+    ) var(--page-margin) 1fr;
   grid-template-areas: ". . center . .";
   background-color: var(--mantle);
   border-bottom: 1px solid var(--crust);

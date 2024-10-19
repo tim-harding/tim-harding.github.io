@@ -18,7 +18,10 @@ const { page } = useData();
 .main {
   grid-area: main;
   display: grid;
-  grid-template-columns: 1fr 1rem minmax(0rem, var(--page-width)) 1rem 1fr;
+  grid-template-columns: 1fr var(--page-margin) minmax(
+      0rem,
+      var(--content-width)
+    ) var(--page-margin) 1fr;
   grid-template-areas: ". . center . .";
 }
 

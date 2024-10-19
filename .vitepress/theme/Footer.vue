@@ -2,6 +2,7 @@
 
 <template>
   <footer :class="s.footer">
+    <div :class="s.topBorder"></div>
     <div :class="s.footerInner">
       <span :class="s.copyright">&copy; Timothy Harding 2024</span>
       <nav :class="s.nav">
@@ -45,17 +46,28 @@
 <style module="s">
 .footer {
   display: grid;
-  grid-template-columns: 1fr minmax(0rem, calc(var(--page-width) + 2rem)) 1fr;
-  grid-template-areas: ". center .";
+  grid-template-columns:
+    1fr var(--page-margin) minmax(0rem, var(--content-width))
+    var(--page-margin)
+    1fr;
+  grid-template-rows: 4rem;
+  margin-top: 3rem;
+}
+
+.topBorder {
+  grid-column-start: 2;
+  grid-column-end: -2;
+  grid-row: 1;
+  height: 2px;
+  background-color: var(--surface-0);
 }
 
 .footerInner {
-  grid-area: center;
+  grid-column: 3;
+  grid-row: 1;
   display: grid;
   grid-template-columns: 1fr max-content;
-  border-top: 2px solid var(--surface-0);
   align-content: center;
-  height: 4rem;
 }
 
 .copyright {
