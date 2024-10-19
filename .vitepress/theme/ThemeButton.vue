@@ -2,8 +2,12 @@
 const toggleTheme = () => {
   const classlist = document.documentElement.classList;
   classlist.toggle("dark");
-  const theme = classlist.contains("dark") ? "dark" : "light";
-  localStorage.setItem("theme", theme);
+  const isDark = classlist.contains("dark");
+  const themeName = isDark ? "dark" : "light";
+  localStorage.setItem("theme", themeName);
+  const meta = document.querySelector("meta[name='theme-color']");
+  const themeAccent = isDark ? "#303446" : "#eff1f5";
+  meta.setAttribute("content", themeAccent);
 };
 </script>
 

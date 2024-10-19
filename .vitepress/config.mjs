@@ -38,6 +38,13 @@ export default defineConfig({
 
   head: [
     [
+      "meta",
+      {
+        name: "theme-color",
+        content: "#eff1f5",
+      },
+    ],
+    [
       "script",
       { id: "check-dark-mode" },
       `(() => {
@@ -47,6 +54,7 @@ switch (localStorage.getItem("theme")) {
     if (window.matchMedia("(prefers-color-scheme: light)").matches) break;
   case "dark":
     document.documentElement.classList.add("dark");
+    document.querySelector("meta[name='theme-color']").setAttribute('content', '#303446');
 }})()`,
     ],
   ],
