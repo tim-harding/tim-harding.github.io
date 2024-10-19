@@ -11,31 +11,11 @@ div[class*="language-"] {
   margin: 1rem -1rem 1rem -1rem;
   border-radius: 0.25rem;
   border: 1px solid var(--crust);
+  overflow-x: auto;
 
-  & > button {
-    position: absolute;
-    display: grid;
-    place-content: center;
-    height: 1.5rem;
-    width: 1.5rem;
-    right: 0.5em;
-    top: 0.5em;
-    border-radius: 0.25rem;
-    border: 1px solid transparent;
-  }
-
-  & > button:hover {
-    background-color: var(--base);
-    border-color: var(--crust);
-  }
-
-  & > button:active {
-    background-color: var(--surface-0);
-    border-color: var(--crust);
-  }
-
-  & > button:focus-visible {
-    outline: 2px solid var(--blue);
+  @media (max-width: 800px) {
+    padding: 0.5rem 0.75rem 0.5rem 0.75rem;
+    margin: 1rem -0.75rem 1rem -0.75rem;
   }
 
   /**
@@ -64,6 +44,10 @@ html.dark {
     color: var(--shiki-dark, inherit);
     font-style: var(--shiki-dark-font-style, inherit);
   }
+}
+
+.copy {
+  display: none;
 }
 
 .shiki:focus-visible {
