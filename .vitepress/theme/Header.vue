@@ -2,25 +2,26 @@
 import ThemeButton from "./ThemeButton.vue";
 import { ref } from "vue";
 
-const isPressed = ref(false);
+const isOpen = ref(false);
+const close = () => (isOpen.value = false);
 </script>
 
 <template>
-  <header :class="s.header">
+  <header :class="s.header" id="header">
     <div :class="s.headerInner">
       <nav :class="s.nav">
         <ul :class="s.list">
           <li :class="s.siteTitle">
-            <a :class="s.link" href="/">
+            <a :class="s.link" href="/" @click="close">
               Harding
               <span class="sr">home page</span>
             </a>
           </li>
           <li :class="s.blog">
-            <a :class="s.link" href="/blog">Blog</a>
+            <a :class="s.link" href="/blog" @click="close">Blog</a>
           </li>
           <li :class="s.about">
-            <a :class="s.link" href="/about">About</a>
+            <a :class="s.link" href="/about" @click="close">About</a>
           </li>
           <li :class="s.github">
             <a
@@ -32,10 +33,12 @@ const isPressed = ref(false);
           </li>
         </ul>
       </nav>
+
       <button
         :class="['icon-button', s.disclosure]"
-        :aria-pressed="isPressed"
-        @click="isPressed = !isPressed"
+        :aria-pressed="isOpen"
+        aria-controls="header"
+        @click="isOpen = !isOpen"
       >
         <svg
           :class="s.icon"
@@ -56,10 +59,9 @@ const isPressed = ref(false);
 <style module="s">
 .header {
   display: grid;
-  grid-template-columns: 1fr var(--page-margin) minmax(
-      0rem,
-      var(--content-width)
-    ) var(--page-margin) 1fr;
+  grid-template-columns:
+    1fr var(--page-margin) minmax(0rem, var(--content-width))
+    var(--page-margin) 1fr;
   grid-template-areas: ". . center . .";
   background-color: var(--mantle);
   border-bottom: 1px solid var(--crust);
