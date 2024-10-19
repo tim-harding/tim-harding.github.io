@@ -45,6 +45,13 @@ export default defineConfig({
       },
     ],
     [
+      "link",
+      {
+        rel: "icon",
+        href: "/favicon.svg",
+      },
+    ],
+    [
       "script",
       { id: "check-dark-mode" },
       `(() => {
