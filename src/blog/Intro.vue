@@ -35,19 +35,22 @@ import { path } from "superellipse-squircle";
 
 .toggleButton {
   display: grid;
-  height: calc(1rem + 4px);
-  width: 1.75rem;
+  grid-template-columns: 0fr 1rem 1fr;
+  grid-template-rows: 1rem;
+  grid-template-areas: ". center .";
+  width: 1.875rem;
   border-radius: calc(0.5rem + 2px);
   background-color: var(--lavender);
   padding: 2px;
-  transition: background-color 125ms;
+  transition:
+    background-color 125ms,
+    grid-template-columns 125ms;
 
   &::before {
     content: "";
-    width: 1rem;
-    height: 1rem;
+    grid-area: center;
     background-color: var(--base);
-    border-radius: 50%;
+    border-radius: 0.5rem;
     transition: transform 125ms;
   }
 }
@@ -76,11 +79,21 @@ import { path } from "superellipse-squircle";
   &:hover > .toggleButton {
     background-color: var(--sapphire);
   }
+
+  &:active > .toggleButton {
+    grid-template-columns: 0fr 1.25rem 1fr;
+  }
 }
 
 input:checked {
-  & + .label > .toggleButton::before {
-    transform: translateX(calc(0.5rem + 1px));
+  & + .label {
+    &:active > .toggleButton {
+      grid-template-columns: 1fr 1.25rem 0fr;
+    }
+
+    & > .toggleButton {
+      grid-template-columns: 1fr 1rem 0fr;
+    }
   }
 
   & ~ .roundedRect {
