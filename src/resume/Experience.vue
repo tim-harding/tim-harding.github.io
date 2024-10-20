@@ -39,6 +39,8 @@ const when = computed(() =>
   grid-template-columns: 1fr max-content;
   grid-template-rows: max-content max-content;
   grid-template-areas: "role when" "institution detail";
+  line-height: 1.25;
+  margin: 1rem 0rem 1rem 0rem;
 }
 
 .definitions {
@@ -53,19 +55,11 @@ const when = computed(() =>
 .when {
   grid-area: when;
   text-align: end;
-  font-family:
-    Concourse Tab,
-    Concourse,
-    sans-serif;
 }
 
 .institution {
   grid-area: institution;
-  text-transform: lowercase;
-  font-family:
-    Concourse Caps,
-    Concourse,
-    sans-serif;
+  font-variant-caps: all-small-caps;
 }
 
 .location,

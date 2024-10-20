@@ -36,6 +36,10 @@ table {
   border-collapse: collapse;
 }
 
+address {
+  font-style: normal;
+}
+
 cite {
   font-style: normal;
 }

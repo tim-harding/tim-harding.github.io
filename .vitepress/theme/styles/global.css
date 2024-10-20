@@ -19,7 +19,7 @@ body {
 }
 
 :root {
-  --content-width: 36rem;
+  --content-width: 30rem;
   --page-margin: 1rem;
   font-size: 20px;
   scrollbar-color: var(--surface-2) var(--crust);

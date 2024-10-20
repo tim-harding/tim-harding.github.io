@@ -2,16 +2,33 @@
 import Experience from "./Experience.vue"
 </script>
 
-# Resume
+<div class="page-heading">
+  <h1>Tim Harding</h1>
+  <a>Download PDF</a>
+</div>
 
-[Download as PDF]()
+<h2 class="sr">Contact</h2>
 
-## Contact
+<ul class="contact">
+  <li href="tel:+12068524199">
+    <address>
+      (206) 852-4199
+    </address>
+  </li>
+  <li href="mailto:tim@timharding.co">
+    <address>
+      Tim@TimHarding.co
+    </address>
+  </li>
+  <li href="https://www.linkedin.com/in/timothy-j-harding/">
+    LinkedIn
+  </li>
+  <li href="https://github.com/tim-harding/">
+    GitHub
+  </li>
+</ul>
 
-- [(206) 852-4199](tel:+12068524199)
-- [Tim@TimHarding.co](mailto:tim@timharding.co)
-- [LinkedIn](https://www.linkedin.com/in/timothy-j-harding/)
-- [GitHub](https://github.com/tim-harding/)
+## Education
 
 <Experience
   role="BS in Computer Science"
@@ -20,10 +37,20 @@ import Experience from "./Experience.vue"
   :when="[2020, 2023]"
 />
 
-- Lead author of a research paper about Elvis, an internet simulator written in Rust
-- Designed a system architecture that enables multithreaded communication between tens of thousands of networked virtual devices
-- Wrote a custom networking protocol stack with IP, TCP, and UDP, allowing for user extensibility and zero-copy packet delivery and manipulation
-- Helped onboard thirteen graduate and undergraduate collaborators
+<ul class="bullets">
+  <li>
+    Lead author of a research paper about Elvis, an internet simulator written in Rust
+  </li>
+  <li>
+    Designed a system architecture that enables multithreaded communication between tens of thousands of networked virtual devices
+  </li>
+  <li>
+    Wrote a custom networking protocol stack with IP, TCP, and UDP, allowing for user extensibility and zero-copy packet delivery and manipulation
+  </li>
+  <li>
+    Helped onboard thirteen graduate and undergraduate collaborators
+  </li>
+</ul>
 
 <Experience
   role="AAS in Commercial Photography"
@@ -41,7 +68,11 @@ import Experience from "./Experience.vue"
   :when="2024"
 />
 
-- Ran labs, graded assignments, captioned videos, protored exams, and addressed student feedback on assignments
+<ul class="bullets">
+  <li>
+    Ran labs, graded assignments, captioned videos, protored exams, and addressed student feedback on assignments
+  </li>
+</ul>
 
 <Experience
   role="Technical Artist"
@@ -50,12 +81,26 @@ import Experience from "./Experience.vue"
   :when="[2016, 2020]"
 />
 
-- Optimized Hololens graphics for the Holoisland demo to run at 60FPS, up from as low as 10FPS
-- Shipped a point-and-click adventure game for training Microsoft retail employees
-- Delivered a Unity-based choose-your-own-adventure film toolkit to Microsoft for training videos
-- Lead development of a yearlong Unity VR automotive demo with a networked AR companion app
-- Wrote over 35 plugins and apps for artists to automate common tasks and simplify workflows
-- Produced hundreds of images and videos for Microsoft, Amazon, Paccar, Micron, Funko, and PowerA
+<ul class="bullets">
+  <li>
+    Optimized Hololens graphics for the Holoisland demo to run at 60FPS, up from as low as 10FPS
+  </li>
+  <li>
+    Shipped a point-and-click adventure game for training Microsoft retail employees
+  </li>
+  <li>
+    Delivered a Unity-based choose-your-own-adventure film toolkit to Microsoft for training videos
+  </li>
+  <li>
+    Lead development of a yearlong Unity VR automotive demo with a networked AR companion app
+  </li>
+  <li>
+    Wrote over 35 plugins and apps for artists to automate common tasks and simplify workflows
+  </li>
+  <li>
+    Produced hundreds of images and videos for Microsoft, Amazon, Paccar, Micron, Funko, and PowerA
+  </li>
+</ul>
 
 <Experience
   role="3D Scanning Specialist"
@@ -64,4 +109,58 @@ import Experience from "./Experience.vue"
   :when="[2015, 2016]"
 />
 
-- Built and operated a photogrammetry content pipeline for web-based 3D e-commerce visuals, delivering 100 assets to Shoes.com, Dye Precision, and the Burke Museum
+<ul class="bullets">
+  <li>
+    Built and operated a photogrammetry content pipeline for web-based 3D e-commerce visuals, delivering 100 assets to Shoes.com, Dye Precision, and the Burke Museum
+  </li>
+</ul>
+
+<style>
+ul.bullets > li {
+  position: relative;
+
+  &::before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: -0.75rem;
+    top: 0.7rem;
+    width: 0.25rem;
+    height: 0.25rem;
+    border-radius: 50%;
+    background-color: var(--text);
+  }
+}
+
+.page-heading {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  align-items: end;
+
+  & > a {
+    margin-bottom: 0.1875rem;
+  }
+}
+
+h1, p {
+  margin: 0rem;
+}
+
+.contact {
+  display: block;
+  text-align: center;
+
+  & > li {
+    display: inline;
+
+    & > address {
+      display: inline;
+    }
+
+    &:not(:first-child)::before {
+      display: inline;
+      content: " | ";
+    }
+  }
+}
+</style>
