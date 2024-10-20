@@ -28,7 +28,7 @@ const when = computed(() =>
       </dd>
 
       <dt class="sr" v-if="gpa">Grade point average</dt>
-      <dd :class="s.gpa" v-if="gpa">{{ props.gpa }}</dd>
+      <dd :class="s.gpa" v-if="gpa">{{ props.gpa }} GPA</dd>
     </dl>
   </div>
 </template>
@@ -61,6 +61,7 @@ const when = computed(() =>
 .institution {
   grid-area: institution;
   font-variant-caps: all-small-caps;
+  font-weight: 400;
 }
 
 .location,
