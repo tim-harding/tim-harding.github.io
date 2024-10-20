@@ -17,11 +17,8 @@ const close = () => (isOpen.value = false);
               <span class="sr">home page</span>
             </a>
           </li>
-          <li :class="s.blog">
-            <a :class="s.link" href="/blog" @click="close">Blog</a>
-          </li>
-          <li :class="s.about">
-            <a :class="s.link" href="/about" @click="close">About</a>
+          <li :class="s.resume">
+            <a :class="s.link" href="/resume" @click="close">Resumé</a>
           </li>
           <li :class="s.github">
             <a
@@ -73,7 +70,7 @@ const close = () => (isOpen.value = false);
   display: grid;
   grid-template-columns: 1fr max-content max-content max-content max-content;
   grid-template-rows: 4rem;
-  grid-template-areas: "site-title blog about github theme-button";
+  grid-template-areas: "site-title resume github theme-button";
   align-items: center;
   gap: 1rem;
 }
@@ -87,12 +84,8 @@ const close = () => (isOpen.value = false);
   }
 }
 
-.blog {
-  grid-area: blog;
-}
-
-.about {
-  grid-area: about;
+.resume {
+  grid-area: resume;
 }
 
 .github {
@@ -136,22 +129,20 @@ button.disclosure {
 
   .headerInner {
     grid-template-columns: 1fr max-content;
-    grid-template-rows: 4rem repeat(3, 0rem);
+    grid-template-rows: 4rem repeat(2, 0rem);
     grid-template-areas:
       "site-title collapse"
-      "blog theme-button"
-      "about theme-button"
+      "resume theme-button"
       "github theme-button";
     gap: 0rem;
     transition: grid-template-rows 250ms;
 
     &:has(.disclosure[aria-pressed="true"]) {
-      grid-template-rows: 4rem repeat(3, 2rem);
+      grid-template-rows: 4rem repeat(2, 2rem);
     }
   }
 
-  .blog,
-  .about,
+  .resume,
   .github,
   .themeButton {
     align-self: start;

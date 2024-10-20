@@ -1,6 +1,6 @@
 ---
 title: Squircles
-description: Drawing squircles with superellipses and canvas
+description: Drawing squircles with superellipses and canvas.
 date: 2024-10-15
 layout: blog
 ---

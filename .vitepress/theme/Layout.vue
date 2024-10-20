@@ -26,7 +26,7 @@ import Footer from "./Footer.vue";
 
 .main {
   grid-area: main;
-  padding-top: 3rem;
+  padding-top: 2rem;
 }
 
 .footer {
