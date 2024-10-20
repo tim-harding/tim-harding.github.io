@@ -19,12 +19,14 @@ button {
 a {
   color: currentColor;
   text-decoration: none;
+  cursor: pointer;
 }
 
 button {
   background-color: transparent;
   font-size: inherit;
   color: inherit;
+  cursor: pointer;
 }
 
 img {

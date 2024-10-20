@@ -55,6 +55,7 @@ const when = computed(() =>
 .when {
   grid-area: when;
   text-align: end;
+  font-variant-numeric: tabular-nums;
 }
 
 .institution {
@@ -66,5 +67,9 @@ const when = computed(() =>
 .gpa {
   grid-area: detail;
   text-align: end;
+}
+
+.gpa {
+  font-variant-numeric: tabular-nums;
 }
 </style>

@@ -9,26 +9,7 @@ import Experience from "./Experience.vue"
 
 <h2 class="sr">Contact</h2>
 
-<ul class="contact">
-  <li href="tel:+12068524199">
-    <address>
-      (206) 852-4199
-    </address>
-  </li>
-  <li href="mailto:tim@timharding.co">
-    <address>
-      Tim@TimHarding.co
-    </address>
-  </li>
-  <li href="https://www.linkedin.com/in/timothy-j-harding/">
-    LinkedIn
-  </li>
-  <li href="https://github.com/tim-harding/">
-    GitHub
-  </li>
-</ul>
-
-## Education
+<h2>Education</h2>
 
 <Experience
   role="BS in Computer Science"
@@ -59,7 +40,7 @@ import Experience from "./Experience.vue"
   :when="[2013, 2015]"
 />
 
-## Work
+<h2>Work</h2>
 
 <Experience
   role="Teaching Assistant"
@@ -136,31 +117,19 @@ ul.bullets > li {
   display: grid;
   grid-template-columns: 1fr max-content;
   align-items: end;
+  margin-bottom: 1.5rem;
 
   & > a {
     margin-bottom: 0.1875rem;
   }
 }
 
-h1, p {
+h1, h2, p {
   margin: 0rem;
 }
 
-.contact {
-  display: block;
-  text-align: center;
-
-  & > li {
-    display: inline;
-
-    & > address {
-      display: inline;
-    }
-
-    &:not(:first-child)::before {
-      display: inline;
-      content: " | ";
-    }
-  }
+h2 {
+  padding-bottom: 0.675rem;
+  border-bottom: 2px solid var(--surface-0);
 }
 </style>

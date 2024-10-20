@@ -68,7 +68,7 @@ const close = () => (isOpen.value = false);
 .headerInner {
   grid-area: center;
   display: grid;
-  grid-template-columns: 1fr max-content max-content max-content max-content;
+  grid-template-columns: 1fr repeat(3, max-content);
   grid-template-rows: 4rem;
   grid-template-areas: "site-title resume github theme-button";
   align-items: center;
@@ -112,6 +112,7 @@ const close = () => (isOpen.value = false);
 
 .themeButton {
   grid-area: theme-button;
+  margin-right: -0.5rem;
 }
 
 .icon {
@@ -122,7 +123,7 @@ button.disclosure {
   display: none;
 }
 
-@media (max-width: 540px) {
+@media (max-width: 460px) {
   button.disclosure {
     display: grid;
   }
