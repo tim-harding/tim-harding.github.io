@@ -105,8 +105,8 @@ const close = () => (isOpen.value = false);
 }
 
 .link {
+  color: inherit;
   font-weight: 500;
-  transition: color 125ms;
 
   &:hover {
     color: var(--blue);

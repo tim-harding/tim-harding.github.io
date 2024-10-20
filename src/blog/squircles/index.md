@@ -2,6 +2,7 @@
 title: Squircles
 description: Drawing squircles with superellipses and canvas
 date: 2024-10-15
+layout: blog
 ---
 
 <script setup>
@@ -16,11 +17,7 @@ This is a squircle, a shape popularized by Jonathan Ive in his design of iPhone 
 
 A typical rounded rectangle is made by taking a circle, quartering it, and grafting the pieces onto a rectangle. The trouble is, this creates a sudden jump in curvature where the parts are glued together. In contrast, squircles blend gradually between straight and curved surfaces to create a more natural transition. During the design of iOS 7,
 
-> Ive’s design team had obsessed over the rounded corners of the phone and become advocates of Bézier curves, a concept from computer modeling used to eliminate the transition breaks between straight and curved surfaces.... A standard rounded corner consists of a single-radius arch or a quarter circle, whereas their curves were mapped through a dozen points, creating a more gradual and natural transition.
-
-<cite>
-Mickle, Tripp. After Steve: How Apple Became a Trillion-Dollar Company and Lost Its Soul (p. 119). HarperCollins. Kindle Edition.
-</cite>
+> Ive’s design team had obsessed over the rounded corners of the phone and become advocates of Bézier curves, a concept from computer modeling used to eliminate the transition breaks between straight and curved surfaces.... A standard rounded corner consists of a single-radius arch or a quarter circle, whereas their curves were mapped through a dozen points, creating a more gradual and natural transition. <cite>[1](#after-steve)</cite>
 
 Beziér curves are just one option to soften the shape. Another is to repurpose an attractive shape from mathematics, the superellipse. We'll start with the equation for a circle:
 
@@ -181,4 +178,13 @@ ctx.closePath();
 ctx.fill();
 ```
 
-From here we could add support for borders and colors, but for that, I'll point you to my package on GitHub where you can find the complete code to use in your own projects. For references and additional details on the math used in this video you can check out the script for this video in the description. Drop a like if you enjoyed this video, let me know in the comments what I could have improved, and I'll catch you in the next one.
+From here we could add support for borders and colors, but for that, I'll point you to my package on GitHub where you can find the complete code to use in your own projects.
+
+<footer aria-labelledby="references-heading">
+  <h2 id="references-heading">References</h2>
+  <ol class="references-list">
+    <li id="after-steve">
+      Mickle, Tripp (2022). <i>After Steve: How Apple Became a Trillion-Dollar Company and Lost Its Soul</i> (pp. 119). HarperCollins. 
+    </li>
+  </ol>
+</footer>

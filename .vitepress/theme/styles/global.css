@@ -57,6 +57,37 @@ a:focus-visible {
   border-radius: 0.1px;
 }
 
+blockquote {
+  border-left: 4px solid var(--surface-2);
+  padding-left: 1rem;
+}
+
+cite {
+  vertical-align: super;
+}
+
+a {
+  color: var(--blue);
+  transition: color 125ms;
+
+  &:hover {
+    color: var(--teal);
+  }
+
+  &:active {
+    color: var(--sky);
+  }
+}
+
+.references-list {
+  list-style: numeric;
+}
+
+#references-heading {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
 :is(h1, h2, h3, h4, h5, h6) {
   &:has(a) {
     position: relative;

@@ -36,6 +36,10 @@ table {
   border-collapse: collapse;
 }
 
+cite {
+  font-style: normal;
+}
+
 h1,
 h2,
 h3,
