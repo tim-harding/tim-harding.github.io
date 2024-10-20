@@ -89,8 +89,11 @@
 }
 
 .topBorder {
+  width: var(--content-width);
+  max-width: 100%;
   grid-column-start: 2;
   grid-column-end: -2;
+  justify-self: center;
   grid-row: 1;
   height: 2px;
   background-color: var(--surface-0);
