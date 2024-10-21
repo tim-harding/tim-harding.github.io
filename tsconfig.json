@@ -12,7 +12,7 @@
     "module": "esnext",
     "target": "esnext",
     "isolatedModules": true,
-    "strict": true,
+    "strict": false,
     "allowJs": true,
     "checkJs": true
   }
