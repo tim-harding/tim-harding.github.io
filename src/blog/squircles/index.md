@@ -9,6 +9,7 @@ layout: blog
 import Intro from "./Intro.vue";
 import Superellipse from "./Superellipse.vue";
 import SuperellipseScaling from "./SuperellipseScaling.vue";
+import SuperellipseDetail from "./SuperellipseDetail.vue";
 </script>
 
 # Squircles
@@ -76,9 +77,7 @@ $$
 
 From there, we can approximate the superellipse by calculating points and drawing straight line segments between them. In testing, I found that for a corner radius $r$, using $4 \sqrt{r}$ line segments per corner gives smooth results without creating unnecessary detail. The angle between line segments decreases for large radii, so using more points yields diminishing returns. Conveniently, the parametric form naturally concentrates points in the corner where curvature is greatest, so detail is not spared in areas that don't contribute visually.
 
-<!--
-TODO
--->
+<SuperellipseDetail />
 
 ## Implementation
 
