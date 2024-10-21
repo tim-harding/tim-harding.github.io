@@ -8,10 +8,12 @@ defineOptions({
 const model = defineModel({ default: 0 });
 const attributes = useAttrs();
 const id = useId();
+
 const klass = computed(() => {
   const { class: klass } = attributes;
   return klass;
 });
+
 const inputAttributes = computed(() => {
   const { class: _, ...inputAttributes } = attributes;
   return inputAttributes;
@@ -29,6 +31,8 @@ const inputAttributes = computed(() => {
       type="range"
       v-bind="inputAttributes"
       v-model.number="model"
+      @touchstart="(event) => event.stopPropagation()"
+      @touchmove="(event) => event.stopPropagation()"
     />
   </div>
 </template>
@@ -50,12 +54,16 @@ const inputAttributes = computed(() => {
 .input {
   grid-area: slider;
   all: unset;
-  box-sizing: border-box;
   width: 100%;
-  height: 0.25rem;
-  background-color: var(--surface-1);
-  border-radius: 0.125rem;
-  border: 1px solid var(--surface-2);
+  height: 1rem;
+
+  &::-moz-range-track {
+    box-sizing: border-box;
+    background-color: var(--surface-1);
+    border-radius: 0.125rem;
+    border: 1px solid var(--surface-2);
+    height: 0.25rem;
+  }
 
   &::-moz-range-thumb {
     border: none;
