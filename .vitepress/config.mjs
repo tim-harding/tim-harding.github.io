@@ -3,6 +3,9 @@ import mk from "markdown-it-mathjax3";
 import { Feed } from "feed";
 import { writeFileSync } from "fs";
 import path from "path";
+import { resolve } from "path";
+
+const srcDir = resolve(__dirname, "..", "src");
 
 export default defineConfig({
   title: "Tim Harding",
@@ -16,6 +19,11 @@ export default defineConfig({
       watch: {
         // For <style module> hot module reloading
         usePolling: true,
+      },
+    },
+    resolve: {
+      alias: {
+        "~": srcDir,
       },
     },
   },
