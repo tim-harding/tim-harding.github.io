@@ -1,6 +1,6 @@
 <script setup>
-import { computed } from "vue";
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import InputRange from "~/components/InputRange.vue";
 
 const aspectInput = ref(0.732051);
 const aspect = computed(() => (aspectInput.value + 1) ** 2 * 0.5 + 0.5);
@@ -85,20 +85,15 @@ const path = computed(() => {
       </g>
     </svg>
 
-    <div :class="s.aspect">
-      <label :class="s.label" for="superellipse-scaling-b"
-        >Aspect ratio: {{ aspectPrecision }}</label
-      >
-      <input
-        id="superellipse-scaling-b"
-        type="range"
-        min="-1"
-        max="1"
-        step="any"
-        :value="aspectInput"
-        @input="(event) => (aspectInput = parseFloat(event.target?.value))"
-      />
-    </div>
+    <InputRange
+      :class="s.aspect"
+      v-model="aspectInput"
+      min="-1"
+      max="1"
+      step="any"
+    >
+      Aspect ratio: {{ aspectPrecision }}
+    </InputRange>
   </div>
 </template>
 
@@ -132,7 +127,7 @@ const path = computed(() => {
 .upperRight,
 .lowerLeft,
 .lowerRight {
-  stroke-width: 0.05;
+  stroke-width: 0.025;
   stroke: var(--text);
 }
 
@@ -149,8 +144,6 @@ const path = computed(() => {
 
 .aspect {
   grid-area: aspect;
-  display: grid;
-  gap: 0.5rem;
 }
 
 .label {

@@ -79,23 +79,6 @@ a {
   }
 }
 
-input[type="range"] {
-  all: unset;
-  box-sizing: border-box;
-  width: 100%;
-  height: 0.25rem;
-  background-color: var(--surface-1);
-  border-radius: 0.125rem;
-  border: 1px solid var(--surface-2);
-
-  &::-moz-range-thumb {
-    border: none;
-    background-color: var(--rosewater);
-    width: 1rem;
-    height: 1rem;
-  }
-}
-
 .references-list {
   list-style: numeric;
 }
