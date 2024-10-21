@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { path, points } from "./shared.mjs";
 import InputRange from "~/components/InputRange.vue";
 
-const n = ref(2);
+const n = ref(4);
 </script>
 
 <template>
