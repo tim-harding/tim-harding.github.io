@@ -44,7 +44,45 @@ const path = computed(() => {
       viewBox="-2.5 -2.5 5 5"
       preserveAspectRatio="xMinYMin"
     >
-      <path :d="path"></path>
+      <mask id="superellipse-symmetry-mask">
+        <rect x="-2.5" y="-2.5" width="5" height="5" fill="black"></rect>
+        <path :d="path" fill="white"></path>
+      </mask>
+
+      <g mask="url(#superellipse-symmetry-mask)">
+        <rect :class="s.rest" x="-2.5" y="-2.5" width="5" height="5"></rect>
+        <rect
+          :class="s.upperLeft"
+          :x="-xOff - 1.1"
+          :y="-yOff - 1.1"
+          width="1.1"
+          height="1.1"
+        ></rect>
+
+        <rect
+          :class="s.upperRight"
+          :x="xOff"
+          :y="-yOff - 1.1"
+          width="1.1"
+          height="1.1"
+        ></rect>
+
+        <rect
+          :class="s.lowerLeft"
+          :x="-xOff - 1.1"
+          :y="yOff"
+          width="1.1"
+          height="1.1"
+        ></rect>
+
+        <rect
+          :class="s.lowerRight"
+          :x="xOff"
+          :y="yOff"
+          width="1.1"
+          height="1.1"
+        ></rect>
+      </g>
     </svg>
 
     <div :class="s.aspect">
@@ -72,6 +110,34 @@ const path = computed(() => {
   grid-template-areas: ". superellipse aspect .";
   gap: 1rem;
   margin: 2rem 0rem 2rem 0rem;
+}
+
+.upperLeft {
+  fill: var(--overlay-0);
+}
+
+.upperRight {
+  fill: var(--overlay-1);
+}
+
+.lowerLeft {
+  fill: var(--overlay-1);
+}
+
+.lowerRight {
+  fill: var(--overlay-0);
+}
+
+.upperLeft,
+.upperRight,
+.lowerLeft,
+.lowerRight {
+  stroke-width: 0.05;
+  stroke: var(--text);
+}
+
+.rest {
+  fill: var(--surface-2);
 }
 
 .superellipse {
