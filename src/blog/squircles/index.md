@@ -8,6 +8,7 @@ layout: blog
 <script setup>
 import Intro from "./Intro.vue";
 import Superellipse from "./Superellipse.vue";
+import SuperellipseScaling from "./SuperellipseScaling.vue";
 </script>
 
 # Squircles
@@ -36,9 +37,7 @@ Currently, this formula only supports square boxes. The more general form can be
 
 $$ \left(\frac{x}{a}\right)^n + \left(\frac{y}{b}\right)^n = 1 $$
 
-<!--
-TODO
--->
+<SuperellipseScaling />
 
 Personally, I don't like the asymmetrical corner shape for wide and tall boxes. Instead, we'll use the square version of the formula and insert straight sides on the long edge.
 

@@ -23,12 +23,10 @@ const path = computed(() => {
   let out = "M 1 0";
 
   for (const { x, y } of points()) {
-    console.log(x, y);
     out += ` L ${x} ${y}`;
   }
 
   out += " Z";
-  console.log(n.value);
   return out;
 });
 
@@ -40,7 +38,7 @@ const nPrecision = computed(() => n.value.toFixed(2));
     <svg
       :class="s.superellipse"
       viewBox="-1 -1 2 2"
-      preserveAspectRatio="xMinyMin"
+      preserveAspectRatio="xMinYMin"
     >
       <path :d="path"></path>
     </svg>
