@@ -1,34 +1,9 @@
 <script setup>
-import { computed, ref } from "vue";
+import { ref } from "vue";
+import { path, points } from "./shared.mjs";
 import InputRange from "~/components/InputRange.vue";
 
 const n = ref(2);
-const COUNT = 128;
-
-function* points() {
-  const exp = 2 / n.value;
-  for (let i = 0; i < COUNT; i++) {
-    const t = (i / COUNT) * Math.PI * 2;
-    const cos = Math.cos(t);
-    const sin = Math.sin(t);
-    const cosSign = Math.sign(cos);
-    const sinSign = Math.sign(sin);
-    const x = cosSign * (cosSign * cos) ** exp;
-    const y = sinSign * (sinSign * sin) ** exp;
-    yield { x, y };
-  }
-}
-
-const path = computed(() => {
-  let out = "M 1 0";
-
-  for (const { x, y } of points()) {
-    out += ` L ${x} ${y}`;
-  }
-
-  out += " Z";
-  return out;
-});
 </script>
 
 <template>
@@ -38,7 +13,7 @@ const path = computed(() => {
       viewBox="-1 -1 2 2"
       preserveAspectRatio="xMinYMin"
     >
-      <path :d="path"></path>
+      <path :d="path(points(n))"></path>
     </svg>
 
     <InputRange :class="s.input" v-model="n" min="0" max="6" step="any">

@@ -1,33 +1,5 @@
 <script setup>
-import { computed } from "vue";
-
-const n = 8;
-const COUNT = 32;
-
-function* points() {
-  const exp = 2 / n;
-  for (let i = 0; i < COUNT; i++) {
-    const t = (i / COUNT) * Math.PI * 2;
-    const cos = Math.cos(t);
-    const sin = Math.sin(t);
-    const cosSign = Math.sign(cos);
-    const sinSign = Math.sign(sin);
-    const x = cosSign * (cosSign * cos) ** exp;
-    const y = sinSign * (sinSign * sin) ** exp;
-    yield { x, y };
-  }
-}
-
-const path = computed(() => {
-  let out = "M 1 0";
-
-  for (const { x, y } of points()) {
-    out += ` L ${x} ${y}`;
-  }
-
-  out += " Z";
-  return out;
-});
+import { path, points } from "./shared.mjs";
 </script>
 
 <template>
@@ -37,8 +9,8 @@ const path = computed(() => {
       viewBox="-1.04 -1.04 2.08 2.08"
       preserveAspectRatio="xMinYMin"
     >
-      <path :d="path" />
-      <template v-for="{ x, y } in points()">
+      <path :d="path(points(8, { count: 32 }))" />
+      <template v-for="{ x, y } in points(8, { count: 32 })">
         <circle :class="s.point" r="0.02" :cx="x" :cy="y" />
       </template>
     </svg>

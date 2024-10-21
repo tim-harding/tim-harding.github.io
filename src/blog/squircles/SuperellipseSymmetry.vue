@@ -1,39 +1,12 @@
 <script setup>
 import { computed, ref } from "vue";
+import { path, points } from "./shared.mjs";
 import InputRange from "~/components/InputRange.vue";
 
 const aspectInput = ref(0.732051);
 const aspect = computed(() => (aspectInput.value + 1) ** 2 * 0.5 + 0.5);
 const xOff = computed(() => Math.max(0, aspect.value - 1));
 const yOff = computed(() => 1 / (1 + Math.min(0, aspect.value - 1)) - 1);
-
-const COUNT = 128;
-function* points() {
-  const exp = 0.5;
-  for (let i = 0; i < COUNT; i++) {
-    const t = (i / COUNT) * Math.PI * 2;
-    const cos = Math.cos(t);
-    const sin = Math.sin(t);
-    const cosSign = Math.sign(cos);
-    const sinSign = Math.sign(sin);
-    const x = cosSign * (cosSign * cos) ** exp + xOff.value * cosSign;
-    const y = sinSign * (sinSign * sin) ** exp + yOff.value * sinSign;
-    yield { x, y };
-  }
-}
-
-const path = computed(() => {
-  const iter = points();
-  const { x: xInit, y: yInit } = iter.next()?.value ?? { x: 0, y: 0 };
-  let out = `M ${xInit} ${yInit}`;
-
-  for (const { x, y } of iter) {
-    out += ` L ${x} ${y}`;
-  }
-
-  out += " Z";
-  return out;
-});
 </script>
 
 <template>
@@ -45,7 +18,7 @@ const path = computed(() => {
     >
       <mask id="superellipse-symmetry-mask">
         <rect x="-2.5" y="-2.5" width="5" height="5" fill="black"></rect>
-        <path :d="path" fill="white"></path>
+        <path :d="path(points(4, { xOff, yOff }))" fill="white"></path>
       </mask>
 
       <g mask="url(#superellipse-symmetry-mask)">

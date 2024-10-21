@@ -1,34 +1,7 @@
 <script setup>
-import ToggleButton from "~/components/ToggleButton.vue";
 import { ref } from "vue";
-
-const COUNT = 128;
-function* points() {
-  const xOff = 0.618;
-  const yOff = 0;
-  const exp = 0.333;
-  for (let i = 0; i < COUNT; i++) {
-    const t = (i / COUNT) * Math.PI * 2;
-    const cos = Math.cos(t);
-    const sin = Math.sin(t);
-    const cosSign = Math.sign(cos);
-    const sinSign = Math.sign(sin);
-    const x = cosSign * (cosSign * cos) ** exp + xOff * cosSign;
-    const y = sinSign * (sinSign * sin) ** exp + yOff * sinSign;
-    yield { x, y };
-  }
-}
-
-function path() {
-  const iter = points();
-  const { x: xInit, y: yInit } = iter.next().value ?? { x: 0, y: 0 };
-  let out = `M ${xInit} ${yInit}`;
-  for (const { x, y } of iter) {
-    out += ` L ${x} ${y}`;
-  }
-  out += " Z";
-  return out;
-}
+import { path, points } from "./shared.mjs";
+import ToggleButton from "~/components/ToggleButton.vue";
 
 const isSquircle = ref(true);
 </script>
@@ -45,7 +18,7 @@ const isSquircle = ref(true);
     </svg>
 
     <svg :class="s.squircle" viewBox="-1.618 -1 3.236 2">
-      <path :d="path()"></path>
+      <path :d="path(points(6, { xOff: 0.618 }))"></path>
     </svg>
   </div>
 </template>
