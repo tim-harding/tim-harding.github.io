@@ -29,6 +29,7 @@ const props = defineProps({
 
 .text {
   grid-area: text;
+  font-weight: 400;
 }
 
 .toggle {

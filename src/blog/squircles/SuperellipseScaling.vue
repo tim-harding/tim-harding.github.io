@@ -1,6 +1,6 @@
 <script setup>
-import { computed } from "vue";
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import InputRange from "~/components/InputRange.vue";
 
 const n = ref(6);
 const a = ref(3);
@@ -51,50 +51,17 @@ const bPrecision = computed(() => b.value.toFixed(2));
       <path :d="path"></path>
     </svg>
 
-    <div :class="s.n">
-      <label :class="s.label" for="superellipse-scaling-n"
-        >n: {{ nPrecision }}</label
-      >
-      <input
-        id="superellipse-scaling-n"
-        type="range"
-        min="2"
-        max="8"
-        step="any"
-        :value="n"
-        @input="(event) => (n = parseFloat(event.target.value))"
-      />
-    </div>
+    <InputRange :class="s.n" v-model="n" min="2" max="8" step="any">
+      n: {{ nPrecision }}
+    </InputRange>
 
-    <div :class="s.a">
-      <label :class="s.label" for="superellipse-scaling-a"
-        >a: {{ aPrecision }}</label
-      >
-      <input
-        id="superellipse-scaling-a"
-        type="range"
-        min="0"
-        max="3"
-        step="any"
-        :value="a"
-        @input="(event) => (a = parseFloat(event.target.value))"
-      />
-    </div>
+    <InputRange :class="s.a" v-model="a" min="0" max="3" step="any">
+      a: {{ aPrecision }}
+    </InputRange>
 
-    <div :class="s.b">
-      <label :class="s.label" for="superellipse-scaling-b"
-        >b: {{ bPrecision }}</label
-      >
-      <input
-        id="superellipse-scaling-b"
-        type="range"
-        min="0"
-        max="3"
-        step="any"
-        :value="b"
-        @input="(event) => (b = parseFloat(event.target.value))"
-      />
-    </div>
+    <InputRange :class="s.b" v-model="b" min="0" max="3" step="any">
+      b: {{ bPrecision }}
+    </InputRange>
   </div>
 </template>
 
@@ -116,13 +83,6 @@ const bPrecision = computed(() => b.value.toFixed(2));
   fill: var(--surface-2);
   width: 100%;
   aspect-ratio: 1 / 1;
-}
-
-.n,
-.a,
-.b {
-  display: grid;
-  gap: 0.5rem;
 }
 
 .n {

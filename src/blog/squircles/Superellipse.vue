@@ -1,6 +1,6 @@
 <script setup>
-import { computed } from "vue";
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import InputRange from "~/components/InputRange.vue";
 
 const n = ref(2);
 const COUNT = 128;
@@ -43,18 +43,9 @@ const nPrecision = computed(() => n.value.toFixed(2));
       <path :d="path"></path>
     </svg>
 
-    <div :class="s.inputContainer">
-      <label :class="s.label" for="superellipse-n">n: {{ nPrecision }}</label>
-      <input
-        id="superellipse-n"
-        type="range"
-        min="0"
-        max="6"
-        step="any"
-        :value="n"
-        @input="(event) => (n = parseFloat(event.target.value))"
-      />
-    </div>
+    <InputRange :class="s.input" v-model="n" min="0" max="6" step="any">
+      n: {{ nPrecision }}
+    </InputRange>
   </div>
 </template>
 
@@ -75,13 +66,7 @@ const nPrecision = computed(() => n.value.toFixed(2));
   aspect-ratio: 1 / 1;
 }
 
-.inputContainer {
+.input {
   grid-area: input;
-  display: grid;
-  gap: 0.5rem;
-}
-
-.label {
-  font-weight: 600;
 }
 </style>
