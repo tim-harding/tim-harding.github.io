@@ -7,6 +7,7 @@ layout: blog
 
 <script setup>
 import Intro from "./Intro.vue";
+import Superellipse from "./Superellipse.vue";
 </script>
 
 # Squircles
@@ -27,9 +28,7 @@ Instead of squaring $x$ and $y$, we can swap in an arbitrary exponent, $n$.
 
 $$ x^n + y^n = 1 $$
 
-<!--
-TODO
--->
+<Superellipse />
 
 As the exponent increases, the circle becomes more and more box-shaped, and eventually approaching a perfect square. Going the other way, the circle starts to pucker and fold in on itself. The puckering isn't so nice, but we can massage this shape into something useable.
 
