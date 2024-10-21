@@ -11,11 +11,7 @@ const yOff = computed(() => 1 / (1 + Math.min(0, aspect.value - 1)) - 1);
 
 <template>
   <div :class="s.root">
-    <svg
-      :class="s.superellipse"
-      viewBox="-2.5 -2.5 5 5"
-      preserveAspectRatio="xMinYMin"
-    >
+    <svg :class="s.superellipse" viewBox="-2.5 -2 5 4">
       <mask id="superellipse-symmetry-mask">
         <rect x="-2.5" y="-2.5" width="5" height="5" fill="black"></rect>
         <path :d="path(points(4, { xOff, yOff }))" fill="white"></path>
@@ -58,7 +54,7 @@ const yOff = computed(() => 1 / (1 + Math.min(0, aspect.value - 1)) - 1);
     </svg>
 
     <InputRange
-      :class="s.aspect"
+      :class="s.input"
       v-model="aspectInput"
       min="-1"
       max="1"
@@ -72,11 +68,12 @@ const yOff = computed(() => 1 / (1 + Math.min(0, aspect.value - 1)) - 1);
 <style module="s">
 .root {
   display: grid;
-  grid-template-columns: 1fr minmax(0rem, 9rem) minmax(0rem, 9rem) 1fr;
-  grid-template-rows: repeat(1, 1fr);
-  grid-template-areas: ". superellipse aspect .";
-  gap: 1rem;
-  margin: 2rem 0rem 2rem 0rem;
+  grid-template-columns: 1fr minmax(0rem, 8rem) 1rem minmax(0rem, 8rem) 1fr;
+  grid-template-rows: 1fr max-content 1fr;
+  grid-template-areas:
+    ". superellipse . .     ."
+    ". superellipse . input ."
+    ". superellipse . .     .";
 }
 
 .upperLeft {
@@ -111,14 +108,9 @@ const yOff = computed(() => 1 / (1 + Math.min(0, aspect.value - 1)) - 1);
   grid-area: superellipse;
   fill: var(--surface-2);
   width: 100%;
-  aspect-ratio: 1 / 1;
 }
 
-.aspect {
-  grid-area: aspect;
-}
-
-.label {
-  font-weight: 600;
+.input {
+  grid-area: input;
 }
 </style>

@@ -25,11 +25,13 @@ const n = ref(2);
 <style module="s">
 .root {
   display: grid;
-  grid-template-columns: 1fr minmax(0rem, 9rem) 1fr;
-  grid-template-rows: 1fr max-content;
-  grid-template-areas: ". superellipse ." ". input .";
-  gap: 1rem;
-  margin: 2rem 0rem 2rem 0rem;
+  grid-template-columns: 1fr minmax(0rem, 8rem) 1rem minmax(0rem, 8rem) 1fr;
+  grid-template-rows: 1fr max-content 1fr;
+  grid-template-areas:
+    ". superellipse . .     ."
+    ". superellipse . input ."
+    ". superellipse . .     .";
+  margin: 1.5rem 0rem 2rem 0rem;
 }
 
 .superellipse {

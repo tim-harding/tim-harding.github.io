@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { path, points } from "./shared.mjs";
 import InputRange from "~/components/InputRange.vue";
 
-const n = ref(6);
+const n = ref(4);
 const a = ref(3);
 const b = ref(1);
 </script>
@@ -14,7 +14,7 @@ const b = ref(1);
       <path :d="path(points(n, { a, b }))"></path>
     </svg>
 
-    <InputRange :class="s.n" v-model="n" min="2" max="8" step="any">
+    <InputRange :class="s.n" v-model="n" min="2" max="6" step="any">
       n: {{ n.toFixed(2) }}
     </InputRange>
 
@@ -31,13 +31,14 @@ const b = ref(1);
 <style module="s">
 .root {
   display: grid;
-  grid-template-columns: 1fr minmax(0rem, 9rem) minmax(0rem, 9rem) 1fr;
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: 1fr minmax(0rem, 8rem) 1rem minmax(0rem, 8rem) 1fr;
+  grid-template-rows: 1fr repeat(3, max-content) 1fr;
   grid-template-areas:
-    ". superellipse input-n ."
-    ". superellipse input-a ."
-    ". superellipse input-b .";
-  gap: 1rem;
+    ". superellipse . .       ."
+    ". superellipse . input-n ."
+    ". superellipse . input-a ."
+    ". superellipse . input-b ."
+    ". superellipse . .       .";
   margin: 2rem 0rem 2rem 0rem;
 }
 
@@ -46,6 +47,7 @@ const b = ref(1);
   fill: var(--surface-2);
   width: 100%;
   aspect-ratio: 1 / 1;
+  align-self: center;
 }
 
 .n {

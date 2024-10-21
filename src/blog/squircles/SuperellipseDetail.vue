@@ -24,7 +24,7 @@ import { path, points } from "./shared.mjs";
   grid-template-rows: 1fr max-content;
   grid-template-areas: ". superellipse ." ". input .";
   gap: 1rem;
-  margin: 2rem 0rem 2rem 0rem;
+  margin: 1.5rem 0rem 2rem 0rem;
 }
 
 .superellipse {
@@ -36,15 +36,5 @@ import { path, points } from "./shared.mjs";
 
 .point {
   fill: var(--overlay-2);
-}
-
-.inputContainer {
-  grid-area: input;
-  display: grid;
-  gap: 0.5rem;
-}
-
-.label {
-  font-weight: 600;
 }
 </style>

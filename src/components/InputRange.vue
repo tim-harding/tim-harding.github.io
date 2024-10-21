@@ -43,12 +43,13 @@ const inputAttributes = computed(() => {
   grid-template-columns: 1fr;
   grid-template-rows: repeat(2, max-content);
   grid-template-areas: "label" "slider";
-  gap: 0.5rem;
+  gap: 0.25rem;
 }
 
 .label {
   grid-area: label;
   font-weight: 400;
+  font-variant-numeric: tabular-nums;
 }
 
 .input {
