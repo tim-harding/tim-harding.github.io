@@ -8,7 +8,7 @@ const isSquircle = ref(true);
 
 <template>
   <div :class="s.intro">
-    <ToggleButton label="Squircle" v-model="isSquircle" />
+    <ToggleButton :class="s.button" v-model="isSquircle">Squircle</ToggleButton>
 
     <svg
       :class="{ [s.roundedRect]: true, [s.show]: !isSquircle }"
@@ -28,8 +28,13 @@ const isSquircle = ref(true);
   display: grid;
   grid-template-columns: 1fr minmax(0rem, 16rem) 1fr;
   grid-template-rows: 1fr max-content;
-  grid-template-areas: ". full ." ". button. ";
+  grid-template-areas: ". full ." ". button .";
   gap: 0.5rem;
+}
+
+.button {
+  grid-area: button;
+  justify-self: center;
 }
 
 .squircle,

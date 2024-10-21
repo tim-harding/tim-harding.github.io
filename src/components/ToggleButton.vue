@@ -7,7 +7,9 @@ const props = defineProps({
 
 <template>
   <button :class="s.toggleButton" :aria-pressed="model" @click="model = !model">
-    <span :class="s.text">{{ label }}</span>
+    <span :class="s.text">
+      <slot></slot>
+    </span>
     <div :class="{ [s.toggle]: true, [s.pressed]: model }">
       <div :class="s.toggleInner"></div>
     </div>
@@ -21,6 +23,8 @@ const props = defineProps({
   grid-template-rows: max-content;
   grid-template-areas: "text toggle";
   align-items: center;
+  gap: 1rem;
+  width: max-content;
 }
 
 .text {
