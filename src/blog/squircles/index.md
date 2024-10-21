@@ -10,6 +10,7 @@ import Intro from "./Intro.vue";
 import Superellipse from "./Superellipse.vue";
 import SuperellipseScaling from "./SuperellipseScaling.vue";
 import SuperellipseDetail from "./SuperellipseDetail.vue";
+import SuperellipseSymmetry from "./SuperellipseSymmetry.vue";
 </script>
 
 # Squircles
@@ -42,9 +43,7 @@ $$ \left(\frac{x}{a}\right)^n + \left(\frac{y}{b}\right)^n = 1 $$
 
 Personally, I don't like the asymmetrical corner shape for wide and tall boxes. Instead, we'll use the square version of the formula and insert straight sides on the long edge.
 
-<!--
-TODO
--->
+<SuperellipseSymmetry />
 
 To maintain a consistent corner radius when we scale our box by a factor $l$, we also need to scale the exponent by the inverse amount.
 
