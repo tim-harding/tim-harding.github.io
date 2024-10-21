@@ -25,6 +25,18 @@ const props = defineProps({
   align-items: center;
   gap: 1rem;
   width: max-content;
+
+  &:hover > .toggle {
+    background-color: var(--blue);
+  }
+
+  &:active > .toggle {
+    grid-template-columns: 0fr 1.25rem 1fr;
+
+    &.pressed {
+      grid-template-columns: 1fr 1.25rem 0fr;
+    }
+  }
 }
 
 .text {
