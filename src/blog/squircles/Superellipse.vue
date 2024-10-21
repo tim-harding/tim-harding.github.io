@@ -29,8 +29,6 @@ const path = computed(() => {
   out += " Z";
   return out;
 });
-
-const nPrecision = computed(() => n.value.toFixed(2));
 </script>
 
 <template>
@@ -44,7 +42,7 @@ const nPrecision = computed(() => n.value.toFixed(2));
     </svg>
 
     <InputRange :class="s.input" v-model="n" min="0" max="6" step="any">
-      n: {{ nPrecision }}
+      n: {{ n.toFixed(2) }}
     </InputRange>
   </div>
 </template>

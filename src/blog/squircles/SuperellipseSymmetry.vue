@@ -4,7 +4,6 @@ import InputRange from "~/components/InputRange.vue";
 
 const aspectInput = ref(0.732051);
 const aspect = computed(() => (aspectInput.value + 1) ** 2 * 0.5 + 0.5);
-const aspectPrecision = computed(() => aspect.value.toFixed(2));
 const xOff = computed(() => Math.max(0, aspect.value - 1));
 const yOff = computed(() => 1 / (1 + Math.min(0, aspect.value - 1)) - 1);
 
@@ -92,7 +91,7 @@ const path = computed(() => {
       max="1"
       step="any"
     >
-      Aspect ratio: {{ aspectPrecision }}
+      Aspect ratio: {{ aspect.toFixed(2) }}
     </InputRange>
   </div>
 </template>

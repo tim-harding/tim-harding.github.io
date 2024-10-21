@@ -35,10 +35,6 @@ const path = computed(() => {
   out += " Z";
   return out;
 });
-
-const nPrecision = computed(() => n.value.toFixed(2));
-const aPrecision = computed(() => a.value.toFixed(2));
-const bPrecision = computed(() => b.value.toFixed(2));
 </script>
 
 <template>
@@ -52,15 +48,15 @@ const bPrecision = computed(() => b.value.toFixed(2));
     </svg>
 
     <InputRange :class="s.n" v-model="n" min="2" max="8" step="any">
-      n: {{ nPrecision }}
+      n: {{ n.toFixed(2) }}
     </InputRange>
 
     <InputRange :class="s.a" v-model="a" min="0" max="3" step="any">
-      a: {{ aPrecision }}
+      a: {{ a.toFixed(2) }}
     </InputRange>
 
     <InputRange :class="s.b" v-model="b" min="0" max="3" step="any">
-      b: {{ bPrecision }}
+      b: {{ b.toFixed(2) }}
     </InputRange>
   </div>
 </template>
