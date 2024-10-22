@@ -23,7 +23,11 @@ A typical rounded rectangle is made by taking a circle, quartering it, and graft
 
 > Ive’s design team had obsessed over the rounded corners of the phone and become advocates of Bézier curves, a concept from computer modeling used to eliminate the transition breaks between straight and curved surfaces.... A standard rounded corner consists of a single-radius arch or a quarter circle, whereas their curves were mapped through a dozen points, creating a more gradual and natural transition. <cite>[1](#after-steve)</cite>
 
-Beziér curves are just one option to soften the shape. Another is to repurpose an attractive shape from mathematics, the superellipse. We'll start with the equation for a circle:
+Beziér curves are just one option to soften the shape. Figma has a [detailed article](https://www.figma.com/blog/desperately-seeking-squircles/) going over this method, but we'll be looking at another that uses a nice mathematical shape.
+
+## Maths
+
+We'll start with the equation for a circle:
 
 $$ x^2 + y^2 = 1 $$
 
@@ -33,30 +37,19 @@ $$ x^n + y^n = 1 $$
 
 <Superellipse />
 
-As the exponent increases, the circle becomes more and more box-shaped, and eventually approaching a perfect square. Going the other way, the circle starts to pucker and fold in on itself. The puckering isn't so nice, but we can massage this shape into something useable.
+As the exponent increases, the circle becomes more and more box-shaped, eventually approaching a perfect square. Going the other way, the circle folds in on itself like a star. We can massage this shape into something useable. The star shape isn't so useful, so we'll limit the exponent to be at least 2 as our first adjustment.
 
-Currently, this formula only supports square boxes. The more general form can be scaled on both axes.
+Currently, this formula only supports square boxes. The more general elliptical form can be scaled on both axes.
 
 $$ \left(\frac{x}{a}\right)^n + \left(\frac{y}{b}\right)^n = 1 $$
 
 <SuperellipseScaling />
 
-Personally, I don't like the asymmetrical corner shape for wide and tall boxes. Instead, we'll use the square version of the formula and insert straight sides on the long edge.
+Personally, I don't like the asymmetrical corner shape this gives. Instead, we'll use the circular version of the formula and insert straight sides on the long edge to complete the rectangle.
 
 <SuperellipseSymmetry />
 
-To maintain a consistent corner radius when we scale our box by a factor $l$, we also need to scale the exponent by the inverse amount.
-
-$$
-\begin{align}
-x(t) &= \cos^{2r/l}(t) \\
-y(t) &= \sin^{2r/l}(t)
-\end{align}
-$$
-
-Since superellipses pucker when their exponent goes below 2, we'll also limit the corner radius at most half the shorter side length. This lets us fall back to a regular rounded rectangle when the box is too thin or narrow to support the desired radius.
-
-Next, we need a way to draw the shape programmatically. It's a bit difficult to generate points for our line segments using the implicit equation for a superellipse, but fortunately, there's also a parametric form that makes this super easy.
+We can draw this shape most easily by approximating it with straight line segments. It's a bit difficult to generate points for our line segments using the implicit equation for a superellipse, but fortunately, there's also a parametric form that makes this super easy.
 
 $$
 \begin{align}
@@ -65,7 +58,7 @@ y(t) &= \sin^{2/n}(t)
 \end{align}
 $$
 
-As $t$ ranges from $0$ to $2 \pi$, this gives us the coordinates for points around the superellipse. Next, we need to adjust the equation to acheive a given corner radius. Since the exponent $n$ and the corner radius $r$ are inversely proportional, we can do so by replacing $n$ with $1/r$.
+As $t$ ranges from $0$ to $2 \pi$, this gives us coordinates for points all around the superellipse. Next, we can acheive a desired corner radius by replacing $n$ with $1/r$, since the exponent $n$ and the corner radius $r$ are inversely proportional.
 
 $$
 \begin{align}
@@ -74,7 +67,14 @@ y(t) &= \sin^{2r}(t)
 \end{align}
 $$
 
-From there, we can approximate the superellipse by calculating points and drawing straight line segments between them. In testing, I found that for a corner radius $r$, using $4 \sqrt{r}$ line segments per corner gives smooth results without creating unnecessary detail. The angle between line segments decreases for large radii, so using more points yields diminishing returns. Conveniently, the parametric form naturally concentrates points in the corner where curvature is greatest, so detail is not spared in areas that don't contribute visually.
+In testing, I found that using $4 \sqrt{r}$ line segments per corner gives smooth results without creating unnecessary detail. The angle between line segments decreases for large radii, so using more points yields diminishing returns. Conveniently, the parametric form naturally concentrates points in the corner where curvature is greatest, so detail is not spared in areas that don't contribute visually.
+
+$$
+\begin{align}
+x(t) &= \cos^{2r/l}(t) \\
+y(t) &= \sin^{2r/l}(t)
+\end{align}
+$$
 
 <SuperellipseDetail />
 
