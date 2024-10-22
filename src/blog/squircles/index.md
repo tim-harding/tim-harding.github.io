@@ -27,21 +27,17 @@ Beziér curves are just one option to soften the shape. Figma has a [detailed ar
 
 ## Maths
 
-We'll start with the equation for a circle:
+We'll start with the equation for an ellipse:
 
-$$ x^2 + y^2 = 1 $$
+$$ \left(\frac{x}{a}\right)^2 + \left(\frac{y}{b}\right)^2 = 1 $$
 
 Instead of squaring $x$ and $y$, we can swap in an arbitrary exponent, $n$.
 
-$$ x^n + y^n = 1 $$
+$$ \left(\frac{x}{a}\right)^n + \left(\frac{y}{b}\right)^n = 1 $$
 
 <Superellipse />
 
 As the exponent increases, the circle becomes more and more box-shaped, eventually approaching a perfect square. Going the other way, the circle folds in on itself like a star. We can massage this shape into something useable. The star shape isn't so useful, so we'll limit the exponent to be at least 2 as our first adjustment.
-
-Currently, this formula only supports square boxes. The more general elliptical form can be scaled on both axes.
-
-$$ \left(\frac{x}{a}\right)^n + \left(\frac{y}{b}\right)^n = 1 $$
 
 <SuperellipseScaling />
 
@@ -80,21 +76,30 @@ $$
 
 ## Implementation
 
-This isn't easy to acheive with the CSS features available today. We'd like to use `clip-path`, but each basic shape has issues:
+This isn't easy to acheive with the CSS features available today. Using `clip-path` with a `polygon` shape seems viable, but the ratio between the corner radius and the rectangle side is needed to find the superellipse exponent, and CSS `calc` has no way of doing that (division does not work, sadly). Our only option is to extend CSS with the Paint API, part of the CSS Houdini suite of APIs that lets us add CSS features with JavaScript. That way, we can write our own shape-drawing functions and use them in CSS.
 
-- `path` is a string and can't use CSS variables to support different corner radii or box sizes,
-- `shape` isn't yet supported by any browsers as of this recording, and
-- `polygon` is most viable, but we can't // TODO investigate more
-
-Since none of the basic shapes work, our only choice is to create our own. This choice is made possible by the Paint API, part of the CSS Houdini suite of APIs that gives us the ability to extend CSS from Javascript. With the paint API, we can write our own shape-drawing functions and use them in CSS.
-
-Let's see how this works. Let's create a new JavaScript file called `worklet.js` and create a class for our drawing code.
+To start, let's create a new JavaScript file called `worklet.js` and create a class for our drawing code.
 
 ```js
 class Squircle {}
+
+registerPaint("squircle", Squircle);
 ```
 
-First, we'll request to the `--squircle-radius` CSS property and a transparent surface to draw on.
+Before going further, let's create another JavaScript file where we'll register our worklet with the CSS engine. We'll also use the Properties and Values API to prepare a CSS variable for corner radius.
+
+```js
+CSS.paintWorklet.addModule("/worklet.js");
+
+CSS.registerProperty({
+  name: "--squircle-radius",
+  syntax: "<length>",
+  inherits: false,
+  initialValue: "0px",
+});
+```
+
+Back in the `Squircle` worklet, we'll ask to be given our corner radius variable and a transparent surface to draw on.
 
 ```js
 static get inputProperties() {
@@ -108,46 +113,37 @@ static get contextOptions() {
 }
 ```
 
-Next, we'll define our paint function, which takes a Canvas 2D context to draw on, the element dimensions, and the radius property we requested.
+Next, we'll define our paint function, which receives the drawing context, the canvas dimensions, and the corner radius variable.
 
 ```js
-paint(ctx, size, props) { }
+paint(ctx, size, props) {
+  const { width: w, height: h } = size;
+  const squircleRadius = props.get("--squircle-radius").value;
+}
 ```
 
-Before going further, let's create another JavaScript file where we'll register our worklet with the CSS engine.
+Inside the paint function, compute the exponent for the superellipse.
 
 ```js
-CSS.paintWorklet.addModule("/worklet.js");
-```
-
-At the same time, we need to use another Houdini API, the Properties and Values API, to tell CSS what type of values to accept for our custom radius property.
-
-```js
-CSS.registerProperty({
-  name: "--squircle-radius",
-  syntax: "<length>",
-  inherits: false,
-  initialValue: "0px",
-});
-```
-
-Back in the worklet, all that's left is to draw. First, set up the variables for width, height, and radius.
-
-```js
-const { width: w, height: h } = size;
-const radius = props.get("--squircle-radius").value;
+// Half the shorter side length
 const l = Math.min(w, h) / 2;
-const r = Math.min(r, l);
+
+// Limit the radius if it is larger than the available side length.
+// This guarantees the superellipse exponent is at least 2.
+const r = Math.min(squircleRadius, l);
+
+// Superellipse exponent is the ratio between the corner radius and the side length
+const exp = r / l;
 ```
 
 Next, we can figure our how to draw the first corner from the parametric equations.
 
 ```js
-const SEGMENTS = 16;
-for (let j = 0; j < SEGMENTS + 1; j++) {
-  const t = j / Math.PI / 2 / SEGMENTS;
-  const x = Math.cos(t) ** (r / l) * l;
-  const y = Math.sin(t) ** (r / l) * l;
+const segments = Math.ceil(4 * Math.sqrt(r));
+for (let i = 0; i < segments + 1; i++) {
+  const t = i / Math.PI / 2 / segments;
+  const x = Math.cos(t) ** exp * l;
+  const y = Math.sin(t) ** exp * l;
   ctx.lineTo(x, y);
 }
 ```
@@ -156,25 +152,34 @@ Once we can draw one corner, we can repeat it for each of the four corners with 
 
 ```js
 ctx.moveTo(w, h - l);
-for (let i = 0; i < 4; i++) {
-  const isLeft = i > 0 && i < 3;
-  const isTop = i > 1;
+for (let j = 0; j < 4; j++) {
+  const isLeft = j > 0 && j < 3;
+  const isTop = j > 1;
   ctx.setTransform(
-    ((i + 1) % 2) * isLeft ? -1 : 1,
-    (i % 2) * isLeft ? -1 : 1,
-    (i % 2) * isTop ? -1 : 1,
-    ((i + 1) % 2) * isTop ? -1 : 1,
+    ((j + 1) % 2) * isLeft ? -1 : 1,
+    (j % 2) * isLeft ? -1 : 1,
+    (j % 2) * isTop ? -1 : 1,
+    ((j + 1) % 2) * isTop ? -1 : 1,
     isLeft ? l : w - l,
     isTop ? l : h - l,
   );
-  // snip
+  // Snip: corner drawing code
 }
 
 ctx.closePath();
 ctx.fill();
 ```
 
-From here we could add support for borders and colors, but for that, I'll point you to my package on GitHub where you can find the complete code to use in your own projects.
+That's all we need to start using squircles in our CSS.
+
+```css
+.squircle {
+  background: paint(squircle);
+  --squircle-radius: 16px;
+}
+```
+
+To read the full implementation or save yourself the trouble, you can check out my [squircle NPM package](https://github.com/tim-harding/squircle). If you enjoyed this article, consider reaching out by [email](mailto:tim@timharding.co). I'm starting this blog to connect with other developers, so I'd appreciate hearing your thoughts or critique. Cheers!
 
 <footer aria-labelledby="references-heading">
   <h2 id="references-heading">References</h2>
