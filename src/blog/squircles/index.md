@@ -1,5 +1,5 @@
 ---
-title: Squircles
+title: Squircles and CSS Houdini
 description: Drawing squircles with superellipses and canvas.
 date: 2024-10-23
 layout: blog
@@ -12,7 +12,7 @@ import SuperellipseDetail from "./SuperellipseDetail.vue";
 import SuperellipseSymmetry from "./SuperellipseSymmetry.vue";
 </script>
 
-# Squircles and CSS Houdini
+# {{ $frontmatter.title }}
 
 This is a squircle, a shape popularized by Jonathan Ive in his design of iPhone and iOS.
 
@@ -120,7 +120,7 @@ const l = Math.min(width, height) / 2;
 // This guarantees the superellipse exponent is at least 2.
 const r = Math.min(squircleRadius, l);
 
-// The superellipse exponent is the ratio 
+// The superellipse exponent is the ratio
 // between the corner radius and the side length.
 const exp = r / l;
 ```
@@ -143,17 +143,17 @@ Once we can draw one corner, we can repeat it for each of the four corners with 
 ctx.moveTo(width, height - l);
 for (let j = 0; j < 4; j++) {
   const isLeft = j > 0 && j < 3;
-  const isTop  = j > 1;
+  const isTop = j > 1;
 
   ctx.setTransform(
     // Rotation
     ((j + 1) % 2) * isLeft ? -1 : 1,
-     (j      % 2) * isLeft ? -1 : 1,
-     (j      % 2) * isTop  ? -1 : 1,
-    ((j + 1) % 2) * isTop  ? -1 : 1,
+    (j % 2) * isLeft ? -1 : 1,
+    (j % 2) * isTop ? -1 : 1,
+    ((j + 1) % 2) * isTop ? -1 : 1,
     // Translation
-    isLeft ? l : width  - l,
-    isTop  ? l : height - l,
+    isLeft ? l : width - l,
+    isTop ? l : height - l,
   );
 
   // Snip: corner drawing code
