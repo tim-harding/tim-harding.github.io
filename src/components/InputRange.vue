@@ -54,11 +54,20 @@ const inputAttributes = computed(() => {
 
 .input {
   grid-area: slider;
-  all: unset;
+  appearance: none;
   width: 100%;
   height: 1rem;
+  background-color: transparent;
 
   &::-moz-range-track {
+    box-sizing: border-box;
+    background-color: var(--surface-1);
+    border-radius: 0.125rem;
+    border: 1px solid var(--surface-2);
+    height: 0.25rem;
+  }
+
+  &::-webkit-slider-runnable-track {
     box-sizing: border-box;
     background-color: var(--surface-1);
     border-radius: 0.125rem;
@@ -71,6 +80,17 @@ const inputAttributes = computed(() => {
     background-color: var(--rosewater);
     width: 1rem;
     height: 1rem;
+    border-radius: 50%;
   }
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    background-color: var(--rosewater);
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    transform: translateY(calc(-0.5rem + 1.5px));
+  }
+
 }
 </style>
