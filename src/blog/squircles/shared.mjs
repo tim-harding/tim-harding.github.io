@@ -16,10 +16,10 @@ export function* points(
 }
 
 export function path(iter) {
-  const { x: xInit, y: yInit } = iter.next().value;
-  let out = `M ${xInit} ${yInit}`;
+  const { x: xInit, y: yInit } = iter.next()?.value ?? { x: 0, y: 0 };
+  let out = `M ${xInit.toFixed(6)} ${yInit.toFixed(6)}`;
   for (const { x, y } of iter) {
-    out += ` L ${x} ${y}`;
+    out += ` L ${x.toFixed(6)} ${y.toFixed(6)}`;
   }
   out += " Z";
   return out;
