@@ -1,7 +1,7 @@
 ---
 title: Squircles
 description: Drawing squircles with superellipses and canvas.
-date: 2024-10-15
+date: 2024-10-23
 layout: blog
 ---
 
@@ -12,7 +12,7 @@ import SuperellipseDetail from "./SuperellipseDetail.vue";
 import SuperellipseSymmetry from "./SuperellipseSymmetry.vue";
 </script>
 
-# Squircles
+# Squircles and CSS Houdini
 
 This is a squircle, a shape popularized by Jonathan Ive in his design of iPhone and iOS.
 
