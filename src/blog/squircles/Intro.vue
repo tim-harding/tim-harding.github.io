@@ -13,6 +13,7 @@ const isSquircle = ref(true);
     <svg
       :class="{ [s.roundedRect]: true, [s.show]: !isSquircle }"
       viewBox="0 0 162 100"
+      preserveAspectRatio="xMinYMin meet"
     >
       <rect width="162" height="100" rx="16" ry="16"></rect>
     </svg>
@@ -42,6 +43,7 @@ const isSquircle = ref(true);
   display: grid;
   grid-area: full;
   fill: var(--surface-2);
+  width: 100%;
 }
 
 .roundedRect {
