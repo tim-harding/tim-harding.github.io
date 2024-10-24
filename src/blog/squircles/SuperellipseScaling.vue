@@ -3,9 +3,9 @@ import { ref } from "vue";
 import { path, points } from "./shared.mjs";
 import InputRange from "~/components/InputRange.vue";
 
-const n = ref(4);
+const n = ref(6);
 const a = ref(3);
-const b = ref(1);
+const b = ref(3);
 </script>
 
 <template>
@@ -14,7 +14,7 @@ const b = ref(1);
       <path :d="path(points(n, { a, b }))"></path>
     </svg>
 
-    <InputRange :class="s.n" v-model="n" min="2" max="6" step="any">
+    <InputRange :class="s.n" v-model="n" min="0" max="6" step="any">
       n: {{ n.toFixed(2) }}
     </InputRange>
 

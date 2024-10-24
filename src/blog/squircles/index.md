@@ -7,7 +7,6 @@ layout: blog
 
 <script setup>
 import Intro from "./Intro.vue";
-import Superellipse from "./Superellipse.vue";
 import SuperellipseScaling from "./SuperellipseScaling.vue";
 import SuperellipseDetail from "./SuperellipseDetail.vue";
 import SuperellipseSymmetry from "./SuperellipseSymmetry.vue";
@@ -23,25 +22,25 @@ A typical rounded rectangle is made by taking a circle, quartering it, and graft
 
 > Ive’s design team had obsessed over the rounded corners of the phone and become advocates of Bézier curves, a concept from computer modeling used to eliminate the transition breaks between straight and curved surfaces.... A standard rounded corner consists of a single-radius arch or a quarter circle, whereas their curves were mapped through a dozen points, creating a more gradual and natural transition. <cite>[1](#after-steve)</cite>
 
-Beziér curves are just one option to soften the shape. Figma has a [detailed article](https://www.figma.com/blog/desperately-seeking-squircles/) going over this method, but we'll be looking at another that uses a nice mathematical shape.
+Beziér curves are just one option to soften the shape. Figma has a [detailed article](https://www.figma.com/blog/desperately-seeking-squircles/) going over this method, but we'll be looking at another approach that uses a nice mathematical shape.
 
 ## Maths
 
-We'll start with the equation for an ellipse:
+We'll start with the equation for an ellipse.
 
 $$ \left(\frac{x}{a}\right)^2 + \left(\frac{y}{b}\right)^2 = 1 $$
 
-Instead of squaring $x$ and $y$, we can swap in an arbitrary exponent, $n$.
+Instead of squaring, we can swap in an arbitrary exponent, $n$.
 
 $$ \left(\frac{x}{a}\right)^n + \left(\frac{y}{b}\right)^n = 1 $$
 
-<Superellipse />
-
-As the exponent increases, the circle becomes more and more box-shaped, eventually approaching a perfect square. Going the other way, the circle folds in on itself like a star. We can massage this shape into something useable. The star shape isn't so useful, so we'll limit the exponent to be at least 2 as our first adjustment.
-
 <SuperellipseScaling />
 
-Personally, I don't like the asymmetrical corner shape this gives. Instead, we'll use the circular version of the formula and insert straight sides on the long edge to complete the rectangle.
+As the exponent increases, the circle becomes more and more box-shaped, eventually approaching a perfect square. Going the other way, the circle folds in on itself like a star. We can massage this shape into something useable. To start, we can avoid the star effect by limiting the exponent to at least 2.
+
+I don't like the asymmetrical corner shape wide or tall boxes take on. Instead, we'll let $a=b=1$ and insert straight sides on the long edge to complete the rectangle.
+
+$$ x^n + y^n = 1 $$
 
 <SuperellipseSymmetry />
 
@@ -65,24 +64,16 @@ $$
 
 In testing, I found that using $4 \sqrt{r}$ line segments per corner gives smooth results without creating unnecessary detail. The angle between line segments decreases for large radii, so using more points yields diminishing returns. Conveniently, the parametric form naturally concentrates points in the corner where curvature is greatest, so detail is not spared in areas that don't contribute visually.
 
-$$
-\begin{align}
-x(t) &= \cos^{2r/l}(t) \\
-y(t) &= \sin^{2r/l}(t)
-\end{align}
-$$
-
 <SuperellipseDetail />
 
 ## Implementation
 
-This isn't easy to acheive with the CSS features available today. Using `clip-path` with a `polygon` shape seems viable, but the ratio between the corner radius and the rectangle side is needed to find the superellipse exponent, and CSS `calc` has no way of doing that (division does not work, sadly). Our only option is to extend CSS with the Paint API, part of the CSS Houdini suite of APIs that lets us add CSS features with JavaScript. That way, we can write our own shape-drawing functions and use them in CSS.
+This isn't easy to acheive with the CSS features available today. Using `clip-path` with a `polygon` shape seems viable, but we need the ratio between the corner radius and the rectangle side to find the superellipse exponent, and CSS `calc` has no way of doing that (division does not work, sadly). Our only option is to extend CSS with the Paint API, part of the CSS Houdini suite of APIs that lets us add CSS features with JavaScript. That way, we can write our own shape-drawing functions and use them in CSS.
 
 To start, let's create a new JavaScript file called `worklet.js` and create a class for our drawing code.
 
 ```js
 class Squircle {}
-
 registerPaint("squircle", Squircle);
 ```
 
@@ -90,7 +81,6 @@ Before going further, let's create another JavaScript file where we'll register 
 
 ```js
 CSS.paintWorklet.addModule("/worklet.js");
-
 CSS.registerProperty({
   name: "--squircle-radius",
   syntax: "<length>",
@@ -103,9 +93,7 @@ Back in the `Squircle` worklet, we'll ask to be given our corner radius variable
 
 ```js
 static get inputProperties() {
-  return [
-    "--squircle-radius",
-  ];
+  return ["--squircle-radius"];
 }
 
 static get contextOptions() {
@@ -117,7 +105,7 @@ Next, we'll define our paint function, which receives the drawing context, the c
 
 ```js
 paint(ctx, size, props) {
-  const { width: w, height: h } = size;
+  const { width, height } = size;
   const squircleRadius = props.get("--squircle-radius").value;
 }
 ```
@@ -126,17 +114,18 @@ Inside the paint function, compute the exponent for the superellipse.
 
 ```js
 // Half the shorter side length
-const l = Math.min(w, h) / 2;
+const l = Math.min(width, height) / 2;
 
-// Limit the radius if it is larger than the available side length.
+// Limit the radius to the available space.
 // This guarantees the superellipse exponent is at least 2.
 const r = Math.min(squircleRadius, l);
 
-// Superellipse exponent is the ratio between the corner radius and the side length
+// The superellipse exponent is the ratio 
+// between the corner radius and the side length.
 const exp = r / l;
 ```
 
-Next, we can figure our how to draw the first corner from the parametric equations.
+Next, we can figure our how to draw the first corner using the parametric equations.
 
 ```js
 const segments = Math.ceil(4 * Math.sqrt(r));
@@ -151,21 +140,24 @@ for (let i = 0; i < segments + 1; i++) {
 Once we can draw one corner, we can repeat it for each of the four corners with different rotations and translations.
 
 ```js
-ctx.moveTo(w, h - l);
+ctx.moveTo(width, height - l);
 for (let j = 0; j < 4; j++) {
   const isLeft = j > 0 && j < 3;
-  const isTop = j > 1;
+  const isTop  = j > 1;
+
   ctx.setTransform(
+    // Rotation
     ((j + 1) % 2) * isLeft ? -1 : 1,
-    (j % 2) * isLeft ? -1 : 1,
-    (j % 2) * isTop ? -1 : 1,
-    ((j + 1) % 2) * isTop ? -1 : 1,
-    isLeft ? l : w - l,
-    isTop ? l : h - l,
+     (j      % 2) * isLeft ? -1 : 1,
+     (j      % 2) * isTop  ? -1 : 1,
+    ((j + 1) % 2) * isTop  ? -1 : 1,
+    // Translation
+    isLeft ? l : width  - l,
+    isTop  ? l : height - l,
   );
+
   // Snip: corner drawing code
 }
-
 ctx.closePath();
 ctx.fill();
 ```

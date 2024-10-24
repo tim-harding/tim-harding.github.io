@@ -76,22 +76,6 @@ const yOff = computed(() => 1 / (1 + Math.min(0, aspect.value - 1)) - 1);
     ". superellipse . .     .";
 }
 
-.upperLeft {
-  fill: var(--overlay-0);
-}
-
-.upperRight {
-  fill: var(--overlay-1);
-}
-
-.lowerLeft {
-  fill: var(--overlay-1);
-}
-
-.lowerRight {
-  fill: var(--overlay-0);
-}
-
 .upperLeft,
 .upperRight,
 .lowerLeft,
