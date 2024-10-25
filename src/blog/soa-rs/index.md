@@ -9,8 +9,6 @@ layout: blog
 
 ## Intro
 
-### Minimal surface area macro
-
 ## Macros
 
 Procedural macros are tedious to write. Even with the aid of `rust-analyzer` and `cargo-expand`, it's difficult to diagnose generated code that fails to compile. Crucially, while the compiler will report a missing comma or lifetime violation, it won't point out the offending code. We love Rust for its error messages being helpful, friendly, and specific. In contrast, macro errors are vague and frustrating, forcing you to wade through the generated code for syntactic and semantic mistakes.
@@ -19,11 +17,35 @@ Worse still is code that compiles but runs incorrectly. Ordinarily you might rea
 
 Complex proc macro authorship would benefit massively from better compiler diagnostics and macro sourcemaps. A line of generated code represents easily an order of magnitude greater maintenance burden than as much regular code, but tooling could go a long way to bringing them in line. 
 
-### Crate setup
-
-### Comparison to Zig
-
 ## Safety
+
+Before writing `soa-rs`, I believed that `unsafe` is difficult largely for the same reasons as C code. `malloc`, `free`, manual lifetime management, and so on. That is false. Unsafe Rust is *much* harder. 
+
+### Pointers
+
+#### Provenance
+
+C pointers are kinda loosy goosy. You can get by understanding them as just an address. Rust expects a bit more from you by adding the notion of provenance. Pointers aren't just a location in memory, they also carry information about the memory region they are allowed to access. For instance, this isn't valid:
+
+```rust
+// Stack-allocate some variables.
+let a = 0u32;
+let b = 0u32;
+
+// Get pointers into the stack. 
+// Each pointer has provenance over _only_ that variable.
+let a = std::ptr::from_ref(&a);
+let b = std::ptr::from_ref(&b);
+
+// Get the difference between the two pointers.
+let delta = b.offset_from(a);
+
+// Invalid! 
+// b is outside the provenance of a. 
+let b = a.offset(delta);
+```
+
+Technically, the pointer arithmetic works. You can do this sort of thing in C if you want, but Rust's memory model forbids it. Working with `unsafe`, I've often encountered rules like this, ones I'm happy to follow but whose motivation is opaque. I suppose it's addressing some compiler technicality known to an enlightened few. Still, unsafe is replete with similarly obscure requirements that conspire to depress confidence in your code, as any stone left unturned threatens to unleash the fearsome demon of undefined behavior. 
 
 ### Type system
 
@@ -74,6 +96,8 @@ Type system has trouble with multiple generic parameters?
 ### Macro debugging
 
 ### ZST special casing
+
+### Crate setup
 
 ## Tricks
 
