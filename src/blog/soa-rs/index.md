@@ -19,7 +19,11 @@ Complex proc macro authorship would benefit massively from better compiler diagn
 
 ## Safety
 
-Before writing `soa-rs`, I believed that `unsafe` is difficult largely for the same reasons as C code. `malloc`, `free`, manual lifetime management, and so on. That is false. Unsafe Rust is *much* harder. 
+Before writing `soa-rs`, I believed that `unsafe` is difficult largely for the same reasons as C code. `malloc`, `free`, manual lifetime management, and so on. That is false. Unsafe Rust is *much* harder, peppered as it is with myriad requirements and pitfalls. These requirements are scattered between `std` documentation, the [Rustonomicon](https://doc.rust-lang.org/nomicon/), and, more problematically, tribal knowledge. 
+
+It took only about an hour from when I first published `soa-rs` for Steffahn to appear in my GitHub issues with two soundness bugs, each requiring significant API redesign. (I've since learned this is a common experience for unsafe authors.) Even with Miri checking over my work and combing through the code for any issues I knew to look for, I still had major blindspots that an experienced programmer could easily unearth. The biggest problem with unsafe is the unknown unknowns — the fearsome gremlin of undefined behavior dwells in hundred dark corners you might have a blind eye to. 
+
+Rust and I are like Linus and his blanket. In a lesser language I'm on edge, never quite assured that I've covered all my tracks. In Rust I am secure, the type system providing the structure I need to code with confidence. Unsafe Rust is quite the opposite experience. You have to be on your guard at every step. In exchange, you get to share a zero-cost interface that cannot be misused. It's hard, but no other language rewards your efforts quite the same. 
 
 ### Pointers
 
@@ -67,6 +71,8 @@ Technically, the pointer arithmetic works. You can do this sort of thing in C if
 
 ## Challenges
 
+### Slices are special (borrowing)
+
 ### Unstable types
 
 #### Pointer metadata
@@ -83,8 +89,6 @@ Type system has trouble with multiple generic parameters?
 
 ### Index/IndexMut
 
-### Slices are special (borrowing)
-
 #### Implementing Eq against other types
 
 ### Array in const context
@@ -92,6 +96,8 @@ Type system has trouble with multiple generic parameters?
 ## Papercuts
 
 ### Type system deadends
+
+#### Pointer metadata
 
 ### Special cases
 
