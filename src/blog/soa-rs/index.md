@@ -25,6 +25,88 @@ It took only about an hour from when I first published `soa-rs` for Steffahn to 
 
 Rust and I are like Linus and his blanket. In a lesser language I'm on edge, never quite assured that I've covered all my tracks. In Rust I am secure, the type system providing the structure I need to code with confidence. Unsafe Rust is quite the opposite experience. You have to be on your guard at every step. In exchange, you get to share a zero-cost interface that cannot be misused. It's hard, but no other language rewards your efforts quite the same. 
 
+### `WithRef`
+
+Suppose you have this struct:
+
+```rust
+struct Struct(u8, u8);
+```
+
+Since `soa-rs` stores the fields separately, a reference to a slice element looks like this:
+
+```rust
+struct StructRef<'a>(&'a u8, &'a u8);
+```
+
+If `Struct` implements a trait, we'd like for `StructRef` to also implement the trait. The first issue Steffahn caught has to do with this clever trait I came up with to solve the issue:
+
+```rust
+pub trait WithRef {
+    type T;
+
+    fn with_ref<F, R>(&self, f: F) -> R
+    where
+        F: FnOnce(&Self::T) -> R;
+}
+
+```
+
+To implement `with_ref`, the macro would bitwise copy each field from `StructRef` to recreate the `Struct` on the stack. Then, it would call `with_ref` with a reference to the `Struct`. 
+
+```rust
+impl WithRef for StructRef {
+    type T = Struct;
+
+    fn with_ref<F, R>(&self, f: F) -> R
+    where
+        F: FnOnce(&Self::T) -> R 
+    {
+        use std::ptr;
+        let t = Struct(
+          unsafe { ptr::read(ptr::from_ref(self.0)) },
+          unsafe { ptr::read(ptr::from_ref(self.1)) },
+        );
+        f(&t);
+    }
+}
+```
+
+This way, you could make a SOA slice hashable using `T`'s implentation of `Hash`, for example.
+
+```rust
+impl<T> Hash for Slice<T>
+where
+    T: Soars + Hash,
+{
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.len().hash(state);
+        for el in self.iter() {
+            el.with_ref(|el| el.hash(state))
+        }
+    }
+}
+```
+
+This all seemed fine to me, and Miri had no complaints either. Since `WithRef` only calls `f` with an non-`mut` reference to the stack, you couldn't mutate anything, so there's no worry you'll affect the `Soa` contents. Right?
+
+*Right?*
+
+Well, I forgot to consider inner mutability. Here's how to expose the issue:
+
+```rust
+#[derive(Soars)]
+struct Foo(RefCell<String>);
+
+let soa = soa![Foo(RefCell::new(String::default()))];
+// Takes ownership of the Foo that `with_ref` created on the stack,
+// but the soa also still owns that memory.
+let r = soa.idx(0).with_ref(|x| std::mem::take(x.0.borrow_mut()));
+// Double free when r and soa are dropped.
+```
+
+In other words, don't forget that a shared reference doesn't always mean an immutable reference, even if it's normally safe to think of them the same. This is the kind of thing that makes unsafe so hard to get right. You have to consider how your code interacts with all of Rust's myriad constructs, and it's easy to overlook some particular case where some errant bit of safe code comes along to ruin your day. 
+
 ### Pointers
 
 #### Provenance
