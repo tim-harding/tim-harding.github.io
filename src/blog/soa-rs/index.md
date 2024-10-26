@@ -130,12 +130,12 @@ Generated code has no knowledge of its context. It doesn't know what crate it's 
 
 Sometimes you want to test that a piece of code doesn't compile. I do this to ensure that certain types aren't `Send` or `Sync`, for example. The only way to do that is by writing a doctest with the `compile_fail` annotation:
 
-```rust
-/// \`\`\`compile_fail 
+````rust
+/// ```compile_fail 
 /// let number: u32 = "string";
-/// \`\`\`
+/// ```
 mod compile_fail_tests {}
-```
+````
 
 This tests that compilation failed, but not why it failed. I've made the mistake of writing one of these to test one thing, but compilation actually failed because I forgot a semicolon. To make sure you're testing the right thing, compile the failing code and make note of the error code:
 
@@ -145,9 +145,9 @@ error[E0308]: mismatched types
 
 Then, modify the doctest to specify the error code you expect. 
 
-```rust
-/// \`\`\`compile_fail,E0308
-```
+````rust
+/// ```compile_fail,E0308
+````
 
 ### doc = include_str!
 
