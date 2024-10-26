@@ -93,8 +93,6 @@ Type system has trouble with multiple generic parameters?
 
 ### Type system deadends
 
-### Macro debugging
-
 ### Special cases
 
 Tuple structs, unit structs, and named field structs each have slightly different syntax that require special handling in macro code. For example, here's how you 
@@ -131,3 +129,14 @@ Generated code has no knowledge of its context. It doesn't know what crate it's 
 ### compile_fail
 
 ### doc = include_str!
+
+If you have a readme with Rust code that you want to ensure compiles, you can do this:
+
+```rust
+#[doc = include_str!("../README.md")]
+mod readme_tests {}
+```
+
+This is equivalent to including the readme as a `///` documentation comment, so Rust will include it with the rest of your doctests. 
+
+## Conclusion
