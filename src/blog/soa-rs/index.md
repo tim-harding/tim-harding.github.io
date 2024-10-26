@@ -95,7 +95,32 @@ Type system has trouble with multiple generic parameters?
 
 ### Macro debugging
 
-### ZST special casing
+### Special cases
+
+Tuple structs, unit structs, and named field structs each have slightly different syntax that require special handling in macro code. For example, here's how you 
+
+```rust
+match kind {
+    FieldKind::Named => quote! {
+        #ident { #(#field: #ty),* }
+    },
+    FieldKind::Unnamed => quote! {
+        #ident ( #(#ty),* );
+    },
+    FieldKind::None => quote! {
+        #ident;
+    }
+}
+```
+
+This is inconvenient given how many places these differences need to be accounted for. However, tuple structs have this nicety:
+
+```rust
+struct Tuple(u8, u8);
+let tuple = Tuple { 0: 42, 1: 7 };
+```
+
+You can treat tuple structs like named field structs for the purpose of initialization, so you don't need to handle them differently. I wish this feature were available in more areas of the language. 
 
 ### Crate setup
 
