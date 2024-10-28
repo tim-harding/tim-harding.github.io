@@ -77,7 +77,7 @@ pub struct Slice<T: Soars, D: ?Sized = [()]> {
 }
 ```
 
-First, the length field has moved to `Soa`, while `Slice` sports a new generic, `D`. When `D` uses the default generic parameter, `[()]`, the struct becomes `?Sized`. That way, when we hand users an `&mut Slice<T>`, they won't be able to `mem::swap` it. It also makes the struct [dynamically sized](https://doc.rust-lang.org/nomicon/exotic-sizes.html#dynamically-sized-types-dsts), meaning that references to it have the same metadata as `[()]` itself. That lets us use the same trick of storing the slice length as part of the reference. 
+First, the length field has moved to `Soa`, while `Slice` sports a new generic, `D`. When `D` uses the default generic parameter, `[()]`, the struct becomes `?Sized`. That way, when we hand users an `&mut Slice<T>`, they won't be able to `mem::swap` it. It also makes the struct [dynamically sized](https://doc.rust-lang.org/nomicon/exotic-sizes.html#dynamically-sized-types-dsts), meaning that references to it have the same metadata as `[()]` itself. That lets us use the same trick of storing the slice length as part of the reference. This isn't really needed, but it feels like a neat priviledge to have anyway. 
 
 Since dynamically sized types can't be stored in a sized type, we can also set `D` to `()` when storing it in the `Soa`. This is also handy for `SliceRef`, an owned type that acts like `&Slice`.
 
