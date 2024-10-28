@@ -1,7 +1,7 @@
 ---
 title: Macros, Safety, and SOA
-description: Drawing squircles with superellipses and canvas.
-date: 2024-10-23
+description: Reflecting on my challenges implementing soa-rs
+date: 2024-10-30
 layout: blog
 ---
 
