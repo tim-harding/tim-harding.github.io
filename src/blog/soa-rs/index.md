@@ -173,6 +173,8 @@ let r = soa.idx(0).with_ref(|x| std::mem::take(x.0.borrow_mut()));
 
 In other words, don't forget that a shared reference doesn't always mean an immutable reference, even if it's normally safe to think of them the same. This is the kind of thing that makes unsafe so hard to get right. You have to consider how your code interacts with all of Rust's myriad constructs, and it's easy to overlook some particular case where some errant bit of safe code comes along to ruin your day. 
 
+Sadly, this kills the ability to implement a bunch of traits for SOA slices without some additional effort by the user, since we can't leverage the existing implementations on `T` for equality, ordering, equality, debug printing, or cloning. To help the situation, you can use `#[soa_derive(Clone, Debug, ...)]` to add derive implementations to `T::Ref`, which does make those traits available on `Slice`. I regret having to sacrifice API design to satisfy something of a corner case usage. 
+
 ### Pointers
 
 #### Provenance
@@ -199,27 +201,7 @@ let b = a.offset(delta);
 
 Technically, the pointer arithmetic works. You can do this sort of thing in C if you want, but Rust's memory model forbids it. Working with `unsafe`, I've often encountered rules like this, ones I'm happy to follow but whose motivation is opaque. I suppose it's addressing some compiler technicality known to an enlightened few. Still, unsafe is replete with similarly obscure requirements that conspire to depress confidence in your code, as any stone left unturned threatens to unleash the fearsome demon of undefined behavior. 
 
-### Type system
-
-#### repr(transparent) for dyn sized (okay to do?)
-
-### Unknown unknowns
-
-#### steffahn
-
-##### WithRef
-
-##### Inner mutability
-
-### Requirements and motivation
-
-#### Miri
-
-#### Best practices are not consolidated
-
 ## Challenges
-
-### Slices are special (borrowing)
 
 ### Unstable types
 
@@ -315,3 +297,5 @@ mod readme_tests {}
 This is equivalent to including the readme as a `///` documentation comment, so Rust will include it with the rest of your doctests. 
 
 ## Conclusion
+
+### Comparison to Zig
