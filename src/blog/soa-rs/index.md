@@ -1,11 +1,11 @@
 ---
-title: SOA, Safety, and Macros
+title: Macros, Safety, and SOA
 description: Drawing squircles with superellipses and canvas.
 date: 2024-10-23
 layout: blog
 ---
 
-# SOA, Safety, and Macros
+# {{ $frontmatter.title }}
 
 ## Intro
 
