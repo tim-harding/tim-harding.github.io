@@ -7,7 +7,61 @@ layout: blog
 
 # {{ $frontmatter.title }}
 
-## Intro
+About a year ago I wrote [`soa-rs`](https://github.com/tim-harding/soa-rs), a structure-of-arrays crate for Rust. It uses proc macros and `unsafe` extensively, and this post reflects on my experience with those tools. Much that I have to say mirrors Chad Austin's recent [Unsafe Rust Is Harder Than C](https://chadaustin.me/2024/10/intrusive-linked-list-in-rust/), which perfectly articulates the universal `unsafe` experience:
+
+> The result of my pain is a safe, efficient API.
+
+However much I criticize, unsafe Rust is uniquely rewarding. Nowhere else can I wrap a bundle of hairy, low-level, error-prone code behind a zero-cost interface that's impossible to misuse. I'll take it, papercuts and all. 
+
+### Comparison to Zig
+
+For comparison, here's a simple example of SOA usage, first in Rust, then in Zig.
+
+```rust
+use soa_rs::{Soa, Soars, soa};
+
+#[derive(Soars)]
+struct Foo {
+    bar: u8,
+    baz: u32,
+}
+
+fn main() {
+    let soa = soa![
+        Foo { bar: 2, baz: 3 },
+        Foo { bar: 5, baz: 7 },
+    ];
+    let bar_sum = soa.bar().iter().sum();
+    assert_eq!(bar_sum, 7);
+}
+```
+
+```zig
+const std = @import("std");
+const assert = std.debug.assert;
+
+const Foo = struct {
+    bar: u8,
+    baz: u32,
+};
+
+pub fn main() !void {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    const alloc = gpa.allocator();
+
+    var soa = std.MultiArrayList(Foo){};
+    defer soa.deinit(alloc);
+
+    try soa.append(alloc, .{ .bar = 2, .baz = 3 });
+    try soa.append(alloc, .{ .bar = 5, .baz = 7 });
+
+    var bar_sum: u32 = 0;
+    for (soa.items(.bar)) |bar| {
+        bar_sum += bar;
+    }
+    assert(bar_sum == 7);
+}
+```
 
 ## Macros
 
@@ -213,17 +267,13 @@ Technically, the pointer arithmetic works. You can do this sort of thing in C if
 
 Type system has trouble with multiple generic parameters?
 
-### Implementing Eq, Ord, etc for SoaVec based on T
-
-### DynSized
-
 ### Index/IndexMut
-
-#### Implementing Eq against other types
 
 ### Array in const context
 
 ## Papercuts
+
+### Trait methods in const
 
 ### Type system deadends
 
@@ -298,4 +348,3 @@ This is equivalent to including the readme as a `///` documentation comment, so 
 
 ## Conclusion
 
-### Comparison to Zig
