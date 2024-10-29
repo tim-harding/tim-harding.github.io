@@ -15,7 +15,7 @@ body {
 }
 
 *, *::before, *::after {
-  transition-property: color background-color border-color opacity fill;
+  transition-property: color, background-color, border-color, opacity, fill;
   transition-duration: var(--speed);
 }
 
