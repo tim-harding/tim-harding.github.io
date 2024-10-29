@@ -63,7 +63,7 @@ html {
     --overlay-1, --overlay-0, --surface-2, --surface-1, --surface-0, --base,
     --mantle, --crust, --rosewater, --flamingo, --pink, --mauve, --red, --maroon,
     --peach, --yellow, --green, --teal, --sky, --sapphire, --blue, --lavender;
-  transition-duration: 250ms;
+  transition-duration: var(--speed);
 }
 
 @property --subtext-1 {

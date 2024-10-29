@@ -48,7 +48,6 @@ const isSquircle = ref(true);
 
 .roundedRect {
   opacity: 0;
-  transition: opacity 125ms;
 }
 
 .show {

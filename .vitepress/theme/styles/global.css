@@ -1,9 +1,22 @@
+:root {
+  --content-width: 30rem;
+  --page-margin: 1rem;
+  --speed: 167ms;
+  font-size: 20px;
+  scrollbar-color: var(--surface-2) var(--crust);
+}
+
 body {
   font-family: "Concourse", sans-serif;
   font-weight: 300; /* Book */
   background-color: var(--base);
-  color: var(--text);
   overflow-x: hidden;
+  color: var(--text);
+}
+
+*, *::before, *::after {
+  transition-property: color background-color border-color opacity fill;
+  transition-duration: var(--speed);
 }
 
 .sr {
@@ -16,13 +29,6 @@ body {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
-}
-
-:root {
-  --content-width: 30rem;
-  --page-margin: 1rem;
-  font-size: 20px;
-  scrollbar-color: var(--surface-2) var(--crust);
 }
 
 ::selection {
@@ -82,7 +88,6 @@ cite {
 
 a {
   color: var(--blue);
-  transition: color 125ms;
 
   &:hover {
     color: var(--sky);
@@ -114,7 +119,6 @@ a {
       content: "#";
       color: var(--rosewater);
       opacity: 0;
-      transition: opacity 125ms;
     }
 
     &:hover::after {
@@ -151,8 +155,6 @@ a {
   border-width: 1px;
   border-style: solid;
   border-color: transparent;
-  transition-property: background-color, border-color;
-  transition-duration: 125ms;
 
   &:hover {
     background-color: var(--base);

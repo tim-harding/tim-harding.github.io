@@ -1,5 +1,6 @@
 <script setup>
 import NotFound from "./NotFound.vue";
+import PageContent from "./PageContent.mjs";
 import { useData } from "vitepress";
 
 const { page, frontmatter } = useData();
@@ -10,9 +11,9 @@ const { page, frontmatter } = useData();
     <div :class="s.inner">
       <NotFound v-if="page.isNotFound" />
       <article v-else-if="frontmatter.layout === 'blog'">
-        <Content />
+        <PageContent />
       </article>
-      <Content v-else />
+      <PageContent v-else />
     </div>
   </main>
 </template>

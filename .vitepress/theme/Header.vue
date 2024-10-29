@@ -136,7 +136,7 @@ button.disclosure {
       "resume theme-button"
       "github theme-button";
     gap: 0rem;
-    transition: grid-template-rows 250ms;
+    transition-property: grid-template-rows;
 
     &:has(.disclosure[aria-pressed="true"]) {
       grid-template-rows: 4rem repeat(2, 2rem);

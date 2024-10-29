@@ -54,9 +54,7 @@ const props = defineProps({
   border-radius: calc(0.5rem + 2px);
   background-color: var(--lavender);
   padding: 2px;
-  transition:
-    background-color 125ms,
-    grid-template-columns 125ms;
+  transition-property: background-color, grid-template-columns;
 }
 
 .toggleInner {
@@ -64,7 +62,7 @@ const props = defineProps({
   grid-area: center;
   background-color: var(--base);
   border-radius: 0.5rem;
-  transition: transform 125ms;
+  transition-property: transform;
 }
 
 .pressed {

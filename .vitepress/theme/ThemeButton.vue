@@ -47,7 +47,7 @@ button.themeButton {
 .moon,
 .sun {
   display: grid;
-  transition: transform 350ms ease-in-out;
+  transition-property: transform;
   place-items: center;
 }
 

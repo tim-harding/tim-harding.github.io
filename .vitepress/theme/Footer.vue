@@ -143,6 +143,5 @@
 
 .icon {
   fill: var(--overlay-0);
-  transition: 125ms fill;
 }
 </style>
