@@ -43,6 +43,14 @@ h2 {
   margin-bottom: 0.5rem;
 }
 
+h3 {
+  font-weight: 600;
+
+  & + p {
+    margin-top: 0.5rem;
+  }
+}
+
 p {
   margin: 1rem 0rem 1rem 0rem;
 }
@@ -87,19 +95,20 @@ a {
 
 :is(h1, h2, h3, h4, h5, h6) {
   &:has(a) {
+    width: fit-content;
     position: relative;
-    display: grid;
-    grid-template-columns: 0.75em 1fr;
-    margin-left: -0.75em;
 
-    &::before {
+    &::after {
+      position: absolute;
+      right: -0.75em;
+      bottom: 0rem;
       content: "#";
       color: var(--rosewater);
       opacity: 0;
       transition: opacity 125ms;
     }
 
-    &:hover::before {
+    &:hover::after {
       opacity: 1;
     }
   }
