@@ -7,15 +7,24 @@ layout: blog
 
 # {{ $frontmatter.title }}
 
-About a year ago I wrote [`soa-rs`](https://github.com/tim-harding/soa-rs), a structure-of-arrays crate for Rust. It uses proc macros and `unsafe` extensively, and this post reflects on my experience with those tools. Much that I have to say mirrors Chad Austin's recent [Unsafe Rust Is Harder Than C](https://chadaustin.me/2024/10/intrusive-linked-list-in-rust/), which perfectly articulates the universal `unsafe` experience:
+About a year ago I wrote [`soa-rs`](https://github.com/tim-harding/soa-rs), a structure-of-arrays (SOA) crate for Rust. It uses proc macros and `unsafe` extensively, and this post reflects on my experience with those tools. Much that I have to say mirrors Chad Austin's recent [Unsafe Rust Is Harder Than C](https://chadaustin.me/2024/10/intrusive-linked-list-in-rust/), which perfectly articulates the universal `unsafe` experience:
 
 > The result of my pain is a safe, efficient API.
 
 However much I criticize, unsafe Rust is uniquely rewarding. Nowhere else can I wrap a bundle of hairy, low-level, error-prone code behind a zero-cost interface that's impossible to misuse. I'll take it, papercuts and all. 
 
-### Comparison to Zig
+## Background
 
-For comparison, here's a simple example of SOA usage, first in Rust, then in Zig.
+SOA is a way of organizing linear data for efficient access on modern computers. Consider this type:
+
+```rust
+struct Foo(u8, u64);
+let foos = vec![Foo(0, 1), Foo(2, 3)];
+```
+
+Because of memory alignment requirements, each `Foo` takes 128 bits of space, leaving 56 bits to waste. Further, suppose you want to iterate over thousands of elements, accessing only the `u8` field. Since RAM serves data by the cache line, 15 of every 16 bytes transferred is thrown out, causing the CPU to stall on memory access. 
+
+SOA addresses this by storing each struct field as a separate array. That way, elements are tightly packed. No space is wasted to padding, and during iteration, every cache line byte goes to use. Here's what it looks like using `soa-rs`:
 
 ```rust
 use soa_rs::{Soa, Soars, soa};
@@ -23,18 +32,27 @@ use soa_rs::{Soa, Soars, soa};
 #[derive(Soars)]
 struct Foo {
     bar: u8,
-    baz: u32,
+    baz: u64,
 }
 
 fn main() {
     let soa = soa![
-        Foo { bar: 2, baz: 3 },
-        Foo { bar: 5, baz: 7 },
+        Foo { bar: 1, baz: 2 },
+        Foo { bar: 3, baz: 4 },
     ];
-    let bar_sum = soa.bar().iter().sum();
-    assert_eq!(bar_sum, 7);
+
+    for mut foo in &mut soa {
+        *foo.bar *= 2;
+    }
+
+    assert_eq!(foo.bar(), [2, 6]);
 }
 ```
+
+### Comparison to Zig
+
+For comparison, here's a simple example of SOA usage, first in Rust, then in Zig.
+
 
 ```zig
 const std = @import("std");
