@@ -7,7 +7,7 @@ layout: blog
 
 # {{ $frontmatter.title }}
 
-About a year ago I wrote [`soa-rs`](https://github.com/tim-harding/soa-rs), a structure-of-arrays (SOA) crate for Rust. It uses proc macros and `unsafe` extensively, and this post reflects on my experience with those tools. Much that I have to say mirrors Chad Austin's recent [Unsafe Rust Is Harder Than C](https://chadaustin.me/2024/10/intrusive-linked-list-in-rust/), which perfectly articulates the universal `unsafe` experience:
+About a year ago I wrote [`soa-rs`](https://github.com/tim-harding/soa-rs), a structure-of-arrays (SOA) crate for Rust. It uses proc macros and `unsafe` extensively, and this post reflects on my experience with those tools. Much that I have to say mirrors Chad Austin's recent [Unsafe Rust Is Harder Than C](https://chadaustin.me/2024/10/intrusive-linked-list-in-rust/), which perfectly articulates the `unsafe` experience:
 
 > The result of my pain is a safe, efficient API.
 
@@ -22,7 +22,7 @@ struct Foo(u8, u64);
 let foos = vec![Foo(0, 1), Foo(2, 3)];
 ```
 
-Because of memory alignment requirements, each `Foo` takes 128 bits of space, leaving 56 bits to waste. Further, suppose you want to iterate over thousands of elements, accessing only the `u8` field. Since RAM serves data by the cache line, 15 of every 16 bytes transferred is thrown out, causing the CPU to stall on memory access. 
+Because of memory alignment requirements, each `Foo` takes 128 bits of space, leaving 56 bits to waste. Further, suppose you iterate over many elements, but only access the `u8` field. Since RAM serves data by the cache line, 15 of every 16 bytes transferred is thrown out, forcing the CPU to wait for memory.
 
 SOA addresses this by storing each struct field as a separate array. That way, elements are tightly packed. No space is wasted to padding, and during iteration, every cache line byte goes to use. Here's what it looks like using `soa-rs`:
 
@@ -49,10 +49,15 @@ fn main() {
 }
 ```
 
+### Design
+
+Several SOA crates existed before `soa-rs`. These crates would generate a unique container type for each SOA struct. Generated code is tedious to develop and maintain; `rust-analyzer` doesn't work in macros, and you can't step through the code in a debugger. You're also creating heaps of duplicate code, slowing down compilation. Trying to match the API surface of `Vec` this way is untenable. Instead, `soa-rs` generates only essential, low-level routines, moving most of the implementation to a generic container type, `Soa`. 
+
+The most popular SOA crate also differs by using a `Vec` for each field, multiplying the overhead of allocation and capacity tracking by the number of fields. `Soa` minimizes overhead by managing one allocation for the collection. `soa-rs` spends most of its `unsafe` in generated code that manages pointers into this allocation for each field array. 
+
 ### Comparison to Zig
 
-For comparison, here's a simple example of SOA usage, first in Rust, then in Zig.
-
+Zig is the poster child of this data structure. Here's the example from above in Zig:
 
 ```zig
 const std = @import("std");
@@ -70,16 +75,17 @@ pub fn main() !void {
     var soa = std.MultiArrayList(Foo){};
     defer soa.deinit(alloc);
 
-    try soa.append(alloc, .{ .bar = 2, .baz = 3 });
-    try soa.append(alloc, .{ .bar = 5, .baz = 7 });
+    try soa.append(alloc, .{ .bar = 1, .baz = 2 });
+    try soa.append(alloc, .{ .bar = 3, .baz = 4 });
 
-    var bar_sum: u32 = 0;
-    for (soa.items(.bar)) |bar| {
-        bar_sum += bar;
+    for (soa.items(.bar)) |*bar| {
+        bar.* *= 2;
     }
-    assert(bar_sum == 7);
+    assert(std.mem.eql(u8, soa.items(.bar), &[_]u8{ 2, 6 }));
 }
 ```
+
+Unless Rust, Zig doesn't need a macros to do this, using its compile-time reflection system instead. `MultiArrayList` works with all structs, not just those marked with `#[derive(Soars)]`, so you can use it with types from other libraries. Not only that, `MultiArrayList` also supports enums, storing small enum variants in separate arrays from large ones. It includes sorting methods that `soa-rs` currently lacks, and it does all this in just 481 lines, compared to 3498 in `soa-rs`. It's superior by just about any standard of comparison. I have at times looked jealously at the ergonomics of raw pointers by default and the insane leverage of comptime. Neither is coming to Rust any time soon, but boy would they be welcome for some sitations. 
 
 ## Macros
 
