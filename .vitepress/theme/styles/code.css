@@ -3,10 +3,25 @@ code {
   font-feature-settings: "calt", "ss01", "ss02", "ss03", "ss19", "ss20";
   font-size: 0.8rem; /* 16px */
   font-weight: 400;
+  background-color: var(--mantle);
+  padding: 0.125rem 0.25rem 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--crust);
+}
+
+pre {
+  display: block;
+  line-height: 1.1;
+
+  & > code {
+    background-color: transparent;
+    padding: 0rem;
+    border-radius: 0rem;
+    border: none;
+  }
 }
 
 div[class*="language-"] {
-  position: relative;
   background-color: var(--mantle);
   padding: 0.25rem 0.75rem 0.5rem 0.75rem;
   margin: 1rem -0.75rem 1rem -0.75rem;
