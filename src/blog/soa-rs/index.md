@@ -103,7 +103,7 @@ It took only about an hour from when I first published `soa-rs` for Steffahn to 
 
 Rust and I are like Linus and his blanket. In a lesser language I'm on edge, never quite assured that I've covered all my tracks. In Rust I am secure, the type system providing the structure I need to code with confidence. Unsafe Rust is quite the opposite experience. You have to be on your guard at every step. In exchange, you get to share a zero-cost interface that cannot be misused. It's hard, but no other language rewards your efforts quite the same. 
 
-### Beware `swap`
+### Beware swap
 
 The original SOA design looked like this:
 
@@ -372,3 +372,4 @@ This is equivalent to including the readme as a `///` documentation comment, so 
 
 ## Conclusion
 
+Navigating the difficulties of `unsafe` makes me appreciate the safe subset of Rust all the more. If I'm critical, it's because I love the language and want it to be even better. Safe Rust is more enjoyable and productive for me than any other language, and I hope there's a future where I can say the same for its unsafe counterpart. If you have thoughts about this post, consider [emailing](mailto:tim@timharding.co) them to me. I'm starting this blog with the hope of opening up conversation with other developers, so I appreciate any responses I receive. Happy programming! 🦀
