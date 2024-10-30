@@ -7,11 +7,11 @@ layout: blog
 
 # {{ $frontmatter.title }}
 
-About a year ago I wrote [`soa-rs`](https://github.com/tim-harding/soa-rs), a structure-of-arrays (SOA) crate for Rust. It uses proc macros and `unsafe` extensively, and this post reflects on my experience with those tools. Much that I have to say mirrors Chad Austin's recent [Unsafe Rust Is Harder Than C](https://chadaustin.me/2024/10/intrusive-linked-list-in-rust/), which perfectly articulates the `unsafe` experience:
+About a year ago I wrote [`soa-rs`](https://github.com/tim-harding/soa-rs), a structure-of-arrays (SOA) crate for Rust that makes extensive use of proc macros and `unsafe`. In this post, I want to reflect on my experience with those tools. Much that I have to say mirrors Chad Austin's recent [Unsafe Rust Is Harder Than C](https://chadaustin.me/2024/10/intrusive-linked-list-in-rust/), which perfectly articulates the `unsafe` experience:
 
 > The result of my pain is a safe, efficient API.
 
-However much I criticize, unsafe Rust is uniquely rewarding. Nowhere else can I wrap a bundle of hairy, low-level, error-prone code behind a zero-cost interface that's impossible to misuse. I'll take it, papercuts and all. 
+However much I have to critique, unsafe Rust is uniquely rewarding. Nowhere else can I wrap a bundle of hairy, low-level, error-prone code behind a zero-cost interface that's impossible to misuse. I'll take it, papercuts and all. 
 
 ## Background
 
@@ -22,7 +22,7 @@ struct Foo(u8, u64);
 let foos = vec![Foo(0, 1), Foo(2, 3)];
 ```
 
-Because of memory alignment requirements, each `Foo` takes 128 bits of space, leaving 56 bits to waste. Further, suppose you iterate over many elements, but only access the `u8` field. Since RAM serves data by the cache line, 15 of every 16 bytes transferred is thrown out, forcing the CPU to wait for memory.
+Because of memory alignment requirements, each `Foo` takes 128 bits of space, leaving 56 bits to waste. Further, suppose you iterate over many elements but only access the `u8` field. Since RAM serves data by the cache line, 15 of every 16 bytes transferred is thrown out, forcing the CPU to wait for memory.
 
 SOA addresses this by storing each struct field as a separate array. That way, elements are tightly packed. No space is wasted to padding, and during iteration, every cache line byte goes to use. Here's what it looks like using `soa-rs`:
 
@@ -51,7 +51,7 @@ fn main() {
 
 ### Design
 
-Several SOA crates existed before `soa-rs`. These crates would generate a unique container type for each SOA struct. Generated code is tedious to develop and maintain; `rust-analyzer` doesn't work in macros, and you can't step through the code in a debugger. You're also creating heaps of duplicate code, slowing down compilation. Trying to match the API surface of `Vec` this way is untenable. Instead, `soa-rs` generates only essential, low-level routines, moving most of the implementation to a generic container type, `Soa`. 
+Several SOA crates existed before `soa-rs`. These crates generate a unique container type for each SOA struct. Generated code is tedious to develop and maintain; `rust-analyzer` doesn't work in macros, and you can't step through the code in a debugger. You're also creating heaps of duplicate code, slowing down compilation. Trying to match the API surface of `Vec` this way is untenable. Instead, `soa-rs` generates only essential, low-level routines, moving most of the implementation to a generic container type, `Soa`. 
 
 The most popular SOA crate also differs by using a `Vec` for each field, multiplying the overhead of allocation and capacity tracking by the number of fields. `Soa` minimizes overhead by managing one allocation for the collection. `soa-rs` spends most of its `unsafe` in generated code that manages pointers into this allocation for each field array. 
 
@@ -85,7 +85,7 @@ pub fn main() !void {
 }
 ```
 
-Unless Rust, Zig doesn't need a macros to do this, using its compile-time reflection system instead. `MultiArrayList` works with all structs, not just those marked with `#[derive(Soars)]`, so you can use it with types from other libraries. Not only that, `MultiArrayList` also supports enums, storing small enum variants in separate arrays from large ones. It includes sorting methods that `soa-rs` currently lacks, and it does all this in just 481 lines, compared to 3498 in `soa-rs`. It's superior by just about any standard of comparison. I have at times looked jealously at the ergonomics of raw pointers by default and the insane leverage of comptime. Neither is coming to Rust any time soon, but boy would they be welcome for some sitations. 
+Unlike Rust, Zig doesn't need a macro to do this, instead using its compile-time reflection system. `MultiArrayList` works with all structs, not just specially marked ones, so you can even use it with types from other libraries. Not only that, `MultiArrayList` also supports enums, storing small enum variants in separate arrays from large ones. It does all this in just 481 lines, compared to 3498 in `soa-rs`. It's superior by just about any standard of comparison. I have at times looked jealously at the ergonomics of raw pointers by default and the insane leverage of comptime. Neither is coming to Rust any time soon, but boy would they be welcome for some sitations. 
 
 ## Macros
 
@@ -97,11 +97,11 @@ Complex proc macro authorship would benefit massively from better compiler diagn
 
 ## Safety
 
-Before writing `soa-rs`, I believed that `unsafe` is difficult largely for the same reasons as C code. `malloc`, `free`, manual lifetime management, and so on. That is false. Unsafe Rust is *much* harder, peppered as it is with myriad requirements and pitfalls. These requirements are scattered between `std` documentation, the [Rustonomicon](https://doc.rust-lang.org/nomicon/), and, more problematically, tribal knowledge. 
+Before writing `soa-rs`, I believed that `unsafe` is difficult largely for the same reasons as C code. `malloc`, `free`, manual lifetime management, and so on. That is false. Unsafe Rust is *much* harder, peppered as it is with myriad requirements and pitfalls. These requirements are scattered between `std` documentation, the [Rustonomicon](https://doc.rust-lang.org/nomicon/), and tribal knowledge. 
 
-It took only about an hour from when I first published `soa-rs` for Steffahn to appear in my GitHub issues with two soundness bugs, each requiring significant API redesign. (I've since learned this is a common experience for unsafe authors.) Even with Miri checking over my work and combing through the code for any issues I knew to look for, I still had major blindspots that an experienced programmer could easily unearth. The biggest problem with unsafe is the unknown unknowns — the fearsome gremlin of undefined behavior dwells in hundred dark corners you might have a blind eye to. 
+In a matter of hours from publishing `soa-rs`, Steffahn appeared in my GitHub issues with two [soundness](https://github.com/tim-harding/soa-rs/issues/2) [bugs](https://github.com/tim-harding/soa-rs/issues/3), each requiring significant API redesign. (I've since learned this is a [shared experience](https://blog.dureuill.net/articles/nolife-0-4/#rainbow-thou-shall-believe-in-thy-friends-sparkling-heart) for unsafe authors.) Even with Miri checking over my work and combing through the code for any issues I knew to look for, I still had major blindspots that an experienced programmer could easily unearth. The biggest problem with unsafe is the unknown unknowns — the fearsome gremlin of undefined behavior dwells in a hundred dark corners you mightn't know to check.
 
-Rust and I are like Linus and his blanket. In a lesser language I'm on edge, never quite assured that I've covered all my tracks. In Rust I am secure, the type system providing the structure I need to code with confidence. Unsafe Rust is quite the opposite experience. You have to be on your guard at every step. In exchange, you get to share a zero-cost interface that cannot be misused. It's hard, but no other language rewards your efforts quite the same. 
+Rust and I are like Linus and his blanket. In a lesser language I'm on edge, never quite assured that I've covered all my tracks. In Rust I am secure, the type system providing the structure I need to code with confidence. Unsafe Rust is quite the opposite experience. You have to be on your guard at every step. In exchange, you get to share a zero-cost interface that cannot be misused. It's difficult, but no other language rewards your efforts quite the same. 
 
 ### Beware swap
 
