@@ -291,7 +291,25 @@ Technically, the pointer arithmetic works. You can do this sort of thing in C if
 
 Type system has trouble with multiple generic parameters?
 
-### Index/IndexMut
+### Index trait
+
+It's a bit unfortunate that certain traits like `Index` return `&Self::Output` instead of just `Self::Output`. I can't implement this type for `Slice` because I need to return an owned type. I assume this constraint is because we didn't have [GAT](https://blog.rust-lang.org/2022/10/28/gats-stabilization.html)s when these traits where being developed. Today we could write
+
+```rust
+trait Index {
+    type Output<'a>: ?Sized where Self: 'a;
+    // instead of
+    type Output: ?Sized;
+}
+
+impl<T> Index for Vec<T> {
+    type Output<'a> = &'a [T] where Self: 'a;
+    // instead of
+    type Output = [T];
+}
+```
+
+Because of this, users have to write `soa.idx(i)` instead of `soa[i]`. Not the end of the world, but more flexibility would be nice in a few places. 
 
 ### Array in const context
 
