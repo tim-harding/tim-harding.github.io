@@ -287,10 +287,6 @@ Technically, the pointer arithmetic works. You can do this sort of thing in C if
 
 #### try_fold
 
-### Deref
-
-Type system has trouble with multiple generic parameters?
-
 ### Index trait
 
 It's a bit unfortunate that certain traits like `Index` return `&Self::Output` instead of just `Self::Output`. I can't implement this type for `Slice` because I need to return an owned type. I assume this constraint is because we didn't have [GAT](https://blog.rust-lang.org/2022/10/28/gats-stabilization.html)s when these traits where being developed. Today we could write
@@ -313,13 +309,50 @@ Because of this, users have to write `soa.idx(i)` instead of `soa[i]`. Not the e
 
 ### Array in const context
 
+It isn't particularly essential, but with analogs for `Vec`, `&[T]`, and `&mut [T]`, I *really* wanted to round out the set with `[T; N]`, compile-time SOA arrays that don't require allocation. This is hard and I gave up a few times but, being preternatually stubborn, I eventually got this working:
+
+```rust
+#[derive(Soars)]
+#[soa_array]
+struct Foo(u64, u8);
+
+const FOOS: FooArray<2> = FooArray::from_array([Foo(1, 2), Foo(3, 4)]);
+assert_eq!(FOOS.as_slice().f0(), [1, 3]);
+```
+
+However niche the use case and however baroque the code to make this work, it's neat that this kind of thing is even possible. For the adventurous, this is roughly what the code looks like:
+
+```rust
+const fn from_array<T, const N: usize>(array: [T; N]) -> Self {
+    // We're taking ownership of the array elements, 
+    // but Rust can't tell because it's pointer stuff.
+    let array = ManuallyDrop::new(array);
+    // Get a reference to the array, 
+    // since Deref isn't available.
+    let array = unsafe { &*ptr::from_ref(&array).cast::<[T; N]> };
+
+    Self {
+        bar: {
+            let mut uninit = [const { MaybeUninit::uninit() }; N];
+            let mut i = 0;
+            while i < N {
+                let src = ptr::from_ref(&array[i].bar);
+                let read = unsafe { src.read() };
+                uninit[i] = MaybeUninit::new(read);
+                i += 1;
+            }
+            unsafe { transmute_copy(&uninit) }
+        },
+        // snip baz
+    }
+}
+```
+
 ## Papercuts
 
 ### Trait methods in const
 
-### Type system deadends
-
-#### Pointer metadata
+Being able to call trait methods in `const` contexts would be really useful. I can understand why this is a difficult problem, but it does hamper ergonomics in substantial ways. For example, you can't use indexing or `for` loops because they rely on the `Index` and `Iterator` traits to work. This forced some [particularly weird casts](https://github.com/tim-harding/soa-rs/issues/5#issuecomment-1968043436) because `Deref` isn't available. 
 
 ### Special cases
 
