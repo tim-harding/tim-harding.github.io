@@ -281,11 +281,9 @@ Technically, the pointer arithmetic works. You can do this sort of thing in C if
 
 ## Challenges
 
-### Unstable types
+### Unstable
 
-#### Pointer metadata
-
-#### try_fold
+Occasionally, there are features and optimizations available to `std` implementors that aren't for library authors. For example, I would like to implement `try_fold` for my iterator type, but from what I can tell, this simply isn't possible. One of the function generics is `R: Try<Output = B>`, but since `Try` is unstable, so you can't name the type when you go to write the function. I respect the stabilization process, but it's also frustrating sometimes to see that a type is right there and being used but out of reach. All the `NonNull` stabilizations in 1.80 were exciting to see, having missed them during development. I delight in refactor opportunities found in the stabilization section of Rust releases. 
 
 ### Index trait
 
