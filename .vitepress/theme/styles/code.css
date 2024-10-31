@@ -53,7 +53,6 @@ html.dark {
 
   .vp-code span {
     color: var(--shiki-dark, inherit);
-    font-style: var(--shiki-dark-font-style, inherit);
   }
 }
 
@@ -71,5 +70,4 @@ html.dark {
 
 .vp-code span {
   color: var(--shiki-light, inherit);
-  font-style: var(--shiki-light-font-style, inherit);
 }
