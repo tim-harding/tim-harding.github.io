@@ -245,32 +245,6 @@ In other words, don't forget that a shared reference doesn't always mean an immu
 
 Sadly, this kills the ability to implement a bunch of traits for SOA slices without some additional effort by the user, since we can't leverage the existing implementations on `T` for equality, ordering, equality, debug printing, or cloning. To help the situation, you can use `#[soa_derive(Clone, Debug, ...)]` to add derive implementations for SOA types, but it's not quite the same. If your impls are more complex than simple `derive`s, you'll have you maintain a copy of each for `Soars::Ref` and `Soars::RefMut`. I regret having to sacrifice API design to satisfy something of a corner case usage. 
 
-### Pointers
-
-#### Provenance
-
-C pointers are kinda loosy goosy. You can get by understanding them as just an address. Rust expects a bit more from you by adding the notion of provenance. Pointers aren't just a location in memory, they also carry information about the memory region they are allowed to access. For instance, this isn't valid:
-
-```rust
-// Stack-allocate some variables.
-let a = 0u32;
-let b = 0u32;
-
-// Get pointers into the stack. 
-// Each pointer has provenance over _only_ that variable.
-let a = std::ptr::from_ref(&a);
-let b = std::ptr::from_ref(&b);
-
-// Get the difference between the two pointers.
-let delta = b.offset_from(a);
-
-// Invalid! 
-// b is outside the provenance of a. 
-let b = a.offset(delta);
-```
-
-Technically, the pointer arithmetic works. You can do this sort of thing in C if you want, but Rust's memory model forbids it. Working with `unsafe`, I've often encountered rules like this, ones I'm happy to follow but whose motivation is opaque. I suppose it's addressing some compiler technicality known to an enlightened few. Still, unsafe is replete with similarly obscure requirements that conspire to depress confidence in your code, as any stone left unturned threatens to unleash the fearsome demon of undefined behavior. 
-
 ## Challenges
 
 ### Unstable
