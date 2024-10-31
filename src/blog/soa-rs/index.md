@@ -245,15 +245,57 @@ In other words, don't forget that a shared reference doesn't always mean an immu
 
 Sadly, this kills the ability to implement a bunch of traits for SOA slices without some additional effort by the user, since we can't leverage the existing implementations on `T` for equality, ordering, equality, debug printing, or cloning. To help the situation, you can use `#[soa_derive(Clone, Debug, ...)]` to add derive implementations for SOA types, but it's not quite the same. If your impls are more complex than simple `derive`s, you'll have you maintain a copy of each for `Soars::Ref` and `Soars::RefMut`. I regret having to sacrifice API design to satisfy something of a corner case usage. 
 
-## Challenges
+## Papercuts
+
+### Const is limited
+
+Having finished analogs for `Vec`, `&[T]`, and `&mut [T]`, I *really* wanted to round out the set with `[T; N]`, compile-time SOA arrays that don't require allocation. This is hard and I gave up a few times but, being preternatually stubborn, I eventually got this working:
+
+```rust
+#[derive(Soars)]
+#[soa_array]
+struct Foo(u64, u8);
+
+const FOOS: FooArray<2> = FooArray::from_array([Foo(1, 2), Foo(3, 4)]);
+assert_eq!(FOOS.as_slice().f0(), [1, 3]);
+```
+
+However niche the use case and however baroque the code to make this work, it's neat that this kind of thing is even possible. For the adventurous, this is roughly what the code looks like:
+
+```rust
+const fn from_array<T, const N: usize>(array: [T; N]) -> Self {
+    // We're taking ownership of the array contents, 
+    // but Rust can't tell because it's pointer stuff.
+    let array = ManuallyDrop::new(array);
+    // Get a reference to the array.
+    let array = unsafe { &*ptr::from_ref(&array).cast::<[T; N]> };
+
+    Self {
+        foo: {
+            let mut uninit = [const { MaybeUninit::uninit() }; N];
+            let mut i = 0;
+            while i < N {
+                let src = ptr::from_ref(&array[i].bar);
+                let read = unsafe { src.read() };
+                uninit[i] = MaybeUninit::new(read);
+                i += 1;
+            }
+            unsafe { transmute_copy(&uninit) }
+        },
+        // snip
+    }
+}
+```
+
+Being able to call trait methods in `const` contexts would be really useful. I can understand why this is a difficult problem, but it does hamper ergonomics considerably. For example, you can't use indexing or `for` loops because they rely on the `Index` and `Iterator` traits to work. I had to use some [particularly weird casts](https://github.com/tim-harding/soa-rs/issues/5#issuecomment-1968043436) because `Deref` isn't available. `const` function stabilization also seems to progress like molasses, forcing weird workarounds or inlining of existing `const` implementations from nightly. 
 
 ### Unstable
 
-Occasionally, there are features and optimizations available to `std` implementors that aren't for library authors. For example, I would like to implement `try_fold` for my iterator type, but from what I can tell, this simply isn't possible. One of the function generics is `R: Try<Output = B>`, but since `Try` is unstable, so you can't name the type when you go to write the function. I respect the stabilization process, but it's also frustrating sometimes to see that a type is right there and being used but out of reach. All the `NonNull` stabilizations in 1.80 were exciting to see, having missed them during development. I delight in refactor opportunities found in the stabilization section of Rust releases. 
+Occasionally, there are features and optimizations available to `std` implementors that aren't for library authors. For example, I would like to implement `try_fold` for my iterator type, but from what I can tell, this simply isn't possible. One of the function generics is `R: Try<Output = B>`, and since `Try` is unstable, you can't name the type when you go to write the function. It frustrating sometimes to see that a type is right there and in use but out of reach. All the `NonNull` stabilizations in 1.80 were exciting to see, having missed them during development. I delight in finding refactor opportunities when new functions are stabilized. Here's hoping for [`[MaybeUninit<T>; N]::transpose`](https://doc.rust-lang.org/std/primitive.array.html#method.transpose) to replace `transmute_copy` in my `from_array` function. 
 
 ### Index trait
 
-It's a bit unfortunate that certain traits like `Index` return `&Self::Output` instead of just `Self::Output`. I can't implement this type for `Slice` because I need to return an owned type. I assume this constraint is because we didn't have [GAT](https://blog.rust-lang.org/2022/10/28/gats-stabilization.html)s when these traits where being developed. Today we could write
+It's a bit unfortunate that certain traits like `Index` return `&Self::Output` instead of just `Self::Output`. I can't implement this type for `Slice` because I need to return an owned type. I assume this constraint is because we didn't have [GAT](https://blog.rust-lang.org/2022/10/28/gats-stabilization.html)s when these traits were being developed. Today we could write
 
 ```rust
 trait Index {
@@ -271,56 +313,10 @@ impl<T> Index for Vec<T> {
 
 Because of this, users have to write `soa.idx(i)` instead of `soa[i]`. Not the end of the world, but more flexibility would be nice in a few places. 
 
-### Array in const context
-
-It isn't particularly essential, but with analogs for `Vec`, `&[T]`, and `&mut [T]`, I *really* wanted to round out the set with `[T; N]`, compile-time SOA arrays that don't require allocation. This is hard and I gave up a few times but, being preternatually stubborn, I eventually got this working:
-
-```rust
-#[derive(Soars)]
-#[soa_array]
-struct Foo(u64, u8);
-
-const FOOS: FooArray<2> = FooArray::from_array([Foo(1, 2), Foo(3, 4)]);
-assert_eq!(FOOS.as_slice().f0(), [1, 3]);
-```
-
-However niche the use case and however baroque the code to make this work, it's neat that this kind of thing is even possible. For the adventurous, this is roughly what the code looks like:
-
-```rust
-const fn from_array<T, const N: usize>(array: [T; N]) -> Self {
-    // We're taking ownership of the array elements, 
-    // but Rust can't tell because it's pointer stuff.
-    let array = ManuallyDrop::new(array);
-    // Get a reference to the array, 
-    // since Deref isn't available.
-    let array = unsafe { &*ptr::from_ref(&array).cast::<[T; N]> };
-
-    Self {
-        bar: {
-            let mut uninit = [const { MaybeUninit::uninit() }; N];
-            let mut i = 0;
-            while i < N {
-                let src = ptr::from_ref(&array[i].bar);
-                let read = unsafe { src.read() };
-                uninit[i] = MaybeUninit::new(read);
-                i += 1;
-            }
-            unsafe { transmute_copy(&uninit) }
-        },
-        // snip baz
-    }
-}
-```
-
-## Papercuts
-
-### Trait methods in const
-
-Being able to call trait methods in `const` contexts would be really useful. I can understand why this is a difficult problem, but it does hamper ergonomics in substantial ways. For example, you can't use indexing or `for` loops because they rely on the `Index` and `Iterator` traits to work. This forced some [particularly weird casts](https://github.com/tim-harding/soa-rs/issues/5#issuecomment-1968043436) because `Deref` isn't available. 
 
 ### Special cases
 
-Tuple structs, unit structs, and named field structs each have slightly different syntax that require special handling in macro code. For example, here's how you 
+Tuple structs, unit structs, and named field structs each have slightly different syntax that require special handling in macro code. For example, here's how you create a struct definition. 
 
 ```rust
 match kind {
@@ -343,7 +339,7 @@ struct Tuple(u8, u8);
 let tuple = Tuple { 0: 42, 1: 7 };
 ```
 
-You can treat tuple structs like named field structs for the purpose of initialization, so you don't need to handle them differently. I wish this feature were available in more areas of the language. 
+You can treat tuple structs like named field structs for the purpose of initialization, so you don't need to handle them differently. I wish this feature were available in more areas.
 
 ### Crate setup
 
@@ -351,7 +347,7 @@ Generated code has no knowledge of its context. It doesn't know what crate it's 
 
 ## Tricks
 
-### compile_fail
+### Testing compile failures
 
 Sometimes you want to test that a piece of code doesn't compile. I do this to ensure that certain types aren't `Send` or `Sync`, for example. The only way to do that is by writing a doctest with the `compile_fail` annotation:
 
@@ -374,7 +370,7 @@ Then, modify the doctest to specify the error code you expect.
 /// ```compile_fail,E0308
 ````
 
-### doc = include_str!
+### Testing readme code
 
 If you have a readme with Rust code that you want to ensure compiles, you can do this:
 
@@ -387,4 +383,4 @@ This is equivalent to including the readme as a `///` documentation comment, so 
 
 ## Conclusion
 
-Navigating the difficulties of `unsafe` makes me appreciate the safe subset of Rust all the more. If I'm critical, it's because I love the language and want it to be even better. Safe Rust is more enjoyable and productive for me than any other language, and I hope there's a future where I can say the same for its unsafe counterpart. If you have thoughts about this post, consider [emailing](mailto:tim@timharding.co) them to me. I'm starting this blog with the hope of opening up conversation with other developers, so I appreciate any responses I receive. Happy programming! 🦀
+Navigating the difficulties of `unsafe` makes me appreciate the safe subset of Rust all the more. If I'm critical, it's because I love the language and want it to be even better. Safe Rust is more enjoyable and productive for me than any other language, and I hope there's a future where I can say the same for its unsafe counterpart. Happy programming 🦀
