@@ -181,7 +181,7 @@ Since `soa-rs` stores the fields separately, a reference to a slice element look
 struct StructRef<'a>(&'a u8, &'a u8);
 ```
 
-If `Struct` implements a trait, we'd like for `StructRef` to also implement the trait. The first issue Steffahn caught has to do with this clever trait I came up with to solve the issue:
+If `Struct` implements a trait, we'd like for `StructRef` to also implement the trait. To solve the issue I concocted `with_ref`, which takes a function and calls it with a `Struct` reference. The macro implements this by bitwise copying each field from `StructRef` to recreate the `Struct` on the stack, then calling the provided function with a reference to that `Struct`.
 
 ```rust
 pub trait WithRef {
@@ -192,11 +192,6 @@ pub trait WithRef {
         F: FnOnce(&Self::T) -> R;
 }
 
-```
-
-To implement `with_ref`, the macro would bitwise copy each field from `StructRef` to recreate the `Struct` on the stack. Then, it would call `with_ref` with a reference to the `Struct`. 
-
-```rust
 impl WithRef for StructRef {
     type T = Struct;
 
@@ -204,10 +199,10 @@ impl WithRef for StructRef {
     where
         F: FnOnce(&Self::T) -> R 
     {
-        use std::ptr;
+        use std::ptr::{read, from_ref};
         let t = Struct(
-          unsafe { ptr::read(ptr::from_ref(self.0)) },
-          unsafe { ptr::read(ptr::from_ref(self.1)) },
+          unsafe { read(from_ref(self.0)) },
+          unsafe { read(from_ref(self.1)) },
         );
         f(&t);
     }
@@ -217,10 +212,7 @@ impl WithRef for StructRef {
 This way, you could make a SOA slice hashable using `T`'s implentation of `Hash`, for example.
 
 ```rust
-impl<T> Hash for Slice<T>
-where
-    T: Soars + Hash,
-{
+impl<T: Soars + Hash> Hash for Slice<T> {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.len().hash(state);
         for el in self.iter() {
@@ -229,6 +221,8 @@ where
     }
 }
 ```
+
+
 
 This all seemed fine to me, and Miri had no complaints either. Since `WithRef` only calls `f` with an non-`mut` reference to the stack, you couldn't mutate anything, so there's no worry you'll affect the `Soa` contents. Right?
 
@@ -247,9 +241,9 @@ let r = soa.idx(0).with_ref(|x| std::mem::take(x.0.borrow_mut()));
 // Double free when r and soa are dropped.
 ```
 
-In other words, don't forget that a shared reference doesn't always mean an immutable reference, even if it's normally safe to think of them the same. This is the kind of thing that makes unsafe so hard to get right. You have to consider how your code interacts with all of Rust's myriad constructs, and it's easy to overlook some particular case where some errant bit of safe code comes along to ruin your day. 
+In other words, don't forget that a shared reference doesn't always mean an immutable reference, even if it's normally safe to think of them the same. This is the kind of thing that makes unsafe so hard to get right. You have to consider how your code interacts with all of Rust's myriad constructs, and it's easy to overlook some particular case where an errant bit of safe code comes along to ruin your day. 
 
-Sadly, this kills the ability to implement a bunch of traits for SOA slices without some additional effort by the user, since we can't leverage the existing implementations on `T` for equality, ordering, equality, debug printing, or cloning. To help the situation, you can use `#[soa_derive(Clone, Debug, ...)]` to add derive implementations to `T::Ref`, which does make those traits available on `Slice`. I regret having to sacrifice API design to satisfy something of a corner case usage. 
+Sadly, this kills the ability to implement a bunch of traits for SOA slices without some additional effort by the user, since we can't leverage the existing implementations on `T` for equality, ordering, equality, debug printing, or cloning. To help the situation, you can use `#[soa_derive(Clone, Debug, ...)]` to add derive implementations for SOA types, but it's not quite the same. If your impls are more complex than simple `derive`s, you'll have you maintain a copy of each for `Soars::Ref` and `Soars::RefMut`. I regret having to sacrifice API design to satisfy something of a corner case usage. 
 
 ### Pointers
 
