@@ -7,11 +7,11 @@ layout: blog
 
 # {{ $frontmatter.title }}
 
-About a year ago I wrote [`soa-rs`](https://github.com/tim-harding/soa-rs), a structure-of-arrays (SOA) crate for Rust that makes extensive use of proc macros and `unsafe`. In this post, I want to reflect on my experience with those tools. Much that I have to say mirrors Chad Austin's recent [Unsafe Rust Is Harder Than C](https://chadaustin.me/2024/10/intrusive-linked-list-in-rust/), which perfectly articulates the `unsafe` experience:
+About a year ago I wrote [`soa-rs`](https://github.com/tim-harding/soa-rs), a structure-of-arrays (SOA) crate for Rust that makes extensive use of procedural macros and `unsafe`. In this post, I want to reflect on my experience with those tools. Much that I have to say mirrors Chad Austin's recent [Unsafe Rust Is Harder Than C](https://chadaustin.me/2024/10/intrusive-linked-list-in-rust/), which perfectly articulates the `unsafe` experience:
 
 > The result of my pain is a safe, efficient API.
 
-However much I have to critique, unsafe Rust is uniquely rewarding. Nowhere else can I wrap a bundle of hairy, low-level, error-prone code behind a zero-cost interface that's impossible to misuse. I'll take it, papercuts and all. 
+However much I have to critique, unsafe Rust is uniquely rewarding. Nowhere else can I wrap a bundle of hairy, low-level, error-prone code behind a zero-cost interface that's impossible to misuse. I'll take it, paper cuts and all. 
 
 ## Background
 
@@ -85,7 +85,7 @@ pub fn main() !void {
 }
 ```
 
-Unlike Rust, Zig doesn't need a macro to do this, instead using its compile-time reflection system. `MultiArrayList` works with all structs, not just specially marked ones, so you can even use it with types from other libraries. Not only that, `MultiArrayList` also supports enums, storing small enum variants in separate arrays from large ones. It does all this in just 481 lines, compared to 3498 in `soa-rs`. It's superior by just about any standard of comparison. I have at times looked jealously at the ergonomics of raw pointers by default and the insane leverage of comptime. Neither is coming to Rust any time soon, but boy would they be welcome for some sitations. 
+Unlike Rust, Zig doesn't need a macro to do this, instead using its compile-time reflection system. `MultiArrayList` works with all structs, not just specially marked ones, so you can even use it with types from other libraries. Not only that, `MultiArrayList` also supports enums, storing small enum variants in separate arrays from large ones. It does all this in just 481 lines, compared to 3498 in `soa-rs`. It's superior by just about any standard of comparison. I have at times looked jealously at the ergonomics of raw pointers by default and the insane leverage of comptime. Neither is coming to Rust any time soon, but boy would they be welcome for some situations. 
 
 ## Macros
 
@@ -93,13 +93,13 @@ Procedural macros are tedious to write. Even with the aid of `rust-analyzer` and
 
 Worse still is code that compiles but runs incorrectly. Ordinarily you might reach for a debugger to step through the code, but macro code offers no such affordance. Unless you can step through assembly and somehow deduce the macro code it comes from, `println!` is your only option. 
 
-Complex proc macro authorship would benefit massively from better compiler diagnostics and macro sourcemaps. A line of generated code represents easily an order of magnitude greater maintenance burden than as much regular code, but tooling could go a long way to bringing them in line. 
+Complex procedural macro authorship would benefit massively from better compiler diagnostics and macro source maps. A line of generated code represents easily an order of magnitude greater maintenance burden than as much regular code, but tooling could go a long way to bringing them in line. 
 
 ## Safety
 
 Before writing `soa-rs`, I believed that `unsafe` is difficult largely for the same reasons as C code. `malloc`, `free`, manual lifetime management, and so on. That is false. Unsafe Rust is *much* harder, peppered as it is with myriad requirements and pitfalls. These requirements are scattered between `std` documentation, the [Rustonomicon](https://doc.rust-lang.org/nomicon/), and tribal knowledge. 
 
-In a matter of hours from publishing `soa-rs`, Steffahn appeared in my GitHub issues with two [soundness](https://github.com/tim-harding/soa-rs/issues/2) [bugs](https://github.com/tim-harding/soa-rs/issues/3), each requiring significant API redesign. (I've since learned this is a [shared experience](https://blog.dureuill.net/articles/nolife-0-4/#rainbow-thou-shall-believe-in-thy-friends-sparkling-heart) for unsafe authors.) Even with Miri checking over my work and combing through the code for any issues I knew to look for, I still had major blindspots that an experienced programmer could easily unearth. The biggest problem with unsafe is the unknown unknowns — the fearsome gremlin of undefined behavior dwells in a hundred dark corners you mightn't know to check.
+In a matter of hours from publishing `soa-rs`, Steffahn appeared in my GitHub issues with two [soundness](https://github.com/tim-harding/soa-rs/issues/2) [bugs](https://github.com/tim-harding/soa-rs/issues/3), each requiring significant API redesign. (I've since learned this is a [shared experience](https://blog.dureuill.net/articles/nolife-0-4/#rainbow-thou-shall-believe-in-thy-friends-sparkling-heart) for unsafe authors.) Even with Miri checking over my work and combing through the code for any issues I knew to look for, I still had major blind spots that an experienced programmer could easily unearth. The biggest problem with unsafe is the unknown unknowns — the fearsome gremlin of undefined behavior dwells in a hundred dark corners you mightn't know to check.
 
 Rust and I are like Linus and his blanket. In a lesser language I'm on edge, never quite assured that I've covered all my tracks. In Rust I am secure, the type system providing the structure I need to code with confidence. Unsafe Rust is quite the opposite experience. You have to be on your guard at every step. In exchange, you get to share a zero-cost interface that cannot be misused. It's difficult, but no other language rewards your efforts quite the same. 
 
@@ -136,7 +136,7 @@ std::mem::swap(a.as_mut_slice(), b.as_mut_slice());
 a.push(Tuple(0)); // segfault!
 ```
 
-By exposing a reference to the struct field, it's now possible to exchange the contents of two containers without updating the capacity to match. In this example, `a` thinks it has capacity to push an element, but contains a slice with no allocated capacity, causing the segfault. `Vec` doesn't have this issue because it derefs to the unsized type `[T]`, which can't be passed to `mem::swap`. We can make `Slice` unsized like so:
+By exposing a reference to the struct field, it's now possible to exchange the contents of two containers without updating the capacity to match. In this example, `a` thinks it has capacity to push an element, but contains a slice with no allocated capacity, causing the segfault. `Vec` doesn't have this issue because it dereferences to the unsized type `[T]`, which can't be passed to `mem::swap`. We can make `Slice` unsized like so:
 
 ```rust
 pub struct Soa<T: Soars> {
@@ -209,7 +209,7 @@ impl WithRef for StructRef {
 }
 ```
 
-This way, you could make a SOA slice hashable using `T`'s implentation of `Hash`, for example.
+This way, you could make a SOA slice hashable using `T`'s implementation of `Hash`, for example.
 
 ```rust
 impl<T: Soars + Hash> Hash for Slice<T> {
@@ -243,13 +243,13 @@ let r = soa.idx(0).with_ref(|x| std::mem::take(x.0.borrow_mut()));
 
 In other words, don't forget that a shared reference doesn't always mean an immutable reference, even if it's normally safe to think of them the same. This is the kind of thing that makes unsafe so hard to get right. You have to consider how your code interacts with all of Rust's myriad constructs, and it's easy to overlook some particular case where an errant bit of safe code comes along to ruin your day. 
 
-Sadly, this kills the ability to implement a bunch of traits for SOA slices without some additional effort by the user, since we can't leverage the existing implementations on `T` for equality, ordering, equality, debug printing, or cloning. To help the situation, you can use `#[soa_derive(Clone, Debug, ...)]` to add derive implementations for SOA types, but it's not quite the same. If your impls are more complex than simple `derive`s, you'll have you maintain a copy of each for `Soars::Ref` and `Soars::RefMut`. I regret having to sacrifice API design to satisfy something of a corner case usage. 
+Sadly, this kills the ability to implement a bunch of traits for SOA slices without some additional effort by the user, since we can't leverage the existing implementations on `T` for equality, ordering, equality, debug printing, or cloning. To help the situation, you can use `#[soa_derive(Clone, Debug, ...)]` to add derive implementations for SOA types, but it's not quite the same. If your implementations are more complex than simple `derive`s, you'll have you maintain a copy of each for `Soars::Ref` and `Soars::RefMut`. I regret having to sacrifice API design to satisfy something of a corner case usage. 
 
-## Papercuts
+## Paper cuts
 
 ### Const is limited
 
-Having finished analogs for `Vec`, `&[T]`, and `&mut [T]`, I *really* wanted to round out the set with `[T; N]`, compile-time SOA arrays that don't require allocation. This is hard and I gave up a few times but, being preternatually stubborn, I eventually got this working:
+Having finished analogs for `Vec`, `&[T]`, and `&mut [T]`, I *really* wanted to round out the set with `[T; N]`, compile-time SOA arrays that don't require allocation. This is hard and I gave up a few times but, being preternaturally stubborn, I eventually got this working:
 
 ```rust
 #[derive(Soars)]
@@ -298,7 +298,7 @@ Being able to call trait methods in `const` contexts would be really useful. I c
 
 ### Unstable
 
-Occasionally, there are features and optimizations available to `std` implementors that aren't for library authors. For example, I would like to implement `try_fold` for my iterator type, but from what I can tell, this simply isn't possible. One of the function generics is `R: Try<Output = B>`, and since `Try` is unstable, you can't name the type when you go to write the function. It frustrating sometimes to see that a type is right there and in use but out of reach. All the `NonNull` stabilizations in 1.80 were exciting to see, having missed them during development. I delight in finding refactor opportunities when new functions are stabilized. Here's hoping for [`[MaybeUninit<T>; N]::transpose`](https://doc.rust-lang.org/std/primitive.array.html#method.transpose) to replace `transmute_copy` in my `from_array` function. 
+Occasionally, there are features and optimizations available to `std` implementers that aren't for library authors. For example, I would like to implement `try_fold` for my iterator type, but from what I can tell, this simply isn't possible. One of the function generics is `R: Try<Output = B>`, and since `Try` is unstable, you can't name the type when you go to write the function. It frustrating sometimes to see that a type is right there and in use but out of reach. All the `NonNull` stabilizations in 1.80 were exciting to see, having missed them during development. I delight in finding refactor opportunities when new functions are stabilized. Here's hoping for [`[MaybeUninit<T>; N]::transpose`](https://doc.rust-lang.org/std/primitive.array.html#method.transpose) to replace `transmute_copy` in my `from_array` function. 
 
 ### Index trait
 
@@ -350,7 +350,7 @@ You can treat tuple structs like named field structs for the purpose of initiali
 
 ### Crate setup
 
-Generated code has no knowledge of its context. It doesn't know what crate it's in, what symbols are imported, or whether you `use std as cursed;`. Therefore, you typically refer to symbols by their absolute path, such as `::std::vec::Vec`. There is just one wrinkle: you cannot refer to the current crate this way. That is, you can't say `::my_crate::symbol` from within `my_crate`. In macros by example you can use `$crate`, in proc macros you cannot. Therefore, you are unable to invoke your macro in `my_crate` if the macro itself uses `::my_crate::symbol`. That means you need a separate crate for just for tests, on top of the ones for your macro and your library. This isn't the biggest deal, but it's one of those annoying administrative things that's foisted upon anyone learning proc macros for the first time. 
+Generated code has no knowledge of its context. It doesn't know what crate it's in, what symbols are imported, or whether you `use std as cursed;`. Therefore, you typically refer to symbols by their absolute path, such as `::std::vec::Vec`. There is just one wrinkle: you cannot refer to the current crate this way. That is, you can't say `::my_crate::symbol` from within `my_crate`. In macros by example you can use `$crate`, in procedural macros you cannot. Therefore, you are unable to invoke your macro in `my_crate` if the macro itself uses `::my_crate::symbol`. That means you need a separate crate for just for tests, on top of the ones for your macro and your library. This isn't the biggest deal, but it's one of those annoying administrative things that's foisted upon anyone learning proc macros for the first time. 
 
 ## Tricks
 
