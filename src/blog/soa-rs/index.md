@@ -256,8 +256,13 @@ Having finished analogs for `Vec`, `&[T]`, and `&mut [T]`, I *really* wanted to 
 #[soa_array]
 struct Foo(u64, u8);
 
-const FOOS: FooArray<2> = FooArray::from_array([Foo(1, 2), Foo(3, 4)]);
+const FOOS: FooArray<2> = FooArray::from_array([
+    Foo(1, 2),
+    Foo(3, 4),
+]);
+
 assert_eq!(FOOS.as_slice().f0(), [1, 3]);
+assert_eq!(FOOS.as_slice().f1(), [2, 4]);
 ```
 
 However niche the use case and however baroque the code to make this work, it's neat that this kind of thing is even possible. For the adventurous, this is roughly what the code looks like:
@@ -268,19 +273,21 @@ const fn from_array<T, const N: usize>(array: [T; N]) -> Self {
     // but Rust can't tell because it's pointer stuff.
     let array = ManuallyDrop::new(array);
     // Get a reference to the array.
-    let array = unsafe { &*ptr::from_ref(&array).cast::<[T; N]> };
+    let array = unsafe { 
+        &*ptr::from_ref(&array).cast::<[T; N]>()
+    };
 
     Self {
         foo: {
-            let mut uninit = [const { MaybeUninit::uninit() }; N];
+            let mut field = [const { MaybeUninit::uninit() }; N];
             let mut i = 0;
             while i < N {
                 let src = ptr::from_ref(&array[i].bar);
                 let read = unsafe { src.read() };
-                uninit[i] = MaybeUninit::new(read);
+                field[i] = MaybeUninit::new(read);
                 i += 1;
             }
-            unsafe { transmute_copy(&uninit) }
+            unsafe { transmute_copy(&field) }
         },
         // snip
     }
