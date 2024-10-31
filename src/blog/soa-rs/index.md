@@ -127,7 +127,7 @@ impl<T> Deref for Soa<T: Soars> {
 }
 ```
 
-In this setup, most of the implementation work goes into `Slice` for any methods that don't require allocation. `Soa` adds allocating methods like `push` and `pop`, but also gets all the methods from `Slice` for free from the `Deref` implementation. This is the same way that `Vec<T>` exposes the methods from `&[T]`. However, this implementation runs into an issue:
+In this setup, most of the implementation work goes into `Slice`. `Soa` adds allocating methods like `push` and `pop`, but also gets all the methods from `Slice` for free from the `Deref` implementation. This is the same way that `Vec<T>` exposes the methods from `&[T]`. However, this runs into an issue:
 
 ```rust
 let a = soa![Tuple(0)];
@@ -136,9 +136,9 @@ std::mem::swap(a.as_mut_slice(), b.as_mut_slice());
 a.push(Tuple(0)); // segfault!
 ```
 
-By exposing a reference to the struct field, it's now possible to exchange the contents of two containers without updating the capacity to match. In the example above, `a` thinks it has capacity to push an element, but contains a slice with no allocated capacity, causing the segfault. `Vec` can get around this because it's deref target, `[T]`, is `?Sized`, meaning that it doesn't have a fixed size and so can't be passed to `mem::swap`. 
+By exposing a reference to the struct field, it's now possible to exchange the contents of two containers without updating the capacity to match. In this example, `a` thinks it has capacity to push an element, but contains a slice with no allocated capacity, causing the segfault. `Vec` doesn't have this issue because it derefs to the unsized type `[T]`, which can't be passed to `mem::swap`. 
 
-Also unlike `Soa`, `Vec` creates slices on-demand using `std::slice::from_raw_parts`, storing the allocation pointer and length as separate fields instead of directly holding a slice (which it couldn't do because of `?Sized`). If `Soa` could do this, then users would only be able to `mem::swap` those on-demand slices, not the actual container internals. However, `&[T]` is special. You can create one with `from_raw_parts` and then return it from a function. Usually you can't return a reference unless it's tied to something that outlives the function, which for us means it has to reference a struct field. We can't create `Slice` in a function and then return a reference to it, because the reference would be to a stack frame that's about to end. If `[T]` were a struct with a length and pointer, it would have the same problem, but it isn't. It has the special priviledge of stashing its length field in the metadata field of a fat pointer, so `&[T]` stands on its own, whereas `&Slice` points to a location with the complete slice information. 
+Also unlike `Soa`, `Vec` creates slices on-demand using `std::slice::from_raw_parts`, storing the allocation pointer and length as separate fields instead of directly holding a slice. However, native slices are special. You can create one with `from_raw_parts` and then return it from a function. Usually you can't return a reference unless it's tied to something that outlives the function, which for `Soa` means referencing a struct field. `[T]` gets around this because it isn't a concrete the way a struct is. It only has a length when it's behind a reference, and it gets to store that length in the fat pointer metadata.  Whereas `&Slice` points to the slice information, `&[T]` *is* the slice information. 
 
 The only option left is to still hold `Slice` inside of `Soa` so we can return references to it, but make `Slice` be `?Sized`. Here's what that looks like:
 
