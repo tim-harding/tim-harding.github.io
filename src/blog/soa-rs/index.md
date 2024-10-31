@@ -84,7 +84,7 @@ pub fn main() !void {
 }
 ```
 
-Unlike Rust, Zig doesn't need a macro to do this, instead using its compile-time reflection system. `MultiArrayList` works with all structs, not just specially marked ones, so you can even use it with types from other libraries. Not only that, `MultiArrayList` also supports enums, storing small enum variants in separate arrays from large ones. It does all this in just 481 lines, compared to 3498 in `soa-rs`. It's superior by just about any standard of comparison. I have at times looked jealously at the ergonomics of raw pointers by default and the insane leverage of comptime. Neither is coming to Rust any time soon, but boy would they be welcome for some situations. 
+Unlike Rust, Zig doesn't need a macro to do this, instead using its compile-time reflection system. `MultiArrayList` works with all structs, not just specially marked ones, so you can even use it with types from other libraries. Not only that, `MultiArrayList` also supports enums, storing small enum variants in separate arrays from large ones. It does all this in just 481 lines, compared to 3498 in `soa-rs`. It's superior by just about any standard of comparison. I have at times looked jealously at the ergonomics of raw pointers by default and the insane leverage of comptime. Hopefully one day we get reflection.
 
 ## Macros
 
@@ -100,7 +100,7 @@ Before writing `soa-rs`, I believed that `unsafe` is difficult largely for the s
 
 In a matter of hours from publishing `soa-rs`, Steffahn appeared in my GitHub issues with two [soundness](https://github.com/tim-harding/soa-rs/issues/2) [bugs](https://github.com/tim-harding/soa-rs/issues/3), each requiring significant API redesign. (I've since learned this is a [shared experience](https://blog.dureuill.net/articles/nolife-0-4/#rainbow-thou-shall-believe-in-thy-friends-sparkling-heart) for unsafe authors.) Even with Miri checking over my work and combing through the code for any issues I knew to look for, I still had major blind spots that an experienced programmer could easily unearth. The biggest problem with unsafe is the unknown unknowns — the fearsome gremlin of undefined behavior dwells in a hundred dark corners you mightn't know to check.
 
-Rust and I are like Linus and his blanket. In a lesser language I'm on edge, never quite assured that I've covered all my tracks. In Rust I am secure, the type system providing the structure I need to code with confidence. Unsafe Rust is quite the opposite experience. You have to be on your guard at every step. In exchange, you get to share a zero-cost interface that cannot be misused. It's difficult, but no other language rewards your efforts quite the same. 
+In a lesser language I'm always a little on edge, never quite assured that I've covered all my tracks. In Rust, the type system provides the structure I need to code with confidence. Unsafe Rust is quite the opposite experience. You have to be on your guard at every step. In exchange, you get to share a zero-cost interface that cannot be misused. It's difficult, but no other language rewards your efforts quite the same. 
 
 ### Beware swap
 
@@ -291,7 +291,7 @@ const fn from_array<T, const N: usize>(array: [T; N]) -> Self {
 }
 ```
 
-Being able to call trait methods in `const` contexts would be really useful. I can understand why this is a difficult problem, but it does hamper ergonomics considerably. For example, you can't use indexing or `for` loops because they rely on the `Index` and `Iterator` traits to work. I had to use some [particularly weird casts](https://github.com/tim-harding/soa-rs/issues/5#issuecomment-1968043436) because `Deref` isn't available. `const` function stabilization also seems to progress like molasses, forcing weird workarounds or inlining of existing `const` implementations from nightly. 
+Being able to call trait methods in `const` contexts would be really useful. I can understand why this is a difficult problem, but it does hamper ergonomics considerably. For example, you can't use indexing or `for` loops because they rely on the `Index` and `Iterator` traits to work. I had to use some [particularly weird casts](https://github.com/tim-harding/soa-rs/issues/5#issuecomment-1968043436) because `Deref` isn't available. 
 
 ### Unstable
 
