@@ -50,9 +50,9 @@ fn main() {
 
 ### Design
 
-Several SOA crates existed before `soa-rs`. These crates generate a unique container type for each SOA struct. Generated code is tedious to develop and maintain; `rust-analyzer` doesn't work in macros, and you can't step through the code in a debugger. You're also creating heaps of duplicate code, slowing down compilation. Trying to match the API surface of `Vec` this way is untenable. Instead, `soa-rs` generates only essential, low-level routines, moving most of the implementation to a generic container type, `Soa`. 
+Several SOA crates have existed since before `soa-rs`. These crates generate a unique container type for each SOA struct. Generated code is tedious to develop and maintain, and each `derive` produces duplicate code, slowing down compilation. Instead, `soa-rs` generates only essential, low-level routines, moving most of the implementation to a generic container type, `Soa`. 
 
-The most popular SOA crate also differs by using a `Vec` for each field, multiplying the overhead of allocation and capacity tracking by the number of fields. `Soa` minimizes overhead by managing one allocation for the collection. `soa-rs` spends most of its `unsafe` in generated code that manages pointers into this allocation for each field array. 
+The most popular SOA crate creates a `Vec` for each field, multiplying the overhead of allocation and capacity tracking by the number of fields. `Soa` minimizes overhead by using one allocation for the collection. `soa-rs` spends most of its `unsafe` in generated code that manages pointers into this allocation for each field. 
 
 ### Comparison to Zig
 
@@ -126,7 +126,7 @@ impl<T> Deref for Soa<T: Soars> {
 }
 ```
 
-In this setup, most of the implementation work goes into `Slice`. `Soa` adds allocating methods like `push` and `pop`, but also gets all the methods from `Slice` for free from the `Deref` implementation. This is the same way that `Vec<T>` exposes the methods from `&[T]`. However, this runs into an issue:
+In this setup, most of the implementation work goes into `Slice`. `Soa` adds allocating methods like `push` and `pop`, but also gets all the methods from `Slice` for free via `Deref` and `DerefMut` implementations. This is the same way that `Vec` adopts slice methods. However, this runs into an issue:
 
 ```rust
 let a = soa![Tuple(0)];
@@ -150,7 +150,7 @@ pub struct Slice<T: Soars, D: ?Sized = [()]> {
 }
 ```
 
-First, the length field has moved to `Soa`, while `Slice` sports a new generic, `D`. When `D` uses the default generic parameter, `[()]`, the struct becomes `?Sized`. That way, when we hand users an `&mut Slice<T>`, they won't be able to `mem::swap` it. It also makes the struct [dynamically sized](https://doc.rust-lang.org/nomicon/exotic-sizes.html#dynamically-sized-types-dsts), meaning that references to it have the same metadata as `[()]` itself. That allows us to store the slice length as part of the reference metadata. This isn't really necessary, but it's kind of neat that we can. 
+The length field has moved to `Soa`, while `Slice` sports a new generic, `D`. When `D` uses the default generic parameter, `[()]`, the struct becomes unsized. That way, when we hand users an `&mut Slice<T>`, they won't be able to `mem::swap` it. It also makes the struct [dynamically sized](https://doc.rust-lang.org/nomicon/exotic-sizes.html#dynamically-sized-types-dsts), meaning that references to it have the same metadata as `[()]` itself. That allows us to store the slice length as part of the reference metadata. This isn't really necessary, but it's kind of neat that it works. 
 
 Since dynamically sized types can't be stored in a sized type, we can also set `D` to `()` when storing it in the `Soa`. This is also handy for `SliceRef`, an owned type that acts like `&Slice`.
 
@@ -162,9 +162,7 @@ pub struct SliceRef<'a, T: 'a + Soars> {
 }
 ```
 
-Being able to return `&Slice` is necessary for implementing `Deref`. However, to support slicing (as in `&foo[1..5]`), we still need the option to return a newly-created slice from a function. `SliceRef` gives us the semantics of `&Slice` in an owned type by storing a phantom reference, which tells the type system that we're borrowing data without actually doing so. 
-
-Unlike `Soa`, `Vec`'s internals store a pointer and a length instead of a slice, so you might wonder how `Vec::as_slice` can return a slice. Usually you can't return a reference unless it's tied to something that outlives the function, which for `Soa` means referencing a struct field. Native slices are special; you can create one with `slice::from_raw_parts` and immediately return it from a function. `[T]` can do this because it isn't concrete the way a struct is. It only has a length when it's behind a reference, and it gets to store that length in the fat pointer metadata. Whereas `&Slice` points to slice information that has to live somewhere, `&[T]` *is itself* the slice information. 
+`SliceRef` gives us the semantics of `&Slice` in a type with owned fields by storing a phantom reference, which tells the type system that we're borrowing data without our actually doing so. Whereas `&Slice` is necessary for implementing `Deref`, `SliceRef` is necessary to support slicing (as in `&foo[1..5]`). Usually you can't return a reference unless it's tied to something that outlives the function, which for `Soa` means referencing a struct field. Native slices are special; you can create one with `slice::from_raw_parts` and immediately return it from a function. Whereas `&Slice` points to slice information that has to live somewhere, `&[T]` *is itself* the slice information. `SliceRef` works similarly. 
 
 ### Beware inner mutability
 
@@ -174,13 +172,13 @@ Suppose you have this struct:
 struct Struct(u8, u8);
 ```
 
-Since `soa-rs` stores the fields separately, a reference to a slice element looks like this:
+Since SOA stores the fields separately, a reference to a slice element looks like this:
 
 ```rust
 struct StructRef<'a>(&'a u8, &'a u8);
 ```
 
-If `Struct` implements a trait, we'd like for `StructRef` to also implement the trait. To solve the issue I concocted `with_ref`, which takes a function and calls it with a `Struct` reference. The macro implements this by bitwise copying each field from `StructRef` to recreate the `Struct` on the stack, then calling the provided function with a reference to that `Struct`.
+If `Struct` implements a trait, we'd like for `StructRef` to also implement the trait. To solve this issue I concocted `with_ref`, which takes a function and calls it with a `Struct` reference. The macro implements this by bitwise copying each field from `StructRef` to recreate the `Struct` on the stack, then calling the provided function with a reference to that `Struct`.
 
 ```rust
 pub trait WithRef {
@@ -234,13 +232,13 @@ Well, I forgot to consider inner mutability. Here's how to expose the issue:
 struct Foo(RefCell<String>);
 
 let soa = soa![Foo(RefCell::new(String::default()))];
-// Takes ownership of the Foo that `with_ref` created on the stack,
-// but the soa also still owns that memory.
-let r = soa.idx(0).with_ref(|x| std::mem::take(x.0.borrow_mut()));
+// Takes ownership of the Foo that with_ref created on the stack,
+// but soa also still owns that memory.
+let r = soa.idx(0).with_ref(|x| mem::take(x.0.borrow_mut()));
 // Double free when r and soa are dropped.
 ```
 
-In other words, don't forget that a shared reference doesn't always mean an immutable reference, even if it's normally safe to think of them the same. This is the kind of thing that makes unsafe so hard to get right. You have to consider how your code interacts with all of Rust's myriad constructs, and it's easy to overlook some particular case where an errant bit of safe code comes along to ruin your day. 
+Even if it's normally safe to think of a shared reference as an immutable reference, they aren't always the same. This is the kind of thing that makes unsafe so hard to get right. You have to consider how your code interacts with all of Rust's myriad constructs, and it's easy to overlook some particular case where an errant bit of safe code comes along to ruin your day. 
 
 Sadly, this kills the ability to implement a bunch of traits for SOA slices without some additional effort by the user, since we can't leverage the existing implementations on `T` for equality, ordering, equality, debug printing, or cloning. To help the situation, you can use `#[soa_derive(Clone, Debug, ...)]` to add derive implementations for SOA types, but it's not quite the same. If your implementations are more complex than simple `derive`s, you'll have you maintain a copy of each for `Soars::Ref` and `Soars::RefMut`. I regret having to sacrifice API design to satisfy something of a corner case usage. 
 
@@ -248,7 +246,7 @@ Sadly, this kills the ability to implement a bunch of traits for SOA slices with
 
 ### Const is limited
 
-Having finished analogs for `Vec`, `&[T]`, and `&mut [T]`, I *really* wanted to round out the set with `[T; N]`, compile-time SOA arrays that don't require allocation. This is hard and I gave up a few times but, being preternaturally stubborn, I eventually got this working:
+Having finished analogs for `Vec`, `&[T]`, and `&mut [T]`, I *really* wanted to round out the set with `[T; N]` and make compile-time SOA arrays that don't require allocation. This was hard enough that I gave up a few times, but being preternaturally stubborn, I eventually got this working:
 
 ```rust
 #[derive(Soars)]
@@ -260,8 +258,8 @@ const FOOS: FooArray<2> = FooArray::from_array([
     Foo(3, 4),
 ]);
 
-assert_eq!(FOOS.as_slice().f0(), [1, 3]);
-assert_eq!(FOOS.as_slice().f1(), [2, 4]);
+assert_eq!(FOOS.0, [1, 3]);
+assert_eq!(FOOS.1, [2, 4]);
 ```
 
 However niche the use case and however baroque the code to make this work, it's neat that this kind of thing is even possible. For the adventurous, this is roughly what the code looks like:
@@ -301,7 +299,7 @@ Occasionally, there are features and optimizations available to `std` implemente
 
 ### Index trait
 
-It's a bit unfortunate that certain traits like `Index` return `&Self::Output` instead of just `Self::Output`. I can't implement this type for `Slice` because I need to return an owned type. I assume this constraint is because we didn't have [GAT](https://blog.rust-lang.org/2022/10/28/gats-stabilization.html)s when these traits were being developed. Today we could write
+It's a bit unfortunate that certain traits like `Index` return `&Self::Output` instead of just `Self::Output`. I can't implement this type for `Slice` because I need to return `SliceRef` instead of a reference. I assume this constraint is because we didn't have [GAT](https://blog.rust-lang.org/2022/10/28/gats-stabilization.html)s when these traits were being developed. Today we could write
 
 ```rust
 trait Index {
@@ -349,7 +347,7 @@ You can treat tuple structs like named field structs for the purpose of initiali
 
 ### Crate setup
 
-Generated code has no knowledge of its context. It doesn't know what crate it's in, what symbols are imported, or whether you `use std as cursed;`. Therefore, you typically refer to symbols by their absolute path, such as `::std::vec::Vec`. There is just one wrinkle: you cannot refer to the current crate this way. That is, you can't say `::my_crate::symbol` from within `my_crate`. In macros by example you can use `$crate`, in procedural macros you cannot. Therefore, you are unable to invoke your macro in `my_crate` if the macro itself uses `::my_crate::symbol`. That means you need a separate crate for just for tests, on top of the ones for your macro and your library. This isn't the biggest deal, but it's one of those annoying administrative things that's foisted upon anyone learning proc macros for the first time. 
+Generated code has no knowledge of its context. It doesn't know what crate it's in, what symbols are imported, or whether you `use std as cursed;`. Therefore, you typically refer to symbols by their absolute path, such as `::std::vec::Vec`. There is just one wrinkle: you cannot refer to the current crate this way. That is, you can't say `::my_crate::symbol` from within `my_crate`. In macros by example you can use `$crate`, in procedural macros you cannot. Because of that, you are unable to invoke your macro in `my_crate` if the macro itself uses `::my_crate::symbol`. That means you need a separate crate just for tests, on top of the ones for your macro and your library. This isn't the biggest deal, but it's one of those annoying administrative things that's foisted upon anyone learning proc macros for the first time. 
 
 ## Tricks
 
