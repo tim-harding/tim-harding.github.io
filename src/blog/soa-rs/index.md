@@ -11,7 +11,6 @@ About a year ago I wrote [`soa-rs`](https://github.com/tim-harding/soa-rs), a st
 
 > The result of my pain is a safe, efficient API.
 
-However much I have to critique, unsafe Rust is uniquely rewarding. Nowhere else can I wrap a bundle of hairy, low-level, error-prone code behind a zero-cost interface that's impossible to misuse. I'll take it, paper cuts and all. 
 
 ## Background
 
@@ -390,4 +389,4 @@ This is equivalent to including the readme as a `///` documentation comment, so 
 
 ## Conclusion
 
-Navigating the difficulties of `unsafe` makes me appreciate the safe subset of Rust all the more. If I'm critical, it's because I love the language and want it to be even better. Safe Rust is more enjoyable and productive for me than any other language, and I hope there's a future where I can say the same for its unsafe counterpart. Happy programming 🦀
+However much I have to critique, unsafe Rust is uniquely rewarding. Nowhere else can I wrap a bundle of hairy, low-level, error-prone code behind a zero-cost interface that's impossible to misuse. Navigating the difficulties of `unsafe` makes me appreciate the safe subset of Rust all the more. Safe Rust is more enjoyable and productive for me than any other language, and I hope there's a future where I can say the same for its unsafe counterpart. Happy programming 🦀
