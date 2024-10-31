@@ -136,11 +136,7 @@ std::mem::swap(a.as_mut_slice(), b.as_mut_slice());
 a.push(Tuple(0)); // segfault!
 ```
 
-By exposing a reference to the struct field, it's now possible to exchange the contents of two containers without updating the capacity to match. In this example, `a` thinks it has capacity to push an element, but contains a slice with no allocated capacity, causing the segfault. `Vec` doesn't have this issue because it derefs to the unsized type `[T]`, which can't be passed to `mem::swap`. 
-
-Also unlike `Soa`, `Vec` creates slices on-demand using `std::slice::from_raw_parts`, storing the allocation pointer and length as separate fields instead of directly holding a slice. However, native slices are special. You can create one with `from_raw_parts` and then return it from a function. Usually you can't return a reference unless it's tied to something that outlives the function, which for `Soa` means referencing a struct field. `[T]` gets around this because it isn't a concrete the way a struct is. It only has a length when it's behind a reference, and it gets to store that length in the fat pointer metadata.  Whereas `&Slice` points to the slice information, `&[T]` *is* the slice information. 
-
-The only option left is to still hold `Slice` inside of `Soa` so we can return references to it, but make `Slice` be `?Sized`. Here's what that looks like:
+By exposing a reference to the struct field, it's now possible to exchange the contents of two containers without updating the capacity to match. In this example, `a` thinks it has capacity to push an element, but contains a slice with no allocated capacity, causing the segfault. `Vec` doesn't have this issue because it derefs to the unsized type `[T]`, which can't be passed to `mem::swap`. We can make `Slice` unsized like so:
 
 ```rust
 pub struct Soa<T: Soars> {
@@ -155,7 +151,7 @@ pub struct Slice<T: Soars, D: ?Sized = [()]> {
 }
 ```
 
-First, the length field has moved to `Soa`, while `Slice` sports a new generic, `D`. When `D` uses the default generic parameter, `[()]`, the struct becomes `?Sized`. That way, when we hand users an `&mut Slice<T>`, they won't be able to `mem::swap` it. It also makes the struct [dynamically sized](https://doc.rust-lang.org/nomicon/exotic-sizes.html#dynamically-sized-types-dsts), meaning that references to it have the same metadata as `[()]` itself. That lets us use the same trick of storing the slice length as part of the reference. This isn't really needed, but it feels like a neat priviledge to have anyway. 
+First, the length field has moved to `Soa`, while `Slice` sports a new generic, `D`. When `D` uses the default generic parameter, `[()]`, the struct becomes `?Sized`. That way, when we hand users an `&mut Slice<T>`, they won't be able to `mem::swap` it. It also makes the struct [dynamically sized](https://doc.rust-lang.org/nomicon/exotic-sizes.html#dynamically-sized-types-dsts), meaning that references to it have the same metadata as `[()]` itself. That allows us to store the slice length as part of the reference metadata. This isn't really necessary, but it's kind of neat that we can. 
 
 Since dynamically sized types can't be stored in a sized type, we can also set `D` to `()` when storing it in the `Soa`. This is also handy for `SliceRef`, an owned type that acts like `&Slice`.
 
@@ -167,9 +163,11 @@ pub struct SliceRef<'a, T: 'a + Soars> {
 }
 ```
 
-Being able to return `&Slice` is great for implementing `Deref` because it can borrow from the container internals. However, to support slicing (as in `&foo[1..5]`), we still need the option to return a newly-created slice from a function. The reference metadata trick isn't quite enough here because we have a pointer for each SOA field, not just the single one that regular slices have. A fat pointer alone doesn't have enough data to fully capture a SOA slice, so we would have to do the impossible by creating the `Slice` on the stack and returning a reference to it. `SliceRef` gives us the semantics of `&Slice` in an owned type by storing a phantom reference, which tells the type system that we're borrowing data without our actually doing so. 
+Being able to return `&Slice` is necessary for implementing `Deref`. However, to support slicing (as in `&foo[1..5]`), we still need the option to return a newly-created slice from a function. `SliceRef` gives us the semantics of `&Slice` in an owned type by storing a phantom reference, which tells the type system that we're borrowing data without actually doing so. 
 
-### `WithRef`
+Unlike `Soa`, `Vec`'s internals store a pointer and a length instead of a slice, so you might wonder how `Vec::as_slice` can return a slice. Usually you can't return a reference unless it's tied to something that outlives the function, which for `Soa` means referencing a struct field. Native slices are special; you can create one with `slice::from_raw_parts` and immediately return it from a function. `[T]` can do this because it isn't concrete the way a struct is. It only has a length when it's behind a reference, and it gets to store that length in the fat pointer metadata. Whereas `&Slice` points to slice information that has to live somewhere, `&[T]` *is itself* the slice information. 
+
+### Beware inner mutability
 
 Suppose you have this struct:
 
