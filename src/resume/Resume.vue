@@ -34,6 +34,12 @@ import Experience from "./Experience.vue";
   <Experience role="AAS in Commercial Photography" institution="Seattle Central College" gpa="3.6"
     :when="[2013, 2015]" />
 
+  <ul class="bullets">
+    <li>
+      Voted #1 portfolio of graduating class by a panel of judges
+    </li>
+  </ul>
+
   <h2>Work</h2>
 
   <Experience role="Teaching Assistant" institution="Western Washington University" location="Bellingham, WA"
@@ -43,6 +49,14 @@ import Experience from "./Experience.vue";
     <li>
       Ran labs, graded assignments, captioned videos, protored exams, and
       addressed student feedback on assignments
+    </li>
+  </ul>
+
+  <Experience role="Systems Builder" institution="Candela Technologies" location="Ferndale, WA" :when="[2022, 2023]" />
+
+  <ul class="bullets">
+    <li>
+      Assembled and tested orders for customized computer network testing devices
     </li>
   </ul>
 
@@ -84,6 +98,20 @@ import Experience from "./Experience.vue";
       the Burke Museum
     </li>
   </ul>
+
+  <Experience role="Sales Associate" institution="Cycle University" location="Seattle, WA" :when="2013" />
+
+  <ul class="bullets">
+    <li>
+      Paired customers with their perfect bike and set up test rides
+    </li>
+    <li>
+      Assembled product shipments
+    </li>
+    <li>
+      Ran checkout and helped shoppers navigate the sales floor
+    </li>
+  </ul>
 </template>
 
 <style scoped>
@@ -123,5 +151,6 @@ p {
 h2 {
   padding-bottom: 0.675rem;
   border-bottom: 2px solid var(--surface-0);
+  margin-top: 1.5rem;
 }
 </style>
