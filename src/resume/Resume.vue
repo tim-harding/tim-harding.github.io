@@ -5,19 +5,15 @@ import Experience from "./Experience.vue";
 <template>
   <div class="page-heading">
     <h1>Tim Harding</h1>
-    <a>Download PDF</a>
+    <a href="/resume.pdf">Download PDF</a>
   </div>
 
   <h2 class="sr">Contact</h2>
 
   <h2>Education</h2>
 
-  <Experience
-    role="BS in Computer Science"
-    institution="Western Washington University"
-    gpa="3.9"
-    :when="[2020, 2023]"
-  />
+  <Experience role="BS in Computer Science" institution="Western Washington University" gpa="3.9"
+    :when="[2020, 2023]" />
 
   <ul class="bullets">
     <li>
@@ -35,21 +31,13 @@ import Experience from "./Experience.vue";
     <li>Helped onboard thirteen graduate and undergraduate collaborators</li>
   </ul>
 
-  <Experience
-    role="AAS in Commercial Photography"
-    institution="Seattle Central College"
-    gpa="3.6"
-    :when="[2013, 2015]"
-  />
+  <Experience role="AAS in Commercial Photography" institution="Seattle Central College" gpa="3.6"
+    :when="[2013, 2015]" />
 
   <h2>Work</h2>
 
-  <Experience
-    role="Teaching Assistant"
-    institution="Western Washington University"
-    location="Bellingham, WA"
-    :when="2024"
-  />
+  <Experience role="Teaching Assistant" institution="Western Washington University" location="Bellingham, WA"
+    :when="2024" />
 
   <ul class="bullets">
     <li>
@@ -58,12 +46,7 @@ import Experience from "./Experience.vue";
     </li>
   </ul>
 
-  <Experience
-    role="Technical Artist"
-    institution="Ten Gun Design"
-    location="Edmonds, WA"
-    :when="[2016, 2020]"
-  />
+  <Experience role="Technical Artist" institution="Ten Gun Design" location="Edmonds, WA" :when="[2016, 2020]" />
 
   <ul class="bullets">
     <li>
@@ -92,12 +75,7 @@ import Experience from "./Experience.vue";
     </li>
   </ul>
 
-  <Experience
-    role="3D Scanning Specialist"
-    institution="Prizmiq"
-    location="Seattle, WA"
-    :when="[2015, 2016]"
-  />
+  <Experience role="3D Scanning Specialist" institution="Prizmiq" location="Seattle, WA" :when="[2015, 2016]" />
 
   <ul class="bullets">
     <li>
@@ -109,7 +87,7 @@ import Experience from "./Experience.vue";
 </template>
 
 <style scoped>
-ul.bullets > li {
+ul.bullets>li {
   position: relative;
 
   &::before {
@@ -131,7 +109,7 @@ ul.bullets > li {
   align-items: end;
   margin-bottom: 1.5rem;
 
-  & > a {
+  &>a {
     margin-bottom: 0.1875rem;
   }
 }
