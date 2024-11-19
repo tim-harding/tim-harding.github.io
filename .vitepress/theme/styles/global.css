@@ -170,3 +170,19 @@ h1, h2, h3, h4, h5, h6 {
     outline-offset: 0px;
   }
 }
+
+main ul > li {
+  position: relative;
+
+  &::before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: -0.75rem;
+    top: 0.7rem;
+    width: 0.25rem;
+    height: 0.25rem;
+    border-radius: 50%;
+    background-color: var(--text);
+  }
+}

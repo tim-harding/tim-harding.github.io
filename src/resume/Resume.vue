@@ -15,7 +15,7 @@ import Experience from "./Experience.vue";
   <Experience role="BS in Computer Science" institution="Western Washington University" gpa="3.9"
     :when="[2020, 2023]" />
 
-  <ul :class="s.bullets">
+  <ul>
     <li>
       Lead author of a research paper about Elvis, an internet simulator written
       in Rust
@@ -34,7 +34,7 @@ import Experience from "./Experience.vue";
   <Experience role="AAS in Commercial Photography" institution="Seattle Central College" gpa="3.6"
     :when="[2013, 2015]" />
 
-  <ul :class="s.bullets">
+  <ul>
     <li>
       Voted #1 portfolio of graduating class by a panel of judges
     </li>
@@ -45,7 +45,7 @@ import Experience from "./Experience.vue";
   <Experience role="Teaching Assistant" institution="Western Washington University" location="Bellingham, WA"
     :when="2024" />
 
-  <ul :class="s.bullets">
+  <ul>
     <li>
       Ran labs, graded assignments, captioned videos, protored exams, and
       addressed student feedback on assignments
@@ -54,7 +54,7 @@ import Experience from "./Experience.vue";
 
   <Experience role="Systems Builder" institution="Candela Technologies" location="Ferndale, WA" :when="[2022, 2023]" />
 
-  <ul :class="s.bullets">
+  <ul>
     <li>
       Assembled and tested orders for customized computer network testing devices
     </li>
@@ -62,7 +62,7 @@ import Experience from "./Experience.vue";
 
   <Experience role="Technical Artist" institution="Ten Gun Design" location="Edmonds, WA" :when="[2016, 2020]" />
 
-  <ul :class="s.bullets">
+  <ul>
     <li>
       Optimized Hololens graphics for the Holoisland demo to run at 60FPS, up
       from as low as 10FPS
@@ -91,7 +91,7 @@ import Experience from "./Experience.vue";
 
   <Experience role="3D Scanning Specialist" institution="Prizmiq" location="Seattle, WA" :when="[2015, 2016]" />
 
-  <ul :class="s.bullets">
+  <ul>
     <li>
       Built and operated a photogrammetry content pipeline for web-based 3D
       e-commerce visuals, delivering 100 assets to Shoes.com, Dye Precision, and
@@ -101,7 +101,7 @@ import Experience from "./Experience.vue";
 
   <Experience role="Sales Associate" institution="Cycle University" location="Seattle, WA" :when="2013" />
 
-  <ul :class="s.bullets">
+  <ul>
     <li>
       Paired customers with their perfect bike and set up test rides
     </li>
@@ -115,22 +115,6 @@ import Experience from "./Experience.vue";
 </template>
 
 <style module="s">
-ul.bullets>li {
-  position: relative;
-
-  &::before {
-    content: "";
-    display: block;
-    position: absolute;
-    left: -0.75rem;
-    top: 0.7rem;
-    width: 0.25rem;
-    height: 0.25rem;
-    border-radius: 50%;
-    background-color: var(--text);
-  }
-}
-
 .pageHeading {
   display: grid;
   grid-template-columns: 1fr max-content;

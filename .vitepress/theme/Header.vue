@@ -17,35 +17,22 @@ const close = () => (isOpen.value = false);
               <span class="sr">home page</span>
             </a>
           </li>
+          <li :class="s.garden">
+            <a :class="s.link" href="/garden" @click="close">Garden</a>
+          </li>
           <li :class="s.resume">
             <a :class="s.link" href="/resume" @click="close">Resumé</a>
           </li>
           <li :class="s.github">
-            <a
-              :class="s.link"
-              href="https://github.com/tim-harding/"
-              target="_blank"
-              >GitHub</a
-            >
+            <a :class="s.link" href="https://github.com/tim-harding/" target="_blank">GitHub</a>
           </li>
         </ul>
       </nav>
 
-      <button
-        :class="['icon-button', s.disclosure]"
-        :aria-pressed="isOpen"
-        aria-controls="header"
-        @click="isOpen = !isOpen"
-      >
-        <svg
-          :class="s.icon"
-          viewBox="0 -960 960 960"
-          height="24px"
-          width="24px"
-        >
-          <path
-            d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"
-          />
+      <button :class="['icon-button', s.disclosure]" :aria-pressed="isOpen" aria-controls="header"
+        @click="isOpen = !isOpen">
+        <svg :class="s.icon" viewBox="0 -960 960 960" height="24px" width="24px">
+          <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
         </svg>
       </button>
       <ThemeButton :class="s.themeButton" />
@@ -57,8 +44,7 @@ const close = () => (isOpen.value = false);
 .header {
   display: grid;
   grid-template-columns:
-    1fr var(--page-margin) minmax(0rem, var(--content-width))
-    var(--page-margin) 1fr;
+    1fr var(--page-margin) minmax(0rem, var(--content-width)) var(--page-margin) 1fr;
   grid-template-areas: ". . center . .";
   background-color: var(--mantle);
   border-bottom: 1px solid var(--crust);
@@ -68,9 +54,10 @@ const close = () => (isOpen.value = false);
 .headerInner {
   grid-area: center;
   display: grid;
-  grid-template-columns: 1fr repeat(3, max-content);
+  grid-template-columns: 1fr;
+  grid-auto-columns: max-content;
   grid-template-rows: 4rem;
-  grid-template-areas: "site-title resume github theme-button";
+  grid-template-areas: "site-title garden resume github theme-button";
   align-items: center;
   gap: 1rem;
 }
@@ -78,10 +65,14 @@ const close = () => (isOpen.value = false);
 .siteTitle {
   grid-area: site-title;
 
-  & > .link {
+  &>.link {
     font-size: 2rem;
     font-weight: 800;
   }
+}
+
+.garden {
+  grid-area: garden;
 }
 
 .resume {
@@ -123,26 +114,28 @@ button.disclosure {
   display: none;
 }
 
-@media (max-width: 460px) {
+@media (max-width: 490px) {
   button.disclosure {
     display: grid;
   }
 
   .headerInner {
     grid-template-columns: 1fr max-content;
-    grid-template-rows: 4rem repeat(2, 0rem);
+    grid-template-rows: 4rem repeat(3, 0rem);
     grid-template-areas:
       "site-title collapse"
+      "garden theme-button"
       "resume theme-button"
       "github theme-button";
     gap: 0rem;
     transition-property: grid-template-rows;
 
     &:has(.disclosure[aria-pressed="true"]) {
-      grid-template-rows: 4rem repeat(2, 2rem);
+      grid-template-rows: 4rem repeat(3, 2rem);
     }
   }
 
+  .garden,
   .resume,
   .github,
   .themeButton {

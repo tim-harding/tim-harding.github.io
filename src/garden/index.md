@@ -1,3 +1,7 @@
+---
+layout: blog
+---
+
 # Digital Garden
 
 Welcome to my [Digital Garden](https://maggieappleton.com/garden-history). It's my personal
@@ -6,7 +10,7 @@ Welcome to my [Digital Garden](https://maggieappleton.com/garden-history). It's 
 - Public notes
 - Miscellaneous thoughts
 
-Have a look around and enjoy your stay. It might not be well-populated yet, but it will be :)
+Have a look around and enjoy your stay. It might not be well-populated yet, but it will be.
 
 ## Index
 
