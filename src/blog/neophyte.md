@@ -31,4 +31,6 @@ With `multigrid`, Neovim will create separate windows for different parts of the
 
 ## Talking back
 
-The most important RPC commands you'll send to Neovim are for user input. This is done with [`nvim_input`](https://neovim.io/doc/user/api.html#nvim_input()) and [`nvim_input_mouse`](https://neovim.io/doc/user/api.html#nvim_input_mouse()). 
+The most important RPC commands you'll send to Neovim are for user input. This is done with [`nvim_input`](https://neovim.io/doc/user/api.html#nvim_input()) and [`nvim_input_mouse`](https://neovim.io/doc/user/api.html#nvim_input_mouse()). Since you control the window and font size, you'll also need to tell Neovim how large of a grid to use with [`nvim_ui_try_resize_grid`](https://neovim.io/doc/user/api.html#nvim_ui_try_resize_grid()). It's also good to pass along focus and blur events with [`nvim_ui_set_focus`](https://neovim.io/doc/user/api.html#nvim_ui_set_focus()). 
+
+For anything more involved than fire-and-forget calls like these, I like using [`nvim_exec_lua`](https://neovim.io/doc/user/api.html#nvim_exec_lua()), which you can use to run arbitrary Lua code. Neophyte includes a Lua module that users can use to script the GUI, and some of the APIs include callbacks for Neophyte-specific events. To trigger these, I can just `require` my module in a Lua snippet and call a function to trigger the callbacks. Most of the GUI functions in this module send namespaced RPC notifications that Neophyte handles alongside native Neovim notifications. 
