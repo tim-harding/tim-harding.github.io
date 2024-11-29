@@ -7,7 +7,9 @@ layout: blog
 
 # {{ $frontmatter.title }}
 
-## Shared language
+## Neovim
+
+### Shared language
 
 You can interact with Neovim via API in two main ways. The most common and familiar is Lua, but the same interface is also available using Remote Procedure Calls, or RPC. The latter is language-agnostic, so you can use it from Rust or any other programming language. I had never used RPC before this project, but it turned out to be pretty approachable. Neovim RPC is based on [MessagePack](https://msgpack.org/index.html), which is a serialization format. You can think of it as a more efficient JSON. On top of serialization you have [MessagePack RPC](https://github.com/msgpack-rpc/msgpack-rpc/blob/master/spec.md), which is a standard for encoding commands. It offers three kinds of commands you can send:
 
@@ -21,7 +23,7 @@ In Rust, [`rmpv`](https://docs.rs/rmpv/latest/rmpv/) is pretty handy for deseria
 
 Alternatively, there are client libraries such as [`nvim-rs`](https://github.com/KillTheMule/nvim-rs) and [`pynvim`](https://github.com/neovim/pynvim) you can use instead of using RPC directly. Since I am sensitive to compile times, I chose not to use the `nvim-rs`, which requires pulling in [`tokio`](https://github.com/tokio-rs/tokio). This is a compromise; I can't get return values from API calls without blocking, so I throw them away instead. This hasn't been a problem, but it does somewhat limit my ability to get information from Neovim. 
 
-## Getting notified
+### Getting notified
 
 After Neovim starts, you need to request UI events by making an RPC call for [`nvim_ui_attach`](https://neovim.io/doc/user/api.html#nvim_ui_attach()). After this point, Neovim will send RPC notifications to update you about changes to the visual application state, which you use to update your own data structures for drawing. At its most basic, Neovim sets up a grid of characters and tells you which ones changed since the last update, which is enough to recreate the built-in terminal experience. 
 
@@ -34,3 +36,19 @@ With `multigrid`, Neovim will create separate windows for different parts of the
 The most important RPC commands you'll send to Neovim are for user input. This is done with [`nvim_input`](https://neovim.io/doc/user/api.html#nvim_input()) and [`nvim_input_mouse`](https://neovim.io/doc/user/api.html#nvim_input_mouse()). Since you control the window and font size, you'll also need to tell Neovim how large of a grid to use with [`nvim_ui_try_resize_grid`](https://neovim.io/doc/user/api.html#nvim_ui_try_resize_grid()). It's also good to pass along focus and blur events with [`nvim_ui_set_focus`](https://neovim.io/doc/user/api.html#nvim_ui_set_focus()). 
 
 For anything more involved than fire-and-forget calls like these, I like using [`nvim_exec_lua`](https://neovim.io/doc/user/api.html#nvim_exec_lua()), which you can use to run arbitrary Lua code. Neophyte includes a Lua module that users can use to script the GUI, and some of the APIs include callbacks for Neophyte-specific events. To trigger these, I can just `require` my module in a Lua snippet and call a function to trigger the callbacks. Most of the GUI functions in this module send namespaced RPC notifications that Neophyte handles alongside native Neovim notifications. 
+
+## Font handling 
+
+## WebGPU
+
+## Future plans
+
+Neophyte hasn't seen widespread adoption, and that's fine. There are more mature projects like Neovide that offer the same features and more. I still daily drive Neophyte on my desktop, so now and again I do basic maintenance, but I don't always answer GitHub issues, especially Windows-related ones. It was a good project to learn more about text handling and low-level rendering. 
+
+One of my biggest difficulties with Neophyte today is its laptop battery consumption. I haven't figured out how to time frames properly on MacOS. Neither vsync nor tearing seems to work well. With vsync, I have to continuously rerender the application, even when nothing is changing, or else animations have noticable jank when I start rendering again. Without, I have to deal with tearing and figure out how to rate limit redraws and render at the right time, which I haven't figured out. 
+
+I hindsight, I like the way ghostty is doing things, using a cross-platform core with native drawing per-platform. This is the direction I want to take Neophyte, and I think it's the best path to making the project more generally useful. At the moment, each GUI shares a common core of functionality to manage state synchronization with Neovim, and I think that part can be abstracted out into a library for other GUIs to use.
+
+Platform-specific frontends that make better use of native text and rendering toolkits is one possible extension that I think MacOS in particular would benefit from. If I ever get my hands on a Vision Pro, I would love to adapt Neophyte for VR and experiment with whether eye-based navigation and selection has any utility. Another use case would be a screen sharing utility in the spirit of asciinema to cast editor sessions without video compression. I have a few other niche ideas for personal use. Neophyte was pretty high-lift because of how involved WebGPU was, but being able to easily spin up simpler frontends could have lots of interesting uses. 
+
+I'm still wrapping up some other projects, but eventually, I hope to get back to Neophyte with a focus on factoring it into smaller crates for others to use. I'll happily keep hacking in my editor until I get another chance to hack on it. 
