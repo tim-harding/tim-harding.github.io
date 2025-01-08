@@ -32,9 +32,18 @@ Scripts in this folder are useful for setting environment variables, modifying t
 While you can define functions in `conf.d`, their definitions will be loaded and run whenever Fish starts, which can impact startup performance. `functions` provides a way to lazy load functions only when they are called. Say you have the following function:
 
 ```fish
-function say_hi
-  echo Hi
+function say_hi -a name
+  echo Hi $name
 end
 ```
 
 By placing this in `functions/say_hi.fish`, Fish will only load the function when you run `say_hi` at the prompt, rather than immediately at startup. 
+
+### `completions`
+
+Much like `functions`, `completions` provides lazy loading for Fish argument completions. Here's how we could offer `Tim` as a suggestion for our `say_hi` function:
+
+```fish
+# completions/say_hi.fish
+complete -c say_hi -a Tim
+```
