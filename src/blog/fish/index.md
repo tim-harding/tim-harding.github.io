@@ -26,3 +26,15 @@ If these don't exist yet, you can create them.
 If you've done any configuration, you may already have a `config.fish` file in your config directory. Fish executes the contents of this file whenever you open a shell, allowing you to run commands to set up your environment. However, this file can grow out of hand and become unweildy to maintain as you add to your setup. `conf.d` allows you to split your config into multiple scripts. Just like with `config.fish`, Fish executes any Fish scripts in this folder when you open a shell. Scripts are executed by order of filename, so if you have dependencies between scripts, it's common to use numeric prefixes such as `00-this-runs-first.fish` to adjust the ordering. 
 
 Scripts in this folder are useful for setting environment variables, modifying the `PATH`, creating [abbreviations](https://fishshell.com/docs/current/interactive.html#abbreviations), configuring plugins, and sourcing Fish integrations from programs. 
+
+### `functions`
+
+While you can define functions in `conf.d`, their definitions will be loaded and run whenever Fish starts, which can impact startup performance. `functions` provides a way to lazy load functions only when they are called. Say you have the following function:
+
+```fish
+function say_hi
+  echo Hi
+end
+```
+
+By placing this in `functions/say_hi.fish`, Fish will only load the function when you run `say_hi` at the prompt, rather than immediately at startup. 
