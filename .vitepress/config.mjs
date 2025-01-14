@@ -53,6 +53,24 @@ export default defineConfig({
       },
     ],
     [
+      "link",
+      {
+        rel: "alternate",
+        type: "application/rss+xml",
+        title: "Blog RSS feed",
+        href: "/feed.rss",
+      },
+    ],
+    [
+      "link",
+      {
+        rel: "alternate",
+        type: "application/atom+xml",
+        title: "Blog Atom feed",
+        href: "/feed.atom",
+      },
+    ],
+    [
       "script",
       { id: "check-dark-mode" },
       `(() => {
