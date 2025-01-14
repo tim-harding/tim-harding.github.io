@@ -3,11 +3,11 @@
   "private": true,
   "type": "module",
   "description": "Blag",
-  "homepage": "https://tim-harding.github.io/",
+  "homepage": "https://www.timharding.co/",
   "author": {
     "name": "Tim Harding",
     "email": "tim@timharding.co",
-    "url": "https://www.timharding.co"
+    "url": "https://www.timharding.co/"
   },
   "repository": {
     "type": "git",

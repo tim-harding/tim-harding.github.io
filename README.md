@@ -1,6 +1,6 @@
 # Personal site
 
-Visit my [personal website](https://tim-harding.github.io/).
+Visit my [personal website](https://www.timharding.co/).
 
 ## Development
 

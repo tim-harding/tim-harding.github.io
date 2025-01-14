@@ -82,7 +82,7 @@ switch (localStorage.getItem("theme")) {
   },
 
   buildEnd: async (config) => {
-    const baseUrl = "https://tim-harding.github.io";
+    const baseUrl = "https://www.timharding.co";
 
     const feed = new Feed({
       title: "Tim Harding",
@@ -90,7 +90,7 @@ switch (localStorage.getItem("theme")) {
       id: baseUrl,
       link: baseUrl,
       language: "en",
-      copyright: "Copyright © 2024, Timothy Harding",
+      copyright: "Copyright © 2025, Timothy Harding",
     });
 
     const posts = await createContentLoader("blog/**/*.md", {}).load();
@@ -111,7 +111,7 @@ switch (localStorage.getItem("theme")) {
           {
             name: "Tim Harding",
             email: "tim@timharding.co",
-            link: "https://tim-harding.github.io",
+            link: "https://www.timharding.co",
           },
         ],
       });
