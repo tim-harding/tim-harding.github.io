@@ -7,9 +7,9 @@ layout: blog
 
 # {{ $frontmatter.title }}
 
-Recently, I've been working on a web app for training Go, an abstract strategy board game. This is the largest frontend project I've worked on using Vue. Along the way, I've learned a valuable lesson: classes don't play nice with reactivity. 
+Recently, I've been working on a [Vue](https://vuejs.org/)-based web app for training Go, an abstract strategy board game. Along the way, I learned an important lesson: classes don't play nice with reactivity. 
 
-In case you haven't experienced this, here's why. Reactivity in Vue works by wrapping values and types in JavaScript [`Proxy`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) objects, like so:
+If you haven't encountered this, here's why. Reactivity in Vue works by wrapping values in JavaScript [`Proxy`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) objects, like so:
 
 ```typescript
 import { reactive } from 'vue';
@@ -17,7 +17,7 @@ const foo = reactive({ hello: '' });
 foo.hello = 'world'; // Triggers reactive update
 ```
 
-Although it looks like normal property assignment, `foo` intercepts property access, tracking reads and writes before forwarding them to the underlying object. Instead of a plain-old-data object, let's see what happens if it's a class instead. 
+Although it looks like normal property assignment, `foo` intercepts property access, tracking reads and writes before forwarding them to the underlying object. Instead of a plain-old-data object, let's see what happens if we wrap a class instead. 
 
 ```typescript
 class Foo {
@@ -37,13 +37,13 @@ foo.greet('world'); // No reactive update
 In the class methods, `this` refers to the original object underlying the reactive proxy. By calling `greet`, we reassign the field behind the proxy's back, so reactivity doesn't work. What to do? I'm not sure what the idiomatic answer is, but there seem to be a few common suggestions in the community:
 
 - Just don't use classes. Use plain-old-data objects and operate on them with freestanding functions.
-- Use Vue composables to build up logic instead. 
-- Use [`ref`](https://vuejs.org/api/reactivity-core.html#ref) or [`shallowRef`](https://vuejs.org/api/reactivity-advanced.html#shallowref) instead of `reactive` and always reassign through `foo.value` instead of relying on proxies to handle reactivity automagically. 
-- Use reactive proxies as class fields instead of plain JavaScript values. 
+- Use Vue [composables](https://vuejs.org/guide/reusability/composables) to build up logic instead.
+- Use [`ref`](https://vuejs.org/api/reactivity-core.html#ref) or [`shallowRef`](https://vuejs.org/api/reactivity-advanced.html#shallowref) instead of [`reactive`](https://vuejs.org/api/reactivity-core.html#reactive) and always reassign through `foo.value` instead of relying on proxies to handle reactivity automagically.
+- Use reactive proxies as class fields instead of plain JavaScript values.
 
 I am personally most attracted to the first option, as it limits the amount of coupling between my code and the framework. It also prevents mixing framework or presentation concerns with business logic. But even if I can't use classes or prototypes, I still want to think in terms of types and methods. 
 
-To do this, I ended up adapting a pattern from the functional language OCaml for use in TypeScript. Each code module contains one primary type, which we call `T`, along with methods that operate on it. For example:
+To do this, I ended up adapting a pattern from the functional language [OCaml](https://ocaml.org/) for use in TypeScript. Each code module contains one primary type, which we call `T`, along with methods that operate on it. For example:
 
 ```typescript
 // Point.ts
@@ -101,7 +101,7 @@ This way, I can just start typing `Point` elsewhere in my codebase and the LSP w
 
 Overall, I've quite enjoyed programming this way. Since it works with plain-old-data objects, it's totally compatible with Vue's reactivity system. Compared to objects, it also works better for tree-shaking. [Valibot](https://valibot.dev/guides/comparison/) does something quite similar to provide an API comparable to [Zod](https://zod.dev/) while greatly reducing the amount of code that gets shipped. 
 
-Compared to OCaml, there are a few downsides to this appoach that I've encountered:
+Compared to OCaml, there are a few downsides to this approach that I've encountered:
 
 - LSP hover windows show types as `T` instead of `Point.T`, making it slightly less convenient to get quick info about your types. 
 - TypeScript interfaces don't do data hiding, so you have less control over the interface boundary. This could be a larger issue if you're working with others and there isn't enough discipline around directly accessing `T` fields. 
