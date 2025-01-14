@@ -58,7 +58,7 @@ export default defineConfig({
         rel: "alternate",
         type: "application/rss+xml",
         title: "Blog RSS feed",
-        href: "/feed.rss",
+        href: "/blog.rss.xml",
       },
     ],
     [
@@ -67,7 +67,7 @@ export default defineConfig({
         rel: "alternate",
         type: "application/atom+xml",
         title: "Blog Atom feed",
-        href: "/feed.atom",
+        href: "/blog.atom.xml",
       },
     ],
     [
@@ -135,7 +135,7 @@ switch (localStorage.getItem("theme")) {
       });
     }
 
-    writeFileSync(path.join(config.outDir, "feed.rss"), feed.rss2());
-    writeFileSync(path.join(config.outDir, "feed.atom"), feed.atom1());
+    writeFileSync(path.join(config.outDir, "blog.rss.xml"), feed.rss2());
+    writeFileSync(path.join(config.outDir, "blog.atom.xml"), feed.atom1());
   },
 });
