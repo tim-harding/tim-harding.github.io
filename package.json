@@ -19,7 +19,8 @@
   },
   "scripts": {
     "dev": "vitepress dev",
-    "build": "vitepress build"
+    "build": "vitepress build",
+    "preview": "vitepress preview"
   },
   "dependencies": {
     "@types/bun": "^1.1.11",
