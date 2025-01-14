@@ -9,7 +9,7 @@ const srcDir = resolve(__dirname, "..", "src");
 
 export default defineConfig({
   title: "Tim Harding",
-  description: "Blag",
+  description: "Blog",
   srcDir: "src",
   appearance: false,
   themeConfig: {},
