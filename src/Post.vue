@@ -24,7 +24,7 @@ const month = [
     <a :class="s.title" :href="post.url">
       {{ title }}
     </a>
-    <time :class="s.time" :datetime="date">
+    <time :class="s.time" :datetime="date.toUTCString()">
       {{ date.getDate() + 1 }} {{ month }} {{ date.getFullYear() }}
     </time>
     <p :class="s.description">
