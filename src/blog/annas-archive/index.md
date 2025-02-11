@@ -52,3 +52,7 @@ Both frameworks are very similar overall, with single-file templates and proxy-b
 I ultimately abandoned Svelte because its reactivity wasn't picking up changes to a sparse array I was using for my image cache. Without the `{ deep: true }` option of `watch` to listen to the whole array or a way to bail out with a manual `triggerRef`, I didn't see how to handle my case. I guess you could have a `$state(false)` and toggle it to force updates, but why deal with kludgy things like that? Vue already has great APIs for all kinds of situations. Debugging flakey reactivity isn't worth whatever simplicity Svelte purportedly has. 
 
 I'll be sticking with Vue for the foreseeable future. The documentation is great, and tooling is too, aside from the Volar and TypeScript LSPs. It isn't perfect, but it's a sure sight better than React or any other framework I've tried. 
+
+## Signing off
+
+Ye who have read this far, thanks! I'll be trying to write and blog more in the coming months during my time at the [Recurse Center](https://www.recurse.com/). Stay tuned. 
