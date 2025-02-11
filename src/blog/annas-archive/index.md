@@ -24,3 +24,13 @@ Tiling means that we break the image into smaller pieces and only load the ones 
 Taken together, mipmapping and tiling greatly reduce the data being sent down on initial load. At first we only send down a few tiles for the fully zoomed-out viewport. As the user zooms and pans around, we request more tiles based on what's onscreen. 
 
 Since the user will inspect individual ISBNs, using a lossy image format for the biggest mipmap level wasn't an option, so I serve PNGs instead. Still, since each ISBN is a boolean value of whether it's present or not, I was able to use single-bit color channels in PNG to serve essentially just compressed 2D bitmaps. How well this compresses varies, with the sparsest tiles taking just 220 bytes and most fitting under 5 kilobytes, which isn't bad for relatively high-entropy data. 
+
+## Space-filling curves
+
+One of requested visualization features was to offer multiple spatial layouts for the ISBNs. One would lay them out line-by-line, while another would arrange them for spatial locality of related ISBN ranges using something like a [Hilbert curve](https://youtu.be/3s7h2MHQtxc?si=Ws_UxVacn_s3AkrV&t=237). 
+
+Hilbert curves are straightforward, but they wouldn't quite work in this case since the ISBN range can't be factored into a perfect square. Instead, I implemented an alternative curve that works for any dimensions, using a [pen and paper sketch](https://lutanho.net/pic2html/draw_sfc.html) as my guide. Dear reader, this absolutely broke my brain and took me the better part of three days to get working. 
+
+I _should_ have just padded the data and used a Hilbert curve. I was concerned that handling different viewport shapes and sizes would make the rendering and data loading more complex. In hindsight, it would have been much, much simpler, but I certainly didn't anticipate the difficulty of the route I actually took. The linked illustation I went off offers virtually no explanation of how the pieces fit together or why it works the way it does. I wound up having to reverse-engineer the technique from first principles after tying my brain into knots over all the edge cases. 
+
+As I learned from other submissions after the fact, [Gilbert Curves](https://github.com/jakubcerveny/gilbert?tab=readme-ov-file) would have been better-looking and easier. This algorithm builds on the one I used, greatly reducing the amount of cases to handle and choosing more aesthetic paths as a result. Although I'm kicking myself for the amount of time I spent on this, I'm glad to know about this alternative for future projects. 
