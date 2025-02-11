@@ -19,4 +19,8 @@ After decoding the file, I extract the ISBNs into bitsets covering the two billi
 
 Mipmapping means storing the image as progressively smaller resolutions and only loading in higher resolutions when zoomed in close enough to see more detail. In this case, we render 7 levels of detail, each at half the resolution of the previous, from 50,000×40,000 down to 781×625. 
 
-Tiling means that we break the image into smaller pieces and only load the ones the user is currently zoomed in on. 
+Tiling means that we break the image into smaller pieces and only load the ones the user is currently zoomed in on. Each tile is 1,024×1,024. At the smallest mipmap level this is a single tile, and at the largest it comes to 1,960. 
+
+Taken together, mipmapping and tiling greatly reduce the data being sent down on initial load. At first we only send down a few tiles for the fully zoomed-out viewport. As the user zooms and pans around, we request more tiles based on what's onscreen. 
+
+Since the user will inspect individual ISBNs, using a lossy image format for the biggest mipmap level wasn't an option, so I serve PNGs instead. Still, since each ISBN is a boolean value of whether it's present or not, I was able to use single-bit color channels in PNG to serve essentially just compressed 2D bitmaps. How well this compresses varies, with the sparsest tiles taking just 220 bytes and most fitting under 5 kilobytes, which isn't bad for relatively high-entropy data. 
