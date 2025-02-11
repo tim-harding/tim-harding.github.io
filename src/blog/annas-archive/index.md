@@ -34,3 +34,21 @@ Hilbert curves are straightforward, but they wouldn't quite work in this case si
 I _should_ have just padded the data and used a Hilbert curve. I was concerned that handling different viewport shapes and sizes would make the rendering and data loading more complex. In hindsight, it would have been much, much simpler, but I certainly didn't anticipate the difficulty of the route I actually took. The linked illustation I went off offers virtually no explanation of how the pieces fit together or why it works the way it does. I wound up having to reverse-engineer the technique from first principles after tying my brain into knots over all the edge cases. 
 
 As I learned from other submissions after the fact, [Gilbert Curves](https://github.com/jakubcerveny/gilbert?tab=readme-ov-file) would have been better-looking and easier. This algorithm builds on the one I used, greatly reducing the amount of cases to handle and choosing more aesthetic paths as a result. Although I'm kicking myself for the amount of time I spent on this, I'm glad to know about this alternative for future projects. 
+
+## Tile loading
+
+## WebGL rendering
+
+## Vue and Svelte
+
+One of my subgoals for this project was to try [Svelte](https://svelte.dev/), having seen so many people rave about it. I ended up switching back to [Vue](https://vuejs.org/) about halfway through the project out of disappointment. 
+
+The first and biggest issue I couldn't get around was the tooling. LSPs in Neovim can be a bit fiddly to set up so this could just be skill issues, but after checking and re-checking the [lspconfig](https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#svelte) instructions multiple times, I could not get completions working in Svelte files. Auto-formatting and syntax highlighting were also broken. I dealt with this for a while before giving up on a solution. 
+
+Granted, tooling for Vue isn't perfect either. Volar doesn't complete component imports in templates, for example, and renaming Vue files doesn't trigger automatic import updates. I had a difficult time getting Volar working with TypeScript properly as well, and it took multiple sessions of attempts to fully resolve. Part of my reticence to get Svelte working properly comes from knowing how long it already took for Vue. I'm disinclined to go through that hassle twice. 
+
+Both frameworks are very similar overall, with single-file templates and proxy-based reactivity. However, everything that Svelte does, Vue does equally well or better. In particular, Vue reactive primitives greatly outshine Svelte runes. `$state`, `$derived`, and `$effect` simply don't offer the kind of control and flexibility that Vue does. While you can get by with the equivalent `ref`, `computed`, and `watchEffect`, I regularly find uses for `reactive`, `watch`, and `shallowRef`, with the rest coming in handy for niche situations. Vue also automatically proxys types like `Map` and `Set` that I often use, while Svelte supports a much more limited set of types for deep reactivity. 
+
+I ultimately abandoned Svelte because its reactivity wasn't picking up changes to a sparse array I was using for my image cache. Without the `{ deep: true }` option of `watch` to listen to the whole array or a way to bail out with a manual `triggerRef`, I didn't see how to handle my case. I guess you could have a `$state(false)` and toggle it to force updates, but why deal with kludgy things like that? Vue already has great APIs for all kinds of situations. Debugging flakey reactivity isn't worth whatever simplicity Svelte purportedly has. 
+
+I'll be sticking with Vue for the foreseeable future. The documentation is great, and tooling is too, aside from the Volar and TypeScript LSPs. It isn't perfect, but it's a sure sight better than React or any other framework I've tried. 
